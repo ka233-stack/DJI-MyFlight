@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dji.myFlight">
 
-    <!-- DJI SDK need permission -->
+    <!-- DJI SDK所需权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -26,7 +26,8 @@
         android:name="android.hardware.usb.accessory"
         android:required="true" />
 
-    <!-- SDK requirement permission end -->
+    <!-- DJI SDK所需权限结尾 -->
+
     <application
         android:name=".MApplication"
         android:allowBackup="true"
@@ -37,7 +38,9 @@
 
         <!-- DJI SDK -->
         <uses-library android:name="com.android.future.usb.accessory" />
-        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <meta-data
             android:name="com.dji.sdk.API_KEY"
@@ -46,7 +49,8 @@
         <service android:name="dji.sdk.sdkmanager.DJIGlobalService"></service>
         <!-- DJI SDK -->
 
-        <activity android:name=".ConnectionActivity"
+        <activity
+            android:name=".ConnectionActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
 
@@ -63,7 +67,8 @@
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
                 android:resource="@xml/accessory_filter" />
         </activity>
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="portrait"></activity>
 
     </application>
