@@ -65,19 +65,12 @@ public class DemoApplication extends Application {
             //Listens to the SDK registration result
             @Override
             public void onRegister(DJIError error) {
-
+                Handler handler = new Handler(Looper.getMainLooper());
                 if (error == DJISDKError.REGISTRATION_SUCCESS) {
-
-                    Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(() -> Toast.makeText(getApplicationContext(), "Register Success", Toast.LENGTH_LONG).show());
-
                     DJISDKManager.getInstance().startConnectionToProduct();
-
                 } else {
-
-                    Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(() -> Toast.makeText(getApplicationContext(), "Register sdk fails, check network is available", Toast.LENGTH_LONG).show());
-
                 }
                 Log.e("TAG", error.toString());
             }
@@ -138,7 +131,7 @@ public class DemoApplication extends Application {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (permissionCheck == 0 && permissionCheck2 == 0)) {
             //This is used to start SDK services and initiate SDK.
             DJISDKManager.getInstance().registerApp(getApplicationContext(), mDJISDKManagerCallback);
-            Toast.makeText(getApplicationContext(), "registering, pls wait...", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "111registering, pls wait...", Toast.LENGTH_LONG).show();
 
         } else {
             Toast.makeText(getApplicationContext(), "Please check if the permission is granted.", Toast.LENGTH_LONG).show();
@@ -151,12 +144,8 @@ public class DemoApplication extends Application {
         mHandler.postDelayed(updateRunnable, 500);
     }
 
-    private Runnable updateRunnable = new Runnable() {
-
-        @Override
-        public void run() {
-            Intent intent = new Intent(FLAG_CONNECTION_CHANGE);
-            getApplicationContext().sendBroadcast(intent);
-        }
+    private Runnable updateRunnable = () -> {
+        Intent intent = new Intent(FLAG_CONNECTION_CHANGE);
+        getApplicationContext().sendBroadcast(intent);
     };
 }
