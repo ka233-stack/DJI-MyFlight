@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected Button logoutBtn;
     protected TextView bindingStateTV;
     protected TextView appActivationStateTV;
+    // 添加侦听器获取应用程序激活状态和飞行器绑定状态
     private AppActivationManager appActivationManager;
     private AppActivationState.AppActivationStateListener activationStateListener;
     private AircraftBindingState.AircraftBindingStateListener bindingStateListener;
