@@ -20,6 +20,7 @@ import dji.sdk.sdkmanager.DJISDKManager;
 
 public class DemoApplication extends Application {
     public static final String FLAG_CONNECTION_CHANGE = "activationDemo_connection_change";
+    private static final String TAG = ConnectionActivity.class.getName();
 
     private static BaseProduct mProduct;
     public Handler mHandler;
@@ -53,6 +54,7 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "onfasfsfas ");
         mHandler = new Handler(Looper.getMainLooper());
 
         /**
@@ -128,13 +130,13 @@ public class DemoApplication extends Application {
         //Check the permissions before registering the application for android system 6.0 above.
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permissionCheck2 = ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_PHONE_STATE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (permissionCheck == 0 && permissionCheck2 == 0)) {
+        if (DJISDKManager.getInstance().hasSDKRegistered()) {
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (permissionCheck == 0 && permissionCheck2 == 0)) {
             //This is used to start SDK services and initiate SDK.
             DJISDKManager.getInstance().registerApp(getApplicationContext(), mDJISDKManagerCallback);
-            Toast.makeText(getApplicationContext(), "111registering, pls wait...", Toast.LENGTH_LONG).show();
-
+            Toast.makeText(getApplicationContext(), "应用注册中", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(getApplicationContext(), "Please check if the permission is granted.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "请检查权限许可", Toast.LENGTH_LONG).show();
         }
 
     }
