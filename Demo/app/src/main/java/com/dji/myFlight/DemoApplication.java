@@ -1,4 +1,4 @@
-package com.dji.activationDemo;
+package com.dji.myFlight;
 
 import android.app.Application;
 import android.content.Context;

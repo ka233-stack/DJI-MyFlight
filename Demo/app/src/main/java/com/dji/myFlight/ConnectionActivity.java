@@ -1,4 +1,4 @@
-package com.dji.activationDemo;
+package com.dji.myFlight;
 
 import android.Manifest;
 import android.app.Activity;
@@ -19,6 +19,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.dji.myFlight.R;
 
 import java.util.ArrayList;
 import java.util.List;
