@@ -67,6 +67,8 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showToast("sdadasda");
+        Log.d(TAG, "onCreate: sdadasds");
 
         checkAndRequestPermissions();
         setContentView(R.layout.activity_connection);
@@ -74,6 +76,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         initUI();
 
         // Register the broadcast receiver for receiving the device connection's changes.
+        // 注册广播接收器以接收设备连接的变化
         IntentFilter filter = new IntentFilter();
         filter.addAction(DemoApplication.FLAG_CONNECTION_CHANGE);
         registerReceiver(mReceiver, filter);
@@ -85,13 +88,13 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
      * requests runtime permission if needed.
      */
     private void checkAndRequestPermissions() {
-        // Check for permissions
+        // 检查权限
         for (String eachPermission : REQUIRED_PERMISSION_LIST) {
             if (ContextCompat.checkSelfPermission(this, eachPermission) != PackageManager.PERMISSION_GRANTED) {
                 missingPermission.add(eachPermission);
             }
         }
-        // Request for missing permissions
+        // 申请缺失的权限
         if (!missingPermission.isEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this,
                     missingPermission.toArray(new String[missingPermission.size()]),
@@ -115,17 +118,20 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             }
         }
         // If there is enough permission, we will start the registration
-        if (missingPermission.isEmpty()) {
-            startSDKRegistration();
-        } else {
+        if (!missingPermission.isEmpty()) {
             showToast("Missing permissions!!!");
         }
+        // else if (!DJISDKManager.getInstance().hasSDKRegistered()) {
+        //     startSDKRegistration();
+        // } else {
+        //     showToast("test");
+        // }
     }
 
     private void startSDKRegistration() {
         if (isRegistrationInProgress.compareAndSet(false, true)) {
             AsyncTask.execute(() -> {
-                showToast( "registering, pls wait...");
+                showToast("应用注册中");
                 DJISDKManager.getInstance().registerApp(getApplicationContext(), new DJISDKManager.SDKManagerCallback() {
                     @Override
                     public void onRegister(DJIError djiError) {
@@ -134,7 +140,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                             DJISDKManager.getInstance().startConnectionToProduct();
                             showToast("Register Success");
                         } else {
-                            showToast( "Register sdk fails, check network is available");
+                            showToast("Register sdk fails, check network is available");
                         }
                         Log.v(TAG, djiError.getDescription());
                     }
@@ -173,6 +179,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                         Log.d(TAG, String.format("onComponentChange key:%s, " + "oldComponent:%s, " + "newComponent:%s",
                                 componentKey, oldComponent, newComponent));
                     }
+
                     @Override
                     public void onInitProcess(DJISDKInitEvent djisdkInitEvent, int i) {
 
@@ -205,7 +212,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         super.onStop();
     }
 
-    public void onReturn(View view){
+    public void onReturn(View view) {
         Log.e(TAG, "onReturn");
         this.finish();
     }
