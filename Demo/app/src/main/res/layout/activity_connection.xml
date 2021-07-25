@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ConnectionActivity">
 
     <TextView
         android:id="@+id/text_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorBlack"
@@ -50,10 +50,8 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/btn_open"
         app:layout_constraintEnd_toStartOf="@+id/text_app_name"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_connection_status"
-        app:layout_constraintVertical_bias="0.844" />
+        app:layout_constraintTop_toBottomOf="@+id/text_connection_status" />
 
     <Button
         android:id="@+id/btn_open"
@@ -66,8 +64,6 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/text_app_name"
-
-        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.6
@@ -84,7 +80,7 @@
         app:layout_constraintEnd_toStartOf="@+id/text_app_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_open"
-        app:layout_constraintVertical_bias="0.069" />
+        app:layout_constraintVertical_bias="0.1" />
 
     <TextView
         android:id="@+id/binding_state_label"
@@ -92,7 +88,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_app_name"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
         android:text="绑定状态"
         android:textColor="@color/colorBlack"
         android:textSize="20sp"
@@ -109,7 +104,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/binding_state_label"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
         android:text="Unknown"
         android:textColor="@color/colorBlack"
         android:textSize="20sp"
@@ -170,9 +164,6 @@
     <Button
         android:id="@+id/btn_login"
         style="@style/common_button"
-        android:layout_alignStart="@+id/tv_activation_state_info"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center_horizontal"
         android:text="登录"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -185,13 +176,9 @@
     <Button
         android:id="@+id/btn_logout"
         style="@style/common_button"
-        android:layout_alignEnd="@+id/tv_activation_state_info"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center_horizontal"
         android:text="注销"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
         app:layout_constraintTop_toTopOf="parent"
