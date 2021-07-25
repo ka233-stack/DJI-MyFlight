@@ -7,7 +7,7 @@
     tools:context="com.dji.myFlight.MainActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/text_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -15,7 +15,7 @@
         android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorBlack"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,13 +32,14 @@
         android:gravity="center"
         android:text="@string/connection_loose"
         android:textColor="@android:color/black"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/text_product_info"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_open"
+        app:layout_constraintEnd_toStartOf="@+id/text_app_name"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintTop_toBottomOf="@+id/text_app_name"
+         />
 
     <TextView
         android:id="@+id/text_product_info"
@@ -48,13 +49,14 @@
         android:gravity="center"
         android:text="@string/product_information"
         android:textColor="@android:color/black"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/btn_open"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/text_app_name"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintTop_toBottomOf="@+id/text_connection_status"
+        app:layout_constraintVertical_bias="0.844" />
 
     <Button
         android:id="@+id/btn_open"
@@ -64,25 +66,116 @@
         android:background="@drawable/round_btn"
         android:text="启动"
         android:textColor="@color/colorWhite"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintEnd_toStartOf="@+id/text_app_name"
+
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.6
+" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/text_sdk_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="@string/sdk_version"
-        android:textSize="15dp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/text_app_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_open"
-        app:layout_constraintVertical_bias="0.08" />
+        app:layout_constraintVertical_bias="0.069" />
+
+    <TextView
+        android:id="@+id/binding_state_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_app_name"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:text="绑定状态"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_app_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_binding_state_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/binding_state_label"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:text="Unknown"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/activation_state_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_app_name"
+        app:layout_constraintTop_toBottomOf="@+id/binding_state_label"
+        app:layout_constraintVertical_bias="0.293" />
+
+    <TextView
+        android:id="@+id/activation_state_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_binding_state_info"
+        android:layout_centerHorizontal="true"
+        android:text="应用激活状态"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_app_name"
+        app:layout_constraintTop_toBottomOf="@+id/binding_state_label" />
+
+    <TextView
+        android:id="@+id/tv_activation_state_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activation_state_label"
+        android:layout_alignEnd="@+id/tv_binding_state_info"
+        android:text="Unknown"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlack"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_app_name"
+        app:layout_constraintTop_toBottomOf="@+id/activation_state_label" />
+
+    <Button
+        android:id="@+id/btn_login"
+        style="@style/common_button"
+        android:layout_alignStart="@+id/tv_activation_state_info"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
+        android:text="登录"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_app_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.7" />
+
+    <Button
+        android:id="@+id/btn_logout"
+        style="@style/common_button"
+        android:layout_alignEnd="@+id/tv_activation_state_info"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
+        android:text="注销"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintStart_toEndOf="@+id/text_app_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
