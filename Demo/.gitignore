@@ -2,3 +2,4 @@
 .gradle/
 import-summary.txt
 local.properties
+build/
