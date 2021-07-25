@@ -328,7 +328,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             showToast("start");
         } else if (id == R.id.btn_login) {
             loginAccount();
-            updateUsername();
+            // updateUsername();
         } else if (id == R.id.btn_logout) {
             logoutAccount();
         }
@@ -340,6 +340,18 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                     @Override
                     public void onSuccess(final UserAccountState userAccountState) {
                         showToast("登录成功");
+                        UserAccountManager.getInstance().getLoggedInDJIUserAccountName(
+                                new CommonCallbacks.CompletionCallbackWith<String>() {
+                                    @Override
+                                    public void onSuccess(final String username) {
+                                        ConnectionActivity.this.runOnUiThread(() -> loginStateTV.setText(username));
+                                    }
+
+                                    @Override
+                                    public void onFailure(DJIError error) {
+                                        showToast("获取用户名失败: " + error.getDescription());
+                                    }
+                                });
                     }
 
                     @Override
@@ -353,7 +365,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         UserAccountManager.getInstance().logoutOfDJIUserAccount(error -> {
             if (null == error) {
                 showToast("Logout Success");
-                loginStateTV.setText("未登录");
+                ConnectionActivity.this.runOnUiThread(() -> loginStateTV.setText("未登录"));
             } else {
                 showToast("Logout Error:"
                         + error.getDescription());
