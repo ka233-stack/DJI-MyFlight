@@ -325,6 +325,11 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             if (bindingStateTV != null) {
                 bindingStateTV.setText(appActivationManager.getAircraftBindingState().toString());
             }
+            if(appActivationStateTV != null && bindingStateTV != null)
+            {
+                Intent intent = new Intent(this, DashboardActivity.class);
+                startActivity(intent);
+            }
         } else if (id == R.id.btn_login) {
             loginAccount();
         } else if (id == R.id.btn_logout) {
