@@ -299,7 +299,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             mBtnOpen.setEnabled(true);
 
             String str = mProduct instanceof Aircraft ? "无人机" : "手持云台";
-            mTextConnectionStatus.setText("状态: 已连接" + str);
+            mTextConnectionStatus.setText(String.format("状态: 已连接%s", str));
 
             if (null != mProduct.getModel()) {
                 mTextProduct.setText(mProduct.getModel().getDisplayName());
@@ -326,6 +326,12 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             // Intent intent = new Intent(this, MainActivity.class);
             // startActivity(intent);
             showToast("start");
+            if (appActivationStateTV != null) {
+                appActivationStateTV.setText(appActivationManager.getAppActivationState().toString());
+            }
+            if (bindingStateTV != null) {
+                bindingStateTV.setText(appActivationManager.getAircraftBindingState().toString());
+            }
         } else if (id == R.id.btn_login) {
             loginAccount();
             // updateUsername();
@@ -364,28 +370,13 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     private void logoutAccount() {
         UserAccountManager.getInstance().logoutOfDJIUserAccount(error -> {
             if (null == error) {
-                showToast("Logout Success");
+                showToast("已注销");
                 ConnectionActivity.this.runOnUiThread(() -> loginStateTV.setText("未登录"));
             } else {
                 showToast("Logout Error:"
                         + error.getDescription());
             }
         });
-    }
-
-    private void updateUsername() {
-        UserAccountManager.getInstance().getLoggedInDJIUserAccountName(
-                new CommonCallbacks.CompletionCallbackWith<String>() {
-                    @Override
-                    public void onSuccess(final String username) {
-                        loginStateTV.setText(username);
-                    }
-
-                    @Override
-                    public void onFailure(DJIError error) {
-                        showToast("获取用户名失败: " + error.getDescription());
-                    }
-                });
     }
 
     private void showToast(final String toastMsg) {
