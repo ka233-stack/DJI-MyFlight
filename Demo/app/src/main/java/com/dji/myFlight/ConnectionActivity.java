@@ -28,12 +28,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import dji.common.error.DJIError;
 import dji.common.error.DJISDKError;
+import dji.common.realname.AircraftBindingState;
+import dji.common.realname.AppActivationState;
+import dji.common.useraccount.UserAccountState;
+import dji.common.util.CommonCallbacks;
 import dji.log.DJILog;
 import dji.sdk.base.BaseComponent;
 import dji.sdk.base.BaseProduct;
 import dji.sdk.products.Aircraft;
+import dji.sdk.realname.AppActivationManager;
 import dji.sdk.sdkmanager.DJISDKInitEvent;
 import dji.sdk.sdkmanager.DJISDKManager;
+import dji.sdk.useraccount.UserAccountManager;
 
 public class ConnectionActivity extends Activity implements View.OnClickListener {
 
@@ -43,6 +49,14 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     private TextView mTextProduct;
     private Button mBtnOpen;
     private TextView mVersionTv;
+    protected Button loginBtn;
+    protected Button logoutBtn;
+    protected TextView bindingStateTV;
+    protected TextView appActivationStateTV;
+    // 添加侦听器获取应用程序激活状态和飞行器绑定状态
+    private AppActivationManager appActivationManager;
+    private AppActivationState.AppActivationStateListener activationStateListener;
+    private AircraftBindingState.AircraftBindingStateListener bindingStateListener;
 
     private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
             Manifest.permission.BLUETOOTH,
@@ -67,15 +81,14 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showToast("onCreate:ConnectionActivity");
         Log.d(TAG, "onCreate:ConnectionActivity");
 
         checkAndRequestPermissions();
         setContentView(R.layout.activity_connection);
 
         initUI();
+        initData();
 
-        // Register the broadcast receiver for receiving the device connection's changes.
         // 注册广播接收器以接收设备连接的变化
         IntentFilter filter = new IntentFilter();
         filter.addAction(DemoApplication.FLAG_CONNECTION_CHANGE);
@@ -97,7 +110,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         // 申请缺失的权限
         if (!missingPermission.isEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this,
-                    missingPermission.toArray(new String[missingPermission.size()]),
+                    missingPermission.toArray(new String[0]),
                     REQUEST_PERMISSION_CODE);
         }
 
@@ -119,29 +132,26 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         }
         // If there is enough permission, we will start the registration
         if (!missingPermission.isEmpty()) {
-            showToast("Missing permissions!!!");
+            showToast("缺少权限");
+        } else if (!DJISDKManager.getInstance().hasSDKRegistered()) {
+            startSDKRegistration();
+        } else {
+            showToast("test");
         }
-         else if (!DJISDKManager.getInstance().hasSDKRegistered()) {
-             startSDKRegistration();
-            showToast("onCreate调用hasSDKRegistered结果为false(ConnectionActivity)");
-         } else {
-             showToast("test");
-         }
     }
 
     private void startSDKRegistration() {
         if (isRegistrationInProgress.compareAndSet(false, true)) {
             AsyncTask.execute(() -> {
-                showToast("应用注册中(ConnectionActivity)");
                 DJISDKManager.getInstance().registerApp(getApplicationContext(), new DJISDKManager.SDKManagerCallback() {
                     @Override
                     public void onRegister(DJIError djiError) {
                         if (djiError == DJISDKError.REGISTRATION_SUCCESS) {
                             DJILog.e("App registration", DJISDKError.REGISTRATION_SUCCESS.getDescription());
                             DJISDKManager.getInstance().startConnectionToProduct();
-                            showToast("Register Success(ConnectionActivity)");
+                            showToast("注册成功(ConnectionActivity)");
                         } else {
-                            showToast("Register sdk fails, check network is available");
+                            showToast("注册SDK失败，检查网络是否可用");
                         }
                         Log.v(TAG, djiError.getDescription());
                     }
@@ -149,14 +159,14 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                     @Override
                     public void onProductDisconnect() {
                         Log.d(TAG, "onProductDisconnect");
-                        showToast("Product Disconnected");
+                        showToast("产品已断开连接");
 
                     }
 
                     @Override
                     public void onProductConnect(BaseProduct baseProduct) {
                         Log.d(TAG, String.format("onProductConnect newProduct:%s", baseProduct));
-                        showToast("Product Connected");
+                        showToast("产品已连接");
 
                     }
 
@@ -169,13 +179,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                     public void onComponentChange(BaseProduct.ComponentKey componentKey, BaseComponent oldComponent,
                                                   BaseComponent newComponent) {
                         if (newComponent != null) {
-                            newComponent.setComponentListener(new BaseComponent.ComponentListener() {
-
-                                @Override
-                                public void onConnectivityChange(boolean isConnected) {
-                                    Log.d(TAG, "onComponentConnectivityChanged: " + isConnected);
-                                }
-                            });
+                            newComponent.setComponentListener(isConnected -> Log.d(TAG, "onComponentConnectivityChanged: " + isConnected));
                         }
                         Log.d(TAG, String.format("onComponentChange key:%s, " + "oldComponent:%s, " + "newComponent:%s",
                                 componentKey, oldComponent, newComponent));
@@ -222,6 +226,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     protected void onDestroy() {
         Log.e(TAG, "onDestroy");
         unregisterReceiver(mReceiver);
+        tearDownListener();
         super.onDestroy();
     }
 
@@ -233,6 +238,47 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         mBtnOpen.setEnabled(false);
         mVersionTv = (TextView) findViewById(R.id.text_sdk_version);
         mVersionTv.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
+        bindingStateTV = (TextView) findViewById(R.id.tv_binding_state_info);
+        appActivationStateTV = (TextView) findViewById(R.id.tv_activation_state_info);
+        loginBtn = (Button) findViewById(R.id.btn_login);
+        logoutBtn = (Button) findViewById(R.id.btn_logout);
+        loginBtn.setOnClickListener(this);
+        logoutBtn.setOnClickListener(this);
+    }
+
+    private void initData() {
+        setUpListener();
+        appActivationManager = DJISDKManager.getInstance().getAppActivationManager();
+        if (appActivationManager != null) {
+            showToast("adding listeners");
+            appActivationManager.addAppActivationStateListener(activationStateListener);
+            appActivationManager.addAircraftBindingStateListener(bindingStateListener);
+            appActivationStateTV.setText(appActivationManager.getAppActivationState().toString());
+            bindingStateTV.setText(appActivationManager.getAircraftBindingState().toString());
+        }
+    }
+
+    private void setUpListener() {
+        // Example of Listener
+        showToast("setting up listener");
+        activationStateListener = new AppActivationState.AppActivationStateListener() {
+            @Override
+            public void onUpdate(final AppActivationState appActivationState) {
+                ConnectionActivity.this.runOnUiThread(() -> appActivationStateTV.setText(appActivationState.toString()));
+            }
+        };
+        bindingStateListener = bindingState -> ConnectionActivity.this.runOnUiThread(() -> bindingStateTV.setText(bindingState.toString()));
+    }
+
+    private void tearDownListener() {
+        if (activationStateListener != null) {
+            appActivationManager.removeAppActivationStateListener(activationStateListener);
+            appActivationStateTV.setText(AppActivationState.UNKNOWN.toString());
+        }
+        if (bindingStateListener != null) {
+            appActivationManager.removeAircraftBindingStateListener(bindingStateListener);
+            bindingStateTV.setText(AircraftBindingState.UNKNOWN.toString());
+        }
     }
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -258,7 +304,10 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             } else {
                 mTextProduct.setText(R.string.product_information);
             }
-
+            if (appActivationManager != null) {
+                appActivationStateTV.setText(appActivationManager.getAppActivationState().toString());
+                bindingStateTV.setText(appActivationManager.getAircraftBindingState().toString());
+            }
         } else {
             Log.v(TAG, "refreshSDK: False");
             mBtnOpen.setEnabled(false);
@@ -269,11 +318,46 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     }
 
     @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.btn_open) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+    public void onClick(View view) {
+        int id = view.getId();
+        if (id == R.id.btn_open) {
+            // Intent intent = new Intent(this, MainActivity.class);
+            // startActivity(intent);
+            showToast("start");
+        } else if (id == R.id.btn_login) {
+            loginAccount();
+        } else if (id == R.id.btn_logout) {
+            logoutAccount();
         }
+    }
+
+    private void loginAccount() {
+        UserAccountManager.getInstance().logIntoDJIUserAccount(this,
+                new CommonCallbacks.CompletionCallbackWith<UserAccountState>() {
+                    @Override
+                    public void onSuccess(final UserAccountState userAccountState) {
+                        showToast("登录成功");
+                        Log.e(TAG, "登录成功");
+                    }
+
+                    @Override
+                    public void onFailure(DJIError error) {
+                        showToast("Login Error:"
+                                + error.getDescription());
+                    }
+                });
+    }
+
+    private void logoutAccount() {
+        UserAccountManager.getInstance().logoutOfDJIUserAccount(error -> {
+            if (null == error) {
+                showToast("Logout Success");
+
+            } else {
+                showToast("Logout Error:"
+                        + error.getDescription());
+            }
+        });
     }
 
     private void showToast(final String toastMsg) {

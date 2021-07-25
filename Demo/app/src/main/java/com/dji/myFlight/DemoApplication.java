@@ -19,7 +19,7 @@ import dji.sdk.sdkmanager.DJISDKInitEvent;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 public class DemoApplication extends Application {
-    public static final String FLAG_CONNECTION_CHANGE = "activationDemo_connection_change";
+    public static final String FLAG_CONNECTION_CHANGE = "demo_connection_change";
     private static final String TAG = ConnectionActivity.class.getName();
 
     private static BaseProduct mProduct;
@@ -105,13 +105,9 @@ public class DemoApplication extends Application {
             public void onComponentChange(BaseProduct.ComponentKey componentKey, BaseComponent oldComponent,
                                           BaseComponent newComponent) {
                 if (newComponent != null) {
-                    newComponent.setComponentListener(new BaseComponent.ComponentListener() {
-
-                        @Override
-                        public void onConnectivityChange(boolean isConnected) {
-                            Log.d("TAG", "onComponentConnectivityChanged: " + isConnected);
-                            notifyStatusChange();
-                        }
+                    newComponent.setComponentListener(isConnected -> {
+                        Log.d("TAG", "onComponentConnectivityChanged: " + isConnected);
+                        notifyStatusChange();
                     });
                 }
 
