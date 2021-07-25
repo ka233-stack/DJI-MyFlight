@@ -361,7 +361,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
                     @Override
                     public void onFailure(DJIError error) {
-                        showToast("Login Error: " + error.getDescription());
+                        showToast("登录失败: " + error.getDescription());
                     }
                 });
     }
@@ -369,11 +369,10 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     private void logoutAccount() {
         UserAccountManager.getInstance().logoutOfDJIUserAccount(error -> {
             if (null == error) {
-                showToast("已注销");
+                showToast("已注销登录");
                 ConnectionActivity.this.runOnUiThread(() -> loginStateTV.setText("未登录"));
             } else {
-                showToast("Logout Error:"
-                        + error.getDescription());
+                showToast("注销失败: " + error.getDescription());
             }
         });
     }
