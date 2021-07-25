@@ -231,7 +231,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         mBtnOpen = (Button) findViewById(R.id.btn_open);
         mBtnOpen.setOnClickListener(this);
         mBtnOpen.setEnabled(false);
-        mVersionTv = (TextView) findViewById(R.id.textView2);
+        mVersionTv = (TextView) findViewById(R.id.text_sdk_version);
         mVersionTv.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
     }
 
