@@ -53,6 +53,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     protected Button logoutBtn;
     protected TextView bindingStateTV;
     protected TextView appActivationStateTV;
+    protected TextView loginStateTV;
     // 添加侦听器获取应用程序激活状态和飞行器绑定状态
     private AppActivationManager appActivationManager;
     private AppActivationState.AppActivationStateListener activationStateListener;
@@ -240,6 +241,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         mVersionTv.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
         bindingStateTV = (TextView) findViewById(R.id.tv_binding_state_info);
         appActivationStateTV = (TextView) findViewById(R.id.tv_activation_state_info);
+        loginStateTV = (TextView) findViewById(R.id.login_state_info);
         loginBtn = (Button) findViewById(R.id.btn_login);
         logoutBtn = (Button) findViewById(R.id.btn_logout);
         loginBtn.setOnClickListener(this);
@@ -296,7 +298,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             Log.v(TAG, "refreshSDK: True");
             mBtnOpen.setEnabled(true);
 
-            String str = mProduct instanceof Aircraft ? "DJIAircraft" : "DJIHandHeld";
+            String str = mProduct instanceof Aircraft ? "无人机" : "手持云台";
             mTextConnectionStatus.setText("状态: 已连接" + str);
 
             if (null != mProduct.getModel()) {
@@ -337,15 +339,26 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                     @Override
                     public void onSuccess(final UserAccountState userAccountState) {
                         showToast("登录成功");
-                        Log.e(TAG, "登录成功");
+                        UserAccountManager.getInstance().getLoggedInDJIUserAccountName(
+                                new CommonCallbacks.CompletionCallbackWith<String>() {
+                                    @Override
+                                    public void onSuccess(final String username) {
+                                        loginStateTV.setText(username);
+                                    }
+
+                                    @Override
+                                    public void onFailure(DJIError error) {
+                                        showToast("获取用户名失败: " + error.getDescription());
+                                    }
+                                });
                     }
 
                     @Override
                     public void onFailure(DJIError error) {
-                        showToast("Login Error:"
-                                + error.getDescription());
+                        showToast("Login Error: " + error.getDescription());
                     }
                 });
+
     }
 
     private void logoutAccount() {
