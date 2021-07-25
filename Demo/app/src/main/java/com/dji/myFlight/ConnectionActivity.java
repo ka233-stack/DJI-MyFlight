@@ -334,7 +334,6 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             }
         } else if (id == R.id.btn_login) {
             loginAccount();
-            // updateUsername();
         } else if (id == R.id.btn_logout) {
             logoutAccount();
         }
