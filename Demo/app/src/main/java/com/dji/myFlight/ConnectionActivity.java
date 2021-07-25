@@ -20,8 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.dji.myFlight.R;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -48,7 +46,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     private TextView mTextConnectionStatus;
     private TextView mTextProduct;
     private Button mBtnOpen;
-    private TextView mVersionTv;
+    private TextView sdkVersionTV;
     protected Button loginBtn;
     protected Button logoutBtn;
     protected TextView bindingStateTV;
@@ -82,19 +80,17 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate:ConnectionActivity");
+        Log.d(TAG, "onCreate: ConnectionActivity");
 
         checkAndRequestPermissions();
         setContentView(R.layout.activity_connection);
 
         initUI();
-        initData();
 
         // 注册广播接收器以接收设备连接的变化
         IntentFilter filter = new IntentFilter();
         filter.addAction(DemoApplication.FLAG_CONNECTION_CHANGE);
         registerReceiver(mReceiver, filter);
-
     }
 
     /**
@@ -237,8 +233,8 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         mBtnOpen = (Button) findViewById(R.id.btn_open);
         mBtnOpen.setOnClickListener(this);
         mBtnOpen.setEnabled(false);
-        mVersionTv = (TextView) findViewById(R.id.text_sdk_version);
-        mVersionTv.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
+        sdkVersionTV = (TextView) findViewById(R.id.text_sdk_version);
+        sdkVersionTV.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
         bindingStateTV = (TextView) findViewById(R.id.tv_binding_state_info);
         appActivationStateTV = (TextView) findViewById(R.id.tv_activation_state_info);
         loginStateTV = (TextView) findViewById(R.id.login_state_info);
@@ -288,6 +284,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         @Override
         public void onReceive(Context context, Intent intent) {
             refreshSDKRelativeUI();
+            initData();
         }
     };
 
@@ -305,10 +302,6 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                 mTextProduct.setText(mProduct.getModel().getDisplayName());
             } else {
                 mTextProduct.setText(R.string.product_information);
-            }
-            if (appActivationManager != null) {
-                appActivationStateTV.setText(appActivationManager.getAppActivationState().toString());
-                bindingStateTV.setText(appActivationManager.getAircraftBindingState().toString());
             }
         } else {
             Log.v(TAG, "refreshSDK: False");
