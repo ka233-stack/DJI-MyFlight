@@ -45,7 +45,7 @@
         <service android:name="dji.sdk.sdkmanager.DJIGlobalService" /> <!-- DJI SDK -->
         <activity
             android:name=".ConnectionActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:theme="@style/AppTheme"
             android:configChanges="orientation"
             android:screenOrientation="sensorLandscape">
             <intent-filter>
@@ -63,6 +63,7 @@
         </activity>
         <activity
             android:name=".DashboardActivity"
+            android:theme="@style/AppTheme"
             android:configChanges="orientation"
             android:screenOrientation="sensorLandscape" />
     </application>
