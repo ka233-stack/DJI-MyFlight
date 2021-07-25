@@ -251,10 +251,10 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             mBtnOpen.setEnabled(true);
 
             String str = mProduct instanceof Aircraft ? "DJIAircraft" : "DJIHandHeld";
-            mTextConnectionStatus.setText("Status: " + str + " connected");
+            mTextConnectionStatus.setText("状态: 已连接" + str);
 
             if (null != mProduct.getModel()) {
-                mTextProduct.setText("" + mProduct.getModel().getDisplayName());
+                mTextProduct.setText(mProduct.getModel().getDisplayName());
             } else {
                 mTextProduct.setText(R.string.product_information);
             }
@@ -277,11 +277,6 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     }
 
     private void showToast(final String toastMsg) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show());
     }
 }
