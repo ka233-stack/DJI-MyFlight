@@ -23,10 +23,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.04" />
 
-    <ImageView
-        android:id="@+id/img_control_manual"
+    <ImageButton
+        android:id="@+id/imgBtn_control_manual"
         android:layout_width="320sp"
         android:layout_height="240sp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/text_app_name"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,13 +35,13 @@
         app:layout_constraintVertical_bias="0.35"
         app:srcCompat="@drawable/control_manual" />
 
-    <ImageView
-        android:id="@+id/img_control_routes"
+    <ImageButton
+        android:id="@+id/imgBtn_control_routes"
         android:layout_width="320sp"
         android:layout_height="240sp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.35"
@@ -71,7 +72,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/text_app_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_control_routes"
+        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes"
         app:layout_constraintVertical_bias="0.1" />
 
     <TextView
@@ -86,7 +87,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
-        app:layout_constraintTop_toBottomOf="@+id/img_control_routes"
+        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes"
         app:layout_constraintVertical_bias="0.3" />
 
 
@@ -99,7 +100,7 @@
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/img_control_routes"
+        app:layout_constraintBottom_toTopOf="@+id/imgBtn_control_routes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
         app:layout_constraintTop_toTopOf="parent" />
@@ -115,7 +116,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
-        app:layout_constraintTop_toBottomOf="@+id/img_control_routes" />
+        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes" />
 
     <Button
         android:id="@+id/btn_logout"
@@ -126,6 +127,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
-        app:layout_constraintTop_toBottomOf="@+id/img_control_routes" />
+        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
