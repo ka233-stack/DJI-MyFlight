@@ -328,6 +328,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             showToast("start");
         } else if (id == R.id.btn_login) {
             loginAccount();
+            updateUsername();
         } else if (id == R.id.btn_logout) {
             logoutAccount();
         }
@@ -339,24 +340,11 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                     @Override
                     public void onSuccess(final UserAccountState userAccountState) {
                         showToast("登录成功");
-
                     }
 
                     @Override
                     public void onFailure(DJIError error) {
                         showToast("Login Error: " + error.getDescription());
-                    }
-                });
-        UserAccountManager.getInstance().getLoggedInDJIUserAccountName(
-                new CommonCallbacks.CompletionCallbackWith<String>() {
-                    @Override
-                    public void onSuccess(final String username) {
-                        loginStateTV.setText(username);
-                    }
-
-                    @Override
-                    public void onFailure(DJIError error) {
-                        showToast("获取用户名失败: " + error.getDescription());
                     }
                 });
     }
@@ -371,6 +359,21 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                         + error.getDescription());
             }
         });
+    }
+
+    private void updateUsername() {
+        UserAccountManager.getInstance().getLoggedInDJIUserAccountName(
+                new CommonCallbacks.CompletionCallbackWith<String>() {
+                    @Override
+                    public void onSuccess(final String username) {
+                        loginStateTV.setText(username);
+                    }
+
+                    @Override
+                    public void onFailure(DJIError error) {
+                        showToast("获取用户名失败: " + error.getDescription());
+                    }
+                });
     }
 
     private void showToast(final String toastMsg) {
