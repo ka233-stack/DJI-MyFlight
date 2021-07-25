@@ -67,7 +67,7 @@ public class DemoApplication extends Application {
          * When starting SDK services, an instance of interface DJISDKManager.DJISDKManagerCallback will be used to listen to
          * the SDK Registration result and the product changing.
          */
-        //Listens to the SDK registration result
+        // 监听SDK的注册结果
         DJISDKManager.SDKManagerCallback mDJISDKManagerCallback = new DJISDKManager.SDKManagerCallback() {
 
             //Listens to the SDK registration result
@@ -75,10 +75,10 @@ public class DemoApplication extends Application {
             public void onRegister(DJIError error) {
                 Handler handler = new Handler(Looper.getMainLooper());
                 if (error == DJISDKError.REGISTRATION_SUCCESS) {
-                    handler.post(() -> Toast.makeText(getApplicationContext(), "Register Success(DemoApplication)", Toast.LENGTH_LONG).show());
+                    handler.post(() -> Toast.makeText(getApplicationContext(), "注册成功(DemoApplication)", Toast.LENGTH_LONG).show());
                     DJISDKManager.getInstance().startConnectionToProduct();
                 } else {
-                    handler.post(() -> Toast.makeText(getApplicationContext(), "Register sdk fails, check network is available", Toast.LENGTH_LONG).show());
+                    handler.post(() -> Toast.makeText(getApplicationContext(), "注册SDK失败，检查网络是否可用", Toast.LENGTH_LONG).show());
                 }
                 Log.e("TAG", error.toString());
             }
