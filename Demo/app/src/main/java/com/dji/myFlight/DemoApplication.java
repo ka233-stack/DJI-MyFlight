@@ -54,7 +54,13 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onfasfsfas ");
+        if(DJISDKManager.getInstance().hasSDKRegistered()){
+            Toast.makeText(getApplicationContext(), "onCreate调用hasSDKRegistered结果为true(DemoApplication)", Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "onCreate调用hasSDKRegistered结果为false(DemoApplication)", Toast.LENGTH_LONG).show();
+        }
+        Log.d(TAG, "onCreate:DemoApplication");
         mHandler = new Handler(Looper.getMainLooper());
 
         /**
@@ -69,7 +75,7 @@ public class DemoApplication extends Application {
             public void onRegister(DJIError error) {
                 Handler handler = new Handler(Looper.getMainLooper());
                 if (error == DJISDKError.REGISTRATION_SUCCESS) {
-                    handler.post(() -> Toast.makeText(getApplicationContext(), "Register Success", Toast.LENGTH_LONG).show());
+                    handler.post(() -> Toast.makeText(getApplicationContext(), "Register Success(DemoApplication)", Toast.LENGTH_LONG).show());
                     DJISDKManager.getInstance().startConnectionToProduct();
                 } else {
                     handler.post(() -> Toast.makeText(getApplicationContext(), "Register sdk fails, check network is available", Toast.LENGTH_LONG).show());
@@ -134,7 +140,7 @@ public class DemoApplication extends Application {
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (permissionCheck == 0 && permissionCheck2 == 0)) {
             //This is used to start SDK services and initiate SDK.
             DJISDKManager.getInstance().registerApp(getApplicationContext(), mDJISDKManagerCallback);
-            Toast.makeText(getApplicationContext(), "应用注册中", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "应用注册中(DemoApplication)", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(getApplicationContext(), "请检查权限许可", Toast.LENGTH_LONG).show();
         }

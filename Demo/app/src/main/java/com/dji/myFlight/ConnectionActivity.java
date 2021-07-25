@@ -67,8 +67,8 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showToast("sdadasda");
-        Log.d(TAG, "onCreate: sdadasds");
+        showToast("onCreate:ConnectionActivity");
+        Log.d(TAG, "onCreate:ConnectionActivity");
 
         checkAndRequestPermissions();
         setContentView(R.layout.activity_connection);
@@ -121,24 +121,25 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         if (!missingPermission.isEmpty()) {
             showToast("Missing permissions!!!");
         }
-        // else if (!DJISDKManager.getInstance().hasSDKRegistered()) {
-        //     startSDKRegistration();
-        // } else {
-        //     showToast("test");
-        // }
+         else if (!DJISDKManager.getInstance().hasSDKRegistered()) {
+             startSDKRegistration();
+            showToast("onCreate调用hasSDKRegistered结果为false(ConnectionActivity)");
+         } else {
+             showToast("test");
+         }
     }
 
     private void startSDKRegistration() {
         if (isRegistrationInProgress.compareAndSet(false, true)) {
             AsyncTask.execute(() -> {
-                showToast("应用注册中");
+                showToast("应用注册中(ConnectionActivity)");
                 DJISDKManager.getInstance().registerApp(getApplicationContext(), new DJISDKManager.SDKManagerCallback() {
                     @Override
                     public void onRegister(DJIError djiError) {
                         if (djiError == DJISDKError.REGISTRATION_SUCCESS) {
                             DJILog.e("App registration", DJISDKError.REGISTRATION_SUCCESS.getDescription());
                             DJISDKManager.getInstance().startConnectionToProduct();
-                            showToast("Register Success");
+                            showToast("Register Success(ConnectionActivity)");
                         } else {
                             showToast("Register sdk fails, check network is available");
                         }
