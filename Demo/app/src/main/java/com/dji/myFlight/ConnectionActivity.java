@@ -365,7 +365,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         UserAccountManager.getInstance().logoutOfDJIUserAccount(error -> {
             if (null == error) {
                 showToast("Logout Success");
-
+                loginStateTV.setText("未登录");
             } else {
                 showToast("Logout Error:"
                         + error.getDescription());
