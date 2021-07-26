@@ -6,5 +6,5 @@
     <string name="product_information">产品信息</string>
     <string name="connection_loose">状态: 无产品连接</string>
     <string name="sdk_version">DJI SDK 版本: %1$s</string>
-
+    <string name="push_info">Push Info</string>
 </resources>

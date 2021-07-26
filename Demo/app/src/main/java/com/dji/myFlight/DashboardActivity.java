@@ -2,6 +2,7 @@ package com.dji.myFlight;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -52,7 +53,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         } else if (id == R.id.imgBtn_control_routes) {
             showToast("航线飞行");
         } else if(id == R.id.imgBtn_gallery){
-            showToast("图库");
+            Intent intent = new Intent(this, GalleryActivity.class);
+            startActivity(intent);
         }
     }
 
