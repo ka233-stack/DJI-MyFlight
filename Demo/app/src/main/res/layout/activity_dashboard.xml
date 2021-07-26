@@ -76,26 +76,9 @@
         app:layout_constraintVertical_bias="0.1" />
 
     <TextView
-        android:id="@+id/activation_state_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="应用激活状态"
-        android:textColor="@color/colorBlack"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btn_login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/text_app_name"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes"
-        app:layout_constraintVertical_bias="0.3" />
-
-
-    <TextView
         android:id="@+id/login_state_info"
         android:layout_width="64dp"
         android:layout_height="28dp"
-        android:layout_below="@+id/activation_state_label"
         android:text="未登录"
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
@@ -105,28 +88,19 @@
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_login"
-        style="@style/common_button"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center_horizontal"
-        android:text="登录"
+
+    <ImageButton
+        android:id="@+id/imgBtn_gallery"
+        style="@style/circle_button"
+        android:layout_width="45sp"
+        android:layout_height="45sp"
+        android:scaleType="centerInside"
+        android:tint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes" />
-
-    <Button
-        android:id="@+id/btn_logout"
-        style="@style/common_button"
-        android:layout_gravity="center_horizontal"
-        android:text="注销"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toEndOf="@+id/text_app_name"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes" />
-
+        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
