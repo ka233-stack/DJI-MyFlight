@@ -31,43 +31,42 @@ public class DemoApplication extends Application {
     public Handler mHandler;
 
     private Application instance;
+    
+    public String loginStateTV_text;
+    public String sdkVersionTV_text;
+    public String mTextConnectionStatus_text;
+    public String appActivationStateTV_text;
 
-    // SJ
-    public TextView loginStateTV;
-    public TextView sdkVersionTV;
-    public TextView mTextConnectionStatus;
-    public TextView appActivationStateTV;
-
-    public TextView getLoginStateTV() {
-        return loginStateTV;
+    public String getLoginStateTV_text() {
+        return loginStateTV_text;
     }
 
-    public void setLoginStateTV(TextView loginStateTV) {
-        this.loginStateTV = loginStateTV;
+    public void setLoginStateTV_text(String loginStateTV_text) {
+        this.loginStateTV_text = loginStateTV_text;
     }
 
-    public TextView getSdkVersionTV() {
-        return sdkVersionTV;
+    public String getSdkVersionTV_text() {
+        return sdkVersionTV_text;
     }
 
-    public void setSdkVersionTV(TextView sdkVersionTV) {
-        this.sdkVersionTV = sdkVersionTV;
+    public void setSdkVersionTV_text(String sdkVersionTV_text) {
+        this.sdkVersionTV_text = sdkVersionTV_text;
     }
 
-    public TextView getmTextConnectionStatus() {
-        return mTextConnectionStatus;
+    public String getmTextConnectionStatus_text() {
+        return mTextConnectionStatus_text;
     }
 
-    public void setmTextConnectionStatus(TextView mTextConnectionStatus) {
-        this.mTextConnectionStatus = mTextConnectionStatus;
+    public void setmTextConnectionStatus_text(String mTextConnectionStatus_text) {
+        this.mTextConnectionStatus_text = mTextConnectionStatus_text;
     }
 
-    public TextView getAppActivationStateTV() {
-        return appActivationStateTV;
+    public String getAppActivationStateTV_text() {
+        return appActivationStateTV_text;
     }
 
-    public void setAppActivationStateTV(TextView appActivationStateTV) {
-        this.appActivationStateTV = appActivationStateTV;
+    public void setAppActivationStateTV_text(String appActivationStateTV_text) {
+        this.appActivationStateTV_text = appActivationStateTV_text;
     }
 
     public void setContext(Application application) {

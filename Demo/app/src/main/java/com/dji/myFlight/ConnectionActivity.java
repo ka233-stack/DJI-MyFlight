@@ -200,14 +200,10 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     public void onResume() {
         Log.e(TAG, "onResume");
         super.onResume();
-        ((MApplication)getApplicationContext()).demoApplication.setLoginStateTV(loginStateTV);
-        ((MApplication)getApplicationContext()).demoApplication.setSdkVersionTV(sdkVersionTV);
-        ((MApplication)getApplicationContext()).demoApplication.setmTextConnectionStatus(mTextConnectionStatus);
-        ((MApplication)getApplicationContext()).demoApplication.setAppActivationStateTV(appActivationStateTV);
-        Log.e(TAG,((MApplication)getApplicationContext()).demoApplication.getLoginStateTV().getText().toString());
-        Log.e(TAG,((MApplication)getApplicationContext()).demoApplication.getSdkVersionTV().getText().toString());
-        Log.e(TAG,((MApplication)getApplicationContext()).demoApplication.getmTextConnectionStatus().getText().toString());
-        Log.e(TAG,((MApplication)getApplicationContext()).demoApplication.getAppActivationStateTV().getText().toString());
+        ((MApplication)getApplicationContext()).demoApplication.setLoginStateTV_text(loginStateTV.getText().toString());
+        ((MApplication)getApplicationContext()).demoApplication.setSdkVersionTV_text(sdkVersionTV.getText().toString());
+        ((MApplication)getApplicationContext()).demoApplication.setmTextConnectionStatus_text(mTextConnectionStatus.getText().toString());
+        ((MApplication)getApplicationContext()).demoApplication.setAppActivationStateTV_text(appActivationStateTV.getText().toString());
     }
 
     @Override
