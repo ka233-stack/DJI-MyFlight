@@ -316,15 +316,6 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.btn_open) {
-            // Intent intent = new Intent(this, MainActivity.class);
-            // startActivity(intent);
-            showToast("start");
-            if (appActivationStateTV != null) {
-                appActivationStateTV.setText(appActivationManager.getAppActivationState().toString());
-            }
-            if (bindingStateTV != null) {
-                bindingStateTV.setText(appActivationManager.getAircraftBindingState().toString());
-            }
             if(appActivationStateTV != null && bindingStateTV != null)
             {
                 Intent intent = new Intent(this, DashboardActivity.class);
