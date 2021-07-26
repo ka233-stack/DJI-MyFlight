@@ -313,11 +313,10 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     }
 
     @Override
-    public void onClick(View view) {
-        int id = view.getId();
+    public void onClick(View v) {
+        int id = v.getId();
         if (id == R.id.btn_open) {
-            if(appActivationStateTV != null && bindingStateTV != null)
-            {
+            if (appActivationStateTV != null && bindingStateTV != null) {
                 Intent intent = new Intent(this, DashboardActivity.class);
                 startActivity(intent);
             }
