@@ -45,9 +45,9 @@
         <service android:name="dji.sdk.sdkmanager.DJIGlobalService" /> <!-- DJI SDK -->
         <activity
             android:name=".ConnectionActivity"
-            android:theme="@style/AppTheme"
             android:configChanges="orientation"
-            android:screenOrientation="sensorLandscape">
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -63,9 +63,14 @@
         </activity>
         <activity
             android:name=".DashboardActivity"
-            android:theme="@style/AppTheme"
             android:configChanges="orientation"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".FPVActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

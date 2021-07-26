@@ -27,7 +27,7 @@ import dji.sdk.camera.VideoFeeder;
 import dji.sdk.codec.DJICodecManager;
 import dji.sdk.useraccount.UserAccountManager;
 
-public class FPVActivity extends Activity implements SurfaceTextureListener,OnClickListener{
+public class FPVActivity extends Activity implements SurfaceTextureListener, OnClickListener {
 
     private static final String TAG = FPVActivity.class.getName();
     protected VideoFeeder.VideoDataListener mReceivedVideoDataListener = null;
@@ -79,22 +79,17 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
                         final String timeString = String.format("%02d:%02d", minutes, seconds);
                         final boolean isVideoRecording = cameraSystemState.isRecording();
 
-                        FPVActivity.this.runOnUiThread(new Runnable() {
+                        FPVActivity.this.runOnUiThread(() -> {
 
-                            @Override
-                            public void run() {
+                            recordingTime.setText(timeString);
 
-                                recordingTime.setText(timeString);
-
-                                /*
-                                 * Update recordingTime TextView visibility and mRecordBtn's check state
-                                 */
-                                if (isVideoRecording){
-                                    recordingTime.setVisibility(View.VISIBLE);
-                                }else
-                                {
-                                    recordingTime.setVisibility(View.INVISIBLE);
-                                }
+                            /*
+                             * Update recordingTime TextView visibility and mRecordBtn's check state
+                             */
+                            if (isVideoRecording) {
+                                recordingTime.setVisibility(View.VISIBLE);
+                            } else {
+                                recordingTime.setVisibility(View.INVISIBLE);
                             }
                         });
                     }
@@ -116,7 +111,7 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
         initPreviewer();
         onProductChange();
 
-        if(mVideoSurface == null) {
+        if (mVideoSurface == null) {
             Log.e(TAG, "mVideoSurface is null");
         }
     }
@@ -134,7 +129,7 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
         super.onStop();
     }
 
-    public void onReturn(View view){
+    public void onReturn(View view) {
         Log.e(TAG, "onReturn");
         this.finish();
     }
@@ -148,7 +143,7 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
 
     private void initUI() {
         // init mVideoSurface
-        mVideoSurface = (TextureView)findViewById(R.id.video_previewer_surface);
+        mVideoSurface = (TextureView) findViewById(R.id.video_previewer_surface);
 
         recordingTime = (TextView) findViewById(R.id.timer);
         mCaptureBtn = (Button) findViewById(R.id.btn_capture);
@@ -197,7 +192,7 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
 
     private void uninitPreviewer() {
         Camera camera = DemoApplication.getCameraInstance();
-        if (camera != null){
+        if (camera != null) {
             // Reset the callback
             VideoFeeder.getInstance().getPrimaryVideoFeed().addVideoDataListener(null);
         }
@@ -218,7 +213,7 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        Log.e(TAG,"onSurfaceTextureDestroyed");
+        Log.e(TAG, "onSurfaceTextureDestroyed");
         if (mCodecManager != null) {
             mCodecManager.cleanSurface();
             mCodecManager = null;
@@ -232,40 +227,30 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
     }
 
     public void showToast(final String msg) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(FPVActivity.this, msg, Toast.LENGTH_SHORT).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(FPVActivity.this, msg, Toast.LENGTH_SHORT).show());
     }
 
     @Override
     public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.btn_capture:
-                captureAction();
-                break;
-            case R.id.btn_shoot_photo_mode:
-                if (isMavicAir2() || isM300()) {
-                    switchCameraFlatMode(SettingsDefinitions.FlatCameraMode.PHOTO_SINGLE);
-                }else {
-                    switchCameraMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO);
-                }
-                break;
-            case R.id.btn_record_video_mode:
-                if (isMavicAir2() || isM300()) {
-                    switchCameraFlatMode(SettingsDefinitions.FlatCameraMode.VIDEO_NORMAL);
-                }else {
-                    switchCameraMode(SettingsDefinitions.CameraMode.RECORD_VIDEO);
-                }
-                break;
-            default:
-                break;
+        int id = v.getId();
+        if (id == R.id.btn_capture) {
+            captureAction();
+        } else if (id == R.id.btn_shoot_photo_mode) {
+            if (isMavicAir2() || isM300()) {
+                switchCameraFlatMode(SettingsDefinitions.FlatCameraMode.PHOTO_SINGLE);
+            } else {
+                switchCameraMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO);
+            }
+        } else if (id == R.id.btn_record_video_mode) {
+            if (isMavicAir2() || isM300()) {
+                switchCameraFlatMode(SettingsDefinitions.FlatCameraMode.VIDEO_NORMAL);
+            } else {
+                switchCameraMode(SettingsDefinitions.CameraMode.RECORD_VIDEO);
+            }
         }
     }
 
-    private void switchCameraFlatMode(SettingsDefinitions.FlatCameraMode flatCameraMode){
+    private void switchCameraFlatMode(SettingsDefinitions.FlatCameraMode flatCameraMode) {
         Camera camera = DemoApplication.getCameraInstance();
         if (camera != null) {
             camera.setFlatMode(flatCameraMode, error -> {
@@ -278,7 +263,7 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
         }
     }
 
-    private void switchCameraMode(SettingsDefinitions.CameraMode cameraMode){
+    private void switchCameraMode(SettingsDefinitions.CameraMode cameraMode) {
         Camera camera = DemoApplication.getCameraInstance();
         if (camera != null) {
             camera.setMode(cameraMode, error -> {
@@ -292,7 +277,7 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
     }
 
     // Method for taking photo
-    private void captureAction(){
+    private void captureAction() {
         final Camera camera = DemoApplication.getCameraInstance();
         if (camera != null) {
             if (isMavicAir2() || isM300()) {
@@ -301,7 +286,7 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
                         takePhoto();
                     }
                 });
-            }else {
+            } else {
                 camera.setShootPhotoMode(SettingsDefinitions.ShootPhotoMode.SINGLE, djiError -> {
                     if (null == djiError) {
                         takePhoto();
@@ -311,34 +296,29 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
         }
     }
 
-    private void takePhoto(){
+    private void takePhoto() {
         final Camera camera = DemoApplication.getCameraInstance();
-        if (camera == null){
+        if (camera == null) {
             return;
         }
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                camera.startShootPhoto(djiError -> {
-                    if (djiError == null) {
-                        showToast("take photo: success");
-                    } else {
-                        showToast(djiError.getDescription());
-                    }
-                });
+        handler.postDelayed(() -> camera.startShootPhoto(djiError -> {
+            if (djiError == null) {
+                showToast("take photo: success");
+            } else {
+                showToast(djiError.getDescription());
             }
-        }, 2000);
+        }), 2000);
     }
 
     // Method for starting recording
-    private void startRecord(){
+    private void startRecord() {
 
         final Camera camera = DemoApplication.getCameraInstance();
         if (camera != null) {
             camera.startRecordVideo(djiError -> {
                 if (djiError == null) {
                     showToast("Record video: success");
-                }else {
+                } else {
                     showToast(djiError.getDescription());
                 }
             }); // Execute the startRecordVideo API
@@ -346,21 +326,21 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
     }
 
     // Method for stopping recording
-    private void stopRecord(){
+    private void stopRecord() {
 
         Camera camera = DemoApplication.getCameraInstance();
         if (camera != null) {
             camera.stopRecordVideo(djiError -> {
-                if(djiError == null) {
+                if (djiError == null) {
                     showToast("Stop recording: success");
-                }else {
+                } else {
                     showToast(djiError.getDescription());
                 }
             }); // Execute the stopRecordVideo API
         }
     }
 
-    private boolean isMavicAir2(){
+    private boolean isMavicAir2() {
         BaseProduct baseProduct = DemoApplication.getProductInstance();
         if (baseProduct != null) {
             return baseProduct.getModel() == Model.MAVIC_AIR_2;
@@ -368,7 +348,7 @@ public class FPVActivity extends Activity implements SurfaceTextureListener,OnCl
         return false;
     }
 
-    private boolean isM300(){
+    private boolean isM300() {
         BaseProduct baseProduct = DemoApplication.getProductInstance();
         if (baseProduct != null) {
             return baseProduct.getModel() == Model.MATRICE_300_RTK;
