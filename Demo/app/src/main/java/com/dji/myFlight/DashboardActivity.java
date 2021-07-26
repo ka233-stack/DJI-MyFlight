@@ -24,8 +24,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-
         initUI();
+        tvLoginState.setText(((MApplication)getApplicationContext()).demoApplication.getLoginStateTV().getText().toString());
+        tvSDKVersion.setText(((MApplication)getApplicationContext()).demoApplication.getSdkVersionTV().getText().toString());
+        tvConnectionStatus.setText(((MApplication)getApplicationContext()).demoApplication.getmTextConnectionStatus().getText().toString());
     }
 
     private void initUI() {

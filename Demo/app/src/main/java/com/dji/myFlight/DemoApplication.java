@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -29,6 +31,44 @@ public class DemoApplication extends Application {
     public Handler mHandler;
 
     private Application instance;
+
+    // SJ
+    public TextView loginStateTV;
+    public TextView sdkVersionTV;
+    public TextView mTextConnectionStatus;
+    public TextView appActivationStateTV;
+
+    public TextView getLoginStateTV() {
+        return loginStateTV;
+    }
+
+    public void setLoginStateTV(TextView loginStateTV) {
+        this.loginStateTV = loginStateTV;
+    }
+
+    public TextView getSdkVersionTV() {
+        return sdkVersionTV;
+    }
+
+    public void setSdkVersionTV(TextView sdkVersionTV) {
+        this.sdkVersionTV = sdkVersionTV;
+    }
+
+    public TextView getmTextConnectionStatus() {
+        return mTextConnectionStatus;
+    }
+
+    public void setmTextConnectionStatus(TextView mTextConnectionStatus) {
+        this.mTextConnectionStatus = mTextConnectionStatus;
+    }
+
+    public TextView getAppActivationStateTV() {
+        return appActivationStateTV;
+    }
+
+    public void setAppActivationStateTV(TextView appActivationStateTV) {
+        this.appActivationStateTV = appActivationStateTV;
+    }
 
     public void setContext(Application application) {
         instance = application;

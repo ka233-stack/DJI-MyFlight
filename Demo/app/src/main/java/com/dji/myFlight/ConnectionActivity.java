@@ -200,6 +200,14 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     public void onResume() {
         Log.e(TAG, "onResume");
         super.onResume();
+        ((MApplication)getApplicationContext()).demoApplication.setLoginStateTV(loginStateTV);
+        ((MApplication)getApplicationContext()).demoApplication.setSdkVersionTV(sdkVersionTV);
+        ((MApplication)getApplicationContext()).demoApplication.setmTextConnectionStatus(mTextConnectionStatus);
+        ((MApplication)getApplicationContext()).demoApplication.setAppActivationStateTV(appActivationStateTV);
+        Log.e(TAG,((MApplication)getApplicationContext()).demoApplication.getLoginStateTV().getText().toString());
+        Log.e(TAG,((MApplication)getApplicationContext()).demoApplication.getSdkVersionTV().getText().toString());
+        Log.e(TAG,((MApplication)getApplicationContext()).demoApplication.getmTextConnectionStatus().getText().toString());
+        Log.e(TAG,((MApplication)getApplicationContext()).demoApplication.getAppActivationStateTV().getText().toString());
     }
 
     @Override

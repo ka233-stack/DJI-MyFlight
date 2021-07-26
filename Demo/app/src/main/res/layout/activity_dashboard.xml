@@ -77,8 +77,8 @@
 
     <TextView
         android:id="@+id/login_state_info"
-        android:layout_width="64dp"
-        android:layout_height="28dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="未登录"
         android:textAlignment="center"
         android:textColor="@color/colorBlack"

@@ -6,7 +6,7 @@ import android.content.Context;
 import com.secneo.sdk.Helper;
 
 public class MApplication extends Application {
-    private DemoApplication demoApplication;
+    public DemoApplication demoApplication;
 
     @Override
     protected void attachBaseContext(Context paramContext) {
