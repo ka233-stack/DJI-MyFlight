@@ -53,7 +53,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.imgBtn_control_manual) {
-            showToast("手动飞行");
+            Intent intent = new Intent(this, ManualFlightActivity.class);
+            startActivity(intent);
         } else if (id == R.id.imgBtn_control_routes) {
             showToast("航线飞行");
         } else if (id == R.id.imgBtn_gallery) {

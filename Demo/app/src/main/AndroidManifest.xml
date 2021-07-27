@@ -76,6 +76,11 @@
             android:configChanges="orientation"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ManualFlightActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
