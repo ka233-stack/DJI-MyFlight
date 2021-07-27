@@ -18,6 +18,7 @@ android {
             // above, FFmpeg lib might lead to runtime crashes or warnings.
             abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -80,6 +81,8 @@ dependencies {
         exclude module: 'library-anti-distortion'
         exclude module: 'fly-safe-database'
     })
+
+    testImplementation 'org.testng:testng:6.9.6'
     implementation('com.dji:dji-uxsdk:4.14', {
         exclude module: 'dji-sdk'
 
