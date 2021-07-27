@@ -95,7 +95,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="9dp"
         android:background="@drawable/round_btn"
-        android:text="启动"
+        android:text="FPV"
         android:textColor="@color/colorWhite"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
