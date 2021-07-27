@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,15 +21,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private TextView tvSDKVersion;
     protected ImageButton imgBtnGallery;
     protected TextView tvLoginState;
+    private Button fpvDemoBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         initUI();
-        tvLoginState.setText(((MApplication)getApplicationContext()).demoApplication.getLoginStateTV_text());
-        tvSDKVersion.setText(((MApplication)getApplicationContext()).demoApplication.getSdkVersionTV_text());
-        tvConnectionStatus.setText(((MApplication)getApplicationContext()).demoApplication.getmTextConnectionStatus_text());
+        tvLoginState.setText(((MApplication) getApplicationContext()).demoApplication.getLoginStateTV_text());
+        tvSDKVersion.setText(((MApplication) getApplicationContext()).demoApplication.getSdkVersionTV_text());
+        tvConnectionStatus.setText(((MApplication) getApplicationContext()).demoApplication.getmTextConnectionStatus_text());
     }
 
     private void initUI() {
@@ -43,6 +45,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         tvLoginState = (TextView) findViewById(R.id.login_state_info);
         imgBtnGallery = (ImageButton) findViewById(R.id.imgBtn_gallery);
         imgBtnGallery.setOnClickListener(this);
+        fpvDemoBtn = (Button) findViewById(R.id.fpvDemo_btn);
+        fpvDemoBtn.setOnClickListener(this);
     }
 
     @Override
@@ -52,8 +56,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             showToast("手动飞行");
         } else if (id == R.id.imgBtn_control_routes) {
             showToast("航线飞行");
-        } else if(id == R.id.imgBtn_gallery){
+        } else if (id == R.id.imgBtn_gallery) {
             Intent intent = new Intent(this, GalleryActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.fpvDemo_btn) {
+            Intent intent = new Intent(this, FPVActivity.class);
             startActivity(intent);
         }
     }
