@@ -94,4 +94,10 @@ dependencies {
     // Sample app dependencies
     implementation 'com.jakewharton:butterknife:10.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
+
+    // UXSDK map dependencies: Only include dependencies for map providers that are used in your app
+    // Amap: Do not include if publishing to Google Play Store
+    implementation 'com.amap.api:3dmap:6.9.2'
+    implementation 'com.amap.api:search:6.9.2'
+    implementation 'com.amap.api:location:4.7.0'
 }
