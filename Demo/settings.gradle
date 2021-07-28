@@ -1,8 +1,1 @@
 include ':app'
-include ':android-uxsdk-beta-core'
-include ':android-uxsdk-beta-accessory'
-include ':android-uxsdk-beta-cameracore'
-include ':android-uxsdk-beta-flight'
-include ':android-uxsdk-beta-map'
-include ':android-uxsdk-beta-training'
-include ':android-uxsdk-beta-visualcamera'
