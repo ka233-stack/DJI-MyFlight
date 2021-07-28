@@ -15,15 +15,15 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_flight);
-        btnGallery = (Button)findViewById(R.id.btn_gallery);
-        btnGallery.setOnClickListener(this);
+        // btnGallery = (Button)findViewById(R.id.btn_gallery);
+        // btnGallery.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_gallery) {
-            Intent intent = new Intent(this, GalleryActivity.class);
-            startActivity(intent);
-        }
+        // if (v.getId() == R.id.btn_gallery) {
+        //     Intent intent = new Intent(this, GalleryActivity.class);
+        //     startActivity(intent);
+        // }
     }
 }
