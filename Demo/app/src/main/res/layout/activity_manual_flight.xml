@@ -171,8 +171,8 @@
     <!-- end camera bar -->
 
     <dji.ux.beta.cameracore.widget.cameracontrols.CameraControlsWidget
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="50sp"
+        android:layout_height="210sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="@string/uxsdk_widget_camera_controls_ratio"
         app:layout_constraintEnd_toEndOf="parent"
