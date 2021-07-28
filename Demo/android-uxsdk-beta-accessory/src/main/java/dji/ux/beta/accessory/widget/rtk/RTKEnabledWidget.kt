@@ -34,6 +34,7 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.*
 import androidx.core.content.res.use
+import androidx.core.widget.TextViewCompat
 import dji.log.DJILog
 import dji.thirdparty.io.reactivex.Flowable
 import dji.thirdparty.io.reactivex.disposables.Disposable
@@ -263,7 +264,8 @@ open class RTKEnabledWidget @JvmOverloads constructor(
      * @param textAppearanceResId Style resource for text appearance
      */
     fun setTitleTextAppearance(@StyleRes textAppearanceResId: Int) {
-        rtkTitleTextView.setTextAppearance(context, textAppearanceResId)
+//        rtkTitleTextView.setTextAppearance(context, textAppearanceResId)
+        TextViewCompat.setTextAppearance(rtkTitleTextView,textAppearanceResId)
     }
 
     /**
@@ -290,7 +292,8 @@ open class RTKEnabledWidget @JvmOverloads constructor(
      * @param textAppearanceResId Style resource for text appearance
      */
     fun setDescriptionTextAppearance(@StyleRes textAppearanceResId: Int) {
-        rtkEnabledDescriptionTextView.setTextAppearance(context, textAppearanceResId)
+//        rtkEnabledDescriptionTextView.setTextAppearance(context, textAppearanceResId)
+        TextViewCompat.setTextAppearance(rtkEnabledDescriptionTextView, textAppearanceResId)
     }
 
     @SuppressLint("Recycle")

@@ -34,6 +34,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StyleRes
 import androidx.core.content.res.use
+import androidx.core.widget.TextViewCompat
 import dji.thirdparty.io.reactivex.Flowable
 import dji.thirdparty.io.reactivex.functions.Consumer
 import dji.thirdparty.io.reactivex.processors.PublishProcessor
@@ -272,7 +273,8 @@ open class RTKWidget @JvmOverloads constructor(
      * @param textAppearance Style resource for text appearance
      */
     fun setRTKDescriptionTextAppearance(@StyleRes textAppearance: Int) {
-        rtkDescriptionTextView.setTextAppearance(context, textAppearance)
+//        rtkDescriptionTextView.setTextAppearance(context, textAppearance)
+        TextViewCompat.setTextAppearance(rtkDescriptionTextView,textAppearance)
     }
 
     /**
@@ -290,7 +292,8 @@ open class RTKWidget @JvmOverloads constructor(
      * @param textAppearance Style resource for text appearance
      */
     fun setDialogOkTextAppearance(@StyleRes textAppearance: Int) {
-        dialogOkTextView.setTextAppearance(context, textAppearance)
+        TextViewCompat.setTextAppearance(dialogOkTextView,textAppearance)
+//        dialogOkTextView.setTextAppearance(context, textAppearance)
     }
 
     /**
