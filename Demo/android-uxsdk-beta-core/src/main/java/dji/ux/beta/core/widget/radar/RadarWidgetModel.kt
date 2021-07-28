@@ -350,7 +350,7 @@ class RadarWidgetModel(djiSdkModel: DJISDKModel,
                 || visionDetectionState.position == VisionSensorPosition.TAIL) {
             visionDetectionState.detectionSectors?.map { sector: ObstacleDetectionSector ->
                 sector.obstacleDistanceInMeters
-            }?.toTypedArray()?.min() ?: 0f
+            }?.toTypedArray()?.minOrNull() ?: 0f
         } else {
             visionDetectionState.obstacleDistanceInMeters.toFloat()
         }
@@ -364,7 +364,7 @@ class RadarWidgetModel(djiSdkModel: DJISDKModel,
     }
 
     private fun getMinDistance(distances: IntArray): Int {
-        return distances.filter { it in 1..60000 }.min() ?: Int.MAX_VALUE
+        return distances.filter { it in 1..60000 }.minOrNull() ?: Int.MAX_VALUE
     }
     //endregion
 
