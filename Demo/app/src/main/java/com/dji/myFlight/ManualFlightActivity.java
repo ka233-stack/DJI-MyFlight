@@ -13,6 +13,9 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.Button;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dji.common.airlink.PhysicalSource;
 import dji.common.product.Model;
 import dji.thirdparty.io.reactivex.android.schedulers.AndroidSchedulers;
@@ -33,7 +36,7 @@ import dji.ux.beta.core.widget.useraccount.UserAccountLoginWidget;
 import dji.ux.beta.map.widget.map.MapWidget;
 import dji.ux.beta.training.widget.simulatorcontrol.SimulatorControlWidget;
 
-public class ManualFlightActivity extends AppCompatActivity implements View.OnClickListener {
+public class ManualFlightActivity extends AppCompatActivity {
 
     //region Fields
     private final static String TAG = "DefaultLayoutActivity";
