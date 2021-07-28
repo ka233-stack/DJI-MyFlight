@@ -14,7 +14,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--允许程序访问WiFi网络信息-->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!--允许程序设置内置sd卡的写权限-->
@@ -84,6 +83,11 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".GalleryActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".BetaManualFlightActivity"
             android:configChanges="orientation"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />

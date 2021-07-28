@@ -22,6 +22,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     protected ImageButton imgBtnGallery;
     protected TextView tvLoginState;
     private Button fpvDemoBtn;
+    private Button betaBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         imgBtnGallery = (ImageButton) findViewById(R.id.imgBtn_gallery);
         imgBtnGallery.setOnClickListener(this);
         fpvDemoBtn = (Button) findViewById(R.id.fpvDemo_btn);
+        betaBtn = (Button) findViewById(R.id.beta_btn);
         fpvDemoBtn.setOnClickListener(this);
+        betaBtn.setOnClickListener(this);
     }
 
     @Override
@@ -62,6 +65,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             startActivity(intent);
         } else if (id == R.id.fpvDemo_btn) {
             Intent intent = new Intent(this, FPVActivity.class);
+            startActivity(intent);
+        } else if(id==R.id.beta_btn){
+            Intent intent = new Intent(this, BetaManualFlightActivity.class);
             startActivity(intent);
         }
     }
