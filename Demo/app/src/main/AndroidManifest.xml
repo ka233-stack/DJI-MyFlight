@@ -42,6 +42,10 @@
             android:name="com.dji.sdk.API_KEY"
             android:value="b96dfb96fa345c056990f3f9" />
 
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="d7c50b15d53fb71c9585ddc3f709dd00" />
+
         <service android:name="dji.sdk.sdkmanager.DJIGlobalService" /> <!-- DJI SDK -->
         <activity
             android:name=".ConnectionActivity"
