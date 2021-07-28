@@ -11,39 +11,28 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import dji.common.airlink.PhysicalSource;
-import dji.common.product.Model;
-import dji.thirdparty.io.reactivex.android.schedulers.AndroidSchedulers;
-import dji.thirdparty.io.reactivex.disposables.CompositeDisposable;
-import dji.ux.beta.accessory.widget.rtk.RTKWidget;
-import dji.ux.beta.cameracore.widget.fpvinteraction.FPVInteractionWidget;
-import dji.ux.beta.core.extension.ViewExtensions;
-import dji.ux.beta.core.panel.systemstatus.SystemStatusListPanelWidget;
-import dji.ux.beta.core.panel.topbar.TopBarPanelWidget;
-import dji.ux.beta.core.util.DisplayUtil;
-import dji.ux.beta.core.util.SettingDefinitions;
-import dji.ux.beta.core.widget.fpv.FPVWidget;
-import dji.ux.beta.core.widget.gpssignal.GPSSignalWidget;
-import dji.ux.beta.core.widget.radar.RadarWidget;
-import dji.ux.beta.core.widget.simulator.SimulatorIndicatorWidget;
-import dji.ux.beta.core.widget.systemstatus.SystemStatusWidget;
-import dji.ux.beta.core.widget.useraccount.UserAccountLoginWidget;
-import dji.ux.beta.map.widget.map.MapWidget;
-import dji.ux.beta.training.widget.simulatorcontrol.SimulatorControlWidget;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.MapView;
+
 
 public class ManualFlightActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button mMediaManagerBtn;
+    private MapView mapView;
+    private AMap aMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_flight);
+
+        mapView = findViewById(R.id.mapWidget);
+        mapView.onCreate(savedInstanceState);
+
+
+        initMapView();
         mMediaManagerBtn = (Button) findViewById(R.id.btn_mediaManager);
         mMediaManagerBtn.setOnClickListener(this);
     }
@@ -54,5 +43,15 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
             Intent intent = new Intent(this, GalleryActivity.class);
             startActivity(intent);
         }
+    }
+
+    private void initMapView() {
+
+        if (aMap == null) {
+            aMap = mapView.getMap();
+            // aMap.setOnMapClickListener(this);// add the listener for click for amap object
+        }
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(18));
+
     }
 }

@@ -14,6 +14,15 @@
 -dontwarn okhttp3.**
 -dontwarn retrofit2.**
 
+# 高德地图的混淆
+-dontwarn com.amap.api.**
+-dontwarn com.a.a.**
+-dontwarn com.autonavi.**
+-keep class com.amap.api.**  {*;}
+-keep class com.autonavi.**  {*;}
+-keep class com.a.a.**  {*;}
+
+
 -keepclassmembers enum * {
     public static <methods>;
 }

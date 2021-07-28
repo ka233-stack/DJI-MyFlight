@@ -168,12 +168,25 @@
             custom:layout_constraintTop_toTopOf="parent"
             custom:layout_constraintVertical_bias="1" />
 
-        <dji.ux.widget.MapWidget
+        <!--<dji.ux.widget.MapWidget-->
+        <!--    android:id="@+id/mapWidget"-->
+        <!--    android:layout_width="150sp"-->
+        <!--    android:layout_height="100sp"-->
+        <!--    android:layout_alignParentEnd="true"-->
+        <!--    android:layout_alignParentBottom="true"-->
+        <!--    custom:layout_constraintBottom_toBottomOf="parent"-->
+        <!--    custom:layout_constraintEnd_toEndOf="parent"-->
+        <!--    custom:layout_constraintHorizontal_bias="1"-->
+        <!--    custom:layout_constraintStart_toStartOf="parent"-->
+        <!--    custom:layout_constraintTop_toTopOf="parent"-->
+        <!--    custom:layout_constraintVertical_bias="1" />-->
+
+        <com.amap.api.maps.MapView
             android:id="@+id/mapWidget"
-            android:layout_width="150sp"
-            android:layout_height="100sp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
+            android:layout_width="@dimen/mini_map_width"
+            android:layout_height="@dimen/mini_map_height"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"
             custom:layout_constraintBottom_toBottomOf="parent"
             custom:layout_constraintEnd_toEndOf="parent"
             custom:layout_constraintHorizontal_bias="1"
