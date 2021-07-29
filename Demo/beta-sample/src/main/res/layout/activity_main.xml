@@ -80,20 +80,6 @@
                     android:text="@string/no_product"
                     android:textColor="@color/white" />
 
-                <EditText
-                    android:id="@+id/edit_text_bridge_ip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:digits="0123456789.\n"
-                    android:hint="@string/wsbridge_ip"
-                    android:imeOptions="actionDone"
-                    android:maxLength="15"
-                    android:maxLines="1"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:textSize="15sp" />
-
             </LinearLayout>
 
             <LinearLayout
