@@ -43,7 +43,6 @@ import dji.sdk.sdkmanager.DJISDKManager;
 public class MainActivity extends AppCompatActivity {
 
     //region Constants
-    private static final String LAST_USED_BRIDGE_IP = "bridgeip";
     private static final int REQUEST_PERMISSION_CODE = 12345;
     private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
             Manifest.permission.VIBRATE, // Gimbal rotation
