@@ -5,20 +5,6 @@
     package="com.dji.myFlight">
 
     <!-- DJI SDK needs these permissions -->
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <!-- DJI SDK所需权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -36,6 +22,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!--允许程序设置内置sd卡的写权限-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--允许程序读写手机状态和身份-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
@@ -66,18 +53,17 @@
         <!-- DJI SDK -->
         <meta-data
             android:name="com.dji.sdk.API_KEY"
-            android:value="@string/dji_ux_sample_dji_sdk_api_key" />
+            android:value="@string/dji_sdk_api_key" />
 
         <!-- AMaps -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="@string/dji_ux_sample_amaps_api_key" />
+            android:value="@string/amaps_api_key" />
 
         <activity
             android:name="com.dji.myFlight.MainActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="sensorLandscape">
-        </activity>
+            android:screenOrientation="sensorLandscape" />
 
         <!-- Add android:windowSoftInputMode="adjustNothing" to activity tag if API 30-->
         <activity
