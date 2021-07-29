@@ -111,10 +111,6 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
     implementation 'com.github.dji-sdk:Mobile-UXSDK-Beta-Android:v0.5.1'
-
-    implementation('com.dji:dji-uxsdk:4.14', {
-        exclude module: 'dji-sdk'
-    })
 }
 repositories {
     mavenLocal()

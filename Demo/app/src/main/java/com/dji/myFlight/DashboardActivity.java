@@ -67,8 +67,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             Intent intent = new Intent(this, FPVActivity.class);
             startActivity(intent);
         } else if(id== R.id.beta_btn){
-            Intent intent = new Intent(this, BetaManualFlightActivity.class);
-            startActivity(intent);
+            showToast("Beta");
         }
     }
 
