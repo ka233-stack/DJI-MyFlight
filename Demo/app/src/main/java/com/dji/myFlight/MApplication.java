@@ -17,7 +17,7 @@ import static com.dji.myFlight.DJIConnectionControlActivity.ACCESSORY_ATTACHED;
 /**
  * An application that loads the SDK classes.
  */
-public class SampleApplication extends Application {
+public class MApplication extends Application {
 
     @Override
     public void onCreate() {
@@ -35,7 +35,7 @@ public class SampleApplication extends Application {
     @Override
     protected void attachBaseContext(Context paramContext) {
         super.attachBaseContext(paramContext);
-        Helper.install(SampleApplication.this);
+        Helper.install(MApplication.this);
         MultiDex.install(this);
     }
 

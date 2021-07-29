@@ -27,7 +27,7 @@
         android:required="true" />
 
     <application
-        android:name="com.dji.myFlight.SampleApplication"
+        android:name="com.dji.myFlight.MApplication"
         android:allowBackup="true"
         android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher"
@@ -37,12 +37,13 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:replace="android:label">
 
-        <!-- DJI SDK -->
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
         <uses-library android:name="com.android.future.usb.accessory" />
 
+        <!-- DJI SDK -->
         <meta-data
             android:name="com.dji.sdk.API_KEY"
             android:value="@string/dji_ux_sample_dji_sdk_api_key" />
