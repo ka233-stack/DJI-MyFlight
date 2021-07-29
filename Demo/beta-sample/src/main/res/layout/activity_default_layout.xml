@@ -28,7 +28,8 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".showcase.defaultlayout.DefaultLayoutActivity">
+    tools:context=".DefaultLayoutActivity">
+    tools:context=".DefaultLayoutActivity">
 
     <dji.ux.beta.core.widget.fpv.FPVWidget
         android:id="@+id/widget_fpv"

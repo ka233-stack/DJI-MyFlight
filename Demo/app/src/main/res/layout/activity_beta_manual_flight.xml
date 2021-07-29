@@ -6,6 +6,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_blue"
     tools:context=".BetaManualFlightActivity">
 
     <dji.ux.beta.core.widget.fpv.FPVWidget
@@ -14,7 +15,13 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:uxsdk_onStateChange="@+id/widget_fpv_interaction" />
+        app:uxsdk_onStateChange="@+id/widget_fpv_interaction" >
+
+        <dji.ux.beta.core.widget.radar.RadarWidget
+            android:id="@+id/widget_radar"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+    </dji.ux.beta.core.widget.fpv.FPVWidget>
 
     <dji.ux.beta.cameracore.widget.fpvinteraction.FPVInteractionWidget
         android:id="@+id/widget_fpv_interaction"
@@ -22,16 +29,6 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <dji.ux.beta.core.widget.radar.RadarWidget
-        android:id="@+id/widget_radar"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/widget_flight_telemetry"
-        app:layout_constraintDimensionRatio="@string/uxsdk_widget_radar_ratio"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/widget_auto_exposure_lock" />
 
     <dji.ux.beta.core.widget.fpv.FPVWidget
         android:id="@+id/widget_secondary_fpv"

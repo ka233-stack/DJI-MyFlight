@@ -11,9 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dji.common.airlink.PhysicalSource;
 import dji.common.product.Model;
 import dji.thirdparty.io.reactivex.android.schedulers.AndroidSchedulers;
@@ -34,29 +31,20 @@ import dji.ux.beta.core.widget.useraccount.UserAccountLoginWidget;
 import dji.ux.beta.map.widget.map.MapWidget;
 import dji.ux.beta.training.widget.simulatorcontrol.SimulatorControlWidget;
 
-public class BetaManualFlightActivity extends AppCompatActivity {
+public class BetaManualFlightActivity extends AppCompatActivity implements View.OnClickListener {
 
     //region Fields
-    private final static String TAG = "DefaultLayoutActivity";
+    private final static String TAG = "BetaManualFlightActivity";
 
-    @BindView(R.id.widget_radar)
     protected RadarWidget radarWidget;
-    @BindView(R.id.widget_fpv)
     protected FPVWidget fpvWidget;
-    @BindView(R.id.widget_fpv_interaction)
     protected FPVInteractionWidget fpvInteractionWidget;
-    @BindView(R.id.widget_map)
     protected MapWidget mapWidget;
-    @BindView(R.id.widget_secondary_fpv)
     protected FPVWidget secondaryFPVWidget;
-    @BindView(R.id.root_view)
     protected ConstraintLayout parentView;
-    @BindView(R.id.widget_panel_system_status_list)
     protected SystemStatusListPanelWidget systemStatusListPanelWidget;
 
-    @BindView(R.id.widget_rtk)
     protected RTKWidget rtkWidget;
-    @BindView(R.id.widget_simulator_control)
     protected SimulatorControlWidget simulatorControlWidget;
 
     private boolean isMapMini = true;
@@ -83,7 +71,7 @@ public class BetaManualFlightActivity extends AppCompatActivity {
         deviceHeight = displayMetrics.heightPixels;
         deviceWidth = displayMetrics.widthPixels;
 
-        ButterKnife.bind(this);
+        initUI();
         setM200SeriesWarningLevelRanges();
         mapWidget.initAMap(map -> {
             map.setOnMapClickListener(latLng -> onViewClick(mapWidget));
@@ -92,7 +80,7 @@ public class BetaManualFlightActivity extends AppCompatActivity {
         mapWidget.getUserAccountLoginWidget().setVisibility(View.GONE);
         mapWidget.onCreate(savedInstanceState);
 
-        // Setup top bar state callbacks
+        // 设置顶栏状态回调
         TopBarPanelWidget topBarPanel = findViewById(R.id.panel_top_bar);
         SystemStatusWidget systemStatusWidget = topBarPanel.getSystemStatusWidget();
         if (systemStatusWidget != null) {
@@ -113,6 +101,19 @@ public class BetaManualFlightActivity extends AppCompatActivity {
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) userAccountLoginWidget.getLayoutParams();
         params.topMargin = (deviceHeight / 10) + (int) DisplayUtil.dipToPx(this, 10);
         userAccountLoginWidget.setLayoutParams(params);
+    }
+
+    private void initUI() {
+        radarWidget = (RadarWidget) findViewById(R.id.widget_radar);
+        fpvWidget = (FPVWidget) findViewById(R.id.widget_fpv);
+        fpvInteractionWidget = (FPVInteractionWidget) findViewById(R.id.widget_fpv_interaction);
+        mapWidget = (MapWidget) findViewById(R.id.widget_map);
+        secondaryFPVWidget = (FPVWidget) findViewById(R.id.widget_secondary_fpv);
+        parentView = (ConstraintLayout) findViewById(R.id.root_view);
+        systemStatusListPanelWidget = (SystemStatusListPanelWidget) findViewById(R.id.widget_panel_system_status_list);
+
+        rtkWidget = (RTKWidget) findViewById(R.id.widget_rtk);
+        simulatorControlWidget = (SimulatorControlWidget) findViewById(R.id.widget_simulator_control);
     }
 
     @Override
@@ -210,24 +211,9 @@ public class BetaManualFlightActivity extends AppCompatActivity {
         radarWidget.setWarningLevelRanges(m200SeriesModels, ranges);
     }
 
-    /**
-     * Handles a click event on the FPV widget
-     */
-    @OnClick(R.id.widget_fpv)
-    public void onFPVClick() {
-        onViewClick(fpvWidget);
-    }
 
     /**
-     * Handles a click event on the secondary FPV widget
-     */
-    @OnClick(R.id.widget_secondary_fpv)
-    public void onSecondaryFPVClick() {
-        swapVideoSource();
-    }
-
-    /**
-     * Swaps the FPV and Map Widgets.
+     * 调换 FPV和 Map Widget
      *
      * @param view The thumbnail view that was clicked.
      */
@@ -259,6 +245,7 @@ public class BetaManualFlightActivity extends AppCompatActivity {
     }
 
     /**
+     * 帮助方法来调整FPV和地图部件的大小
      * Helper method to resize the FPV and Map Widgets.
      *
      * @param viewToEnlarge The view that needs to be enlarged to full screen.
@@ -297,6 +284,16 @@ public class BetaManualFlightActivity extends AppCompatActivity {
             secondaryFPVWidget.setVisibility(View.GONE);
         } else {
             secondaryFPVWidget.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.widget_secondary_fpv) {
+            swapVideoSource();
+        } else if (id == R.id.widget_fpv) {
+            onViewClick(fpvWidget);
         }
     }
     //endregion
