@@ -19,9 +19,12 @@ import static com.dji.myFlight.DJIConnectionControlActivity.ACCESSORY_ATTACHED;
  */
 public class MApplication extends Application {
 
+    public DemoApplication demoApplication;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        demoApplication.onCreate();
         //For the global preferences to take effect, this must be done before the widgets are initialized
         //If this is not done, no global preferences will take effect or persist across app restarts
         GlobalPreferencesManager.initialize(new DefaultGlobalPreferences(this));
@@ -37,6 +40,11 @@ public class MApplication extends Application {
         super.attachBaseContext(paramContext);
         Helper.install(MApplication.this);
         MultiDex.install(this);
+
+        if (demoApplication == null) {
+            demoApplication = new DemoApplication();
+            demoApplication.setContext(this);
+        }
     }
 
 }

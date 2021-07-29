@@ -19,6 +19,26 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- DJI SDK所需权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!--允许程序打开网络套接字-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--允许程序获取网络状态-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--允许程序访问CellID或WiFi热点来获取粗略的位置-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!--允许程序访问WiFi网络信息-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!--允许程序设置内置sd卡的写权限-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--允许程序读写手机状态和身份-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <uses-feature
         android:name="android.hardware.usb.host"
         android:required="false" />
@@ -57,11 +77,6 @@
             android:name="com.dji.myFlight.MainActivity"
             android:launchMode="singleTop"
             android:screenOrientation="sensorLandscape">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <!-- Add android:windowSoftInputMode="adjustNothing" to activity tag if API 30-->
@@ -82,6 +97,50 @@
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
                 android:resource="@xml/accessory_filter" />
         </activity>
+
+        <activity
+            android:name=".ConnectionActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
+                android:resource="@xml/accessory_filter" />
+        </activity>
+        <activity
+            android:name=".DashboardActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".FPVActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".GalleryActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".BetaManualFlightActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ManualFlightActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
 
     </application>
 
