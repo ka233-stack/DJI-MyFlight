@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2018-2020 DJI
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,13 +24,12 @@
 <resources>
     <dimen name="map_settings_separator">15dp</dimen>
     <dimen name="map_settings_item_separator">5dp</dimen>
-    <dimen name="mini_map_height">100dp</dimen>
-    <dimen name="mini_map_width">150dp</dimen>
-    <dimen name="mini_map_margin">12dp</dimen>
+    <dimen name="mini_map_height">72sp</dimen>
+    <dimen name="mini_map_width">96sp</dimen>
 
     <dimen name="topbar_padding">3dp</dimen>
-    <dimen name="camera_config_height">35dp</dimen>
-    <dimen name="camera_bar_height">35dp</dimen>
+    <dimen name="camera_config_height">40sp</dimen>
+    <dimen name="camera_bar_height">40dp</dimen>
     <dimen name="camera_bar_padding">6dp</dimen>
     <dimen name="top_bar_percent_height">0.1</dimen>
 </resources>

@@ -16,7 +16,7 @@ import dji.sdk.sdkmanager.DJISDKManager;
 public class OnDJIUSBAttachedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!MainActivity.isStarted()) {
+        if (!ConnectionActivity.isStarted()) {
             Intent startIntent = context.getPackageManager()
                     .getLaunchIntentForPackage(context.getPackageName());
             startIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT

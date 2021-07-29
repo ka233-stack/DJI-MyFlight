@@ -43,6 +43,8 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
     private static final String TAG = ConnectionActivity.class.getName();
 
+    private static boolean isAppStarted = false;
+
     private TextView mTextConnectionStatus;
     private TextView mTextProduct;
     private Button mBtnOpen;
@@ -81,7 +83,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: ConnectionActivity");
-
+        isAppStarted = true;
         checkAndRequestPermissions();
         setContentView(R.layout.activity_connection);
 
@@ -206,10 +208,10 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     public void onPause() {
         Log.e(TAG, "onPause");
         super.onPause();
-        ((MApplication)getApplicationContext()).demoApplication.setLoginStateTV_text(loginStateTV.getText().toString());
-        ((MApplication)getApplicationContext()).demoApplication.setSdkVersionTV_text(sdkVersionTV.getText().toString());
-        ((MApplication)getApplicationContext()).demoApplication.setmTextConnectionStatus_text(mTextConnectionStatus.getText().toString());
-        ((MApplication)getApplicationContext()).demoApplication.setAppActivationStateTV_text(appActivationStateTV.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setLoginStateTV_text(loginStateTV.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setSdkVersionTV_text(sdkVersionTV.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setmTextConnectionStatus_text(mTextConnectionStatus.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setAppActivationStateTV_text(appActivationStateTV.getText().toString());
     }
 
     @Override
@@ -228,6 +230,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         Log.e(TAG, "onDestroy");
         unregisterReceiver(mReceiver);
         tearDownListener();
+        isAppStarted = false;
         super.onDestroy();
     }
 
@@ -371,5 +374,14 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
     private void showToast(final String toastMsg) {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show());
+    }
+
+    /**
+     * Whether the app has started.
+     *
+     * @return `true` if the app has been started.
+     */
+    public static boolean isStarted() {
+        return isAppStarted;
     }
 }

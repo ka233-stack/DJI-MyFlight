@@ -11,11 +11,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.dji.mapkit.core.maps.DJIMap;
+
 import dji.common.airlink.PhysicalSource;
 import dji.common.product.Model;
 import dji.thirdparty.io.reactivex.android.schedulers.AndroidSchedulers;
 import dji.thirdparty.io.reactivex.disposables.CompositeDisposable;
 import dji.ux.beta.accessory.widget.rtk.RTKWidget;
+import dji.ux.beta.cameracore.widget.cameracontrols.camerasettingsindicator.CameraSettingsMenuIndicatorWidget;
+import dji.ux.beta.cameracore.widget.cameracontrols.exposuresettingsindicator.ExposureSettingsIndicatorWidget;
 import dji.ux.beta.cameracore.widget.fpvinteraction.FPVInteractionWidget;
 import dji.ux.beta.core.extension.ViewExtensions;
 import dji.ux.beta.core.panel.systemstatus.SystemStatusListPanelWidget;
@@ -27,7 +31,6 @@ import dji.ux.beta.core.widget.gpssignal.GPSSignalWidget;
 import dji.ux.beta.core.widget.radar.RadarWidget;
 import dji.ux.beta.core.widget.simulator.SimulatorIndicatorWidget;
 import dji.ux.beta.core.widget.systemstatus.SystemStatusWidget;
-import dji.ux.beta.core.widget.useraccount.UserAccountLoginWidget;
 import dji.ux.beta.map.widget.map.MapWidget;
 import dji.ux.beta.training.widget.simulatorcontrol.SimulatorControlWidget;
 
@@ -50,11 +53,9 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
     private boolean isMapMini = true;
     private int widgetHeight;
     private int widgetWidth;
-    private int widgetMargin;
     private int deviceWidth;
     private int deviceHeight;
     private CompositeDisposable compositeDisposable;
-    private UserAccountLoginWidget userAccountLoginWidget;
     //endregion
 
     //region Lifecycle
@@ -65,7 +66,6 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
 
         widgetHeight = (int) getResources().getDimension(R.dimen.mini_map_height);
         widgetWidth = (int) getResources().getDimension(R.dimen.mini_map_width);
-        widgetMargin = (int) getResources().getDimension(R.dimen.mini_map_margin);
 
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         deviceHeight = displayMetrics.heightPixels;
@@ -96,22 +96,20 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
         if (gpsSignalWidget != null) {
             gpsSignalWidget.setStateChangeCallback(findViewById(R.id.widget_rtk));
         }
-
-        userAccountLoginWidget = mapWidget.getUserAccountLoginWidget();
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) userAccountLoginWidget.getLayoutParams();
-        params.topMargin = (deviceHeight / 10) + (int) DisplayUtil.dipToPx(this, 10);
-        userAccountLoginWidget.setLayoutParams(params);
     }
 
     private void initUI() {
         radarWidget = (RadarWidget) findViewById(R.id.widget_radar);
         fpvWidget = (FPVWidget) findViewById(R.id.widget_fpv);
+        fpvWidget.setOnClickListener(this);
         fpvInteractionWidget = (FPVInteractionWidget) findViewById(R.id.widget_fpv_interaction);
         mapWidget = (MapWidget) findViewById(R.id.widget_map);
         secondaryFPVWidget = (FPVWidget) findViewById(R.id.widget_secondary_fpv);
+        secondaryFPVWidget.setOnClickListener(this);
         parentView = (ConstraintLayout) findViewById(R.id.root_view);
         systemStatusListPanelWidget = (SystemStatusListPanelWidget) findViewById(R.id.widget_panel_system_status_list);
 
+        // camera
         rtkWidget = (RTKWidget) findViewById(R.id.widget_rtk);
         simulatorControlWidget = (SimulatorControlWidget) findViewById(R.id.widget_simulator_control);
     }
@@ -218,28 +216,25 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
      * @param view The thumbnail view that was clicked.
      */
     private void onViewClick(View view) {
-        if (view == fpvWidget && !isMapMini) {
-            //reorder widgets
+        if (view == fpvWidget && !isMapMini) { // 地图模式
+            // widget重新排序
             parentView.removeView(fpvWidget);
             parentView.addView(fpvWidget, 0);
 
-            //resize widgets
+            // 调整widget大小
             resizeViews(fpvWidget, mapWidget);
-            //enable interaction on FPV
+
+            // 启用FPV上的互动
             fpvInteractionWidget.setInteractionEnabled(true);
-            //disable user login widget on map
-            userAccountLoginWidget.setVisibility(View.GONE);
             isMapMini = true;
-        } else if (view == mapWidget && isMapMini) {
-            //reorder widgets
+        } else if (view == mapWidget && isMapMini) { // 拍摄模式
+            // widget重新排序
             parentView.removeView(fpvWidget);
             parentView.addView(fpvWidget, parentView.indexOfChild(mapWidget) + 1);
-            //resize widgets
+            // 调整widget大小
             resizeViews(mapWidget, fpvWidget);
-            //disable interaction on FPV
+            // 禁用FPV上的互动
             fpvInteractionWidget.setInteractionEnabled(false);
-            //enable user login widget on map
-            userAccountLoginWidget.setVisibility(View.VISIBLE);
             isMapMini = false;
         }
     }
@@ -252,17 +247,17 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
      * @param viewToShrink  The view that needs to be shrunk to a thumbnail.
      */
     private void resizeViews(View viewToEnlarge, View viewToShrink) {
-        //enlarge first widget
+        // 放大第一个widget
         ResizeAnimation enlargeAnimation = new ResizeAnimation(viewToEnlarge, widgetWidth, widgetHeight, deviceWidth, deviceHeight, 0);
         viewToEnlarge.startAnimation(enlargeAnimation);
 
-        //shrink second widget
-        ResizeAnimation shrinkAnimation = new ResizeAnimation(viewToShrink, deviceWidth, deviceHeight, widgetWidth, widgetHeight, widgetMargin);
+        // 缩减第二个widget
+        ResizeAnimation shrinkAnimation = new ResizeAnimation(viewToShrink, deviceWidth, deviceHeight, widgetWidth, widgetHeight, 0);
         viewToShrink.startAnimation(shrinkAnimation);
     }
 
     /**
-     * Swap the video sources of the FPV and secondary FPV widgets.
+     * 交换FPV和secondary FPV widget的视频源
      */
     private void swapVideoSource() {
         if (secondaryFPVWidget.getVideoSource() == SettingDefinitions.VideoSource.SECONDARY) {

@@ -106,11 +106,11 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
-    // Sample app dependencies
-    implementation 'com.jakewharton:butterknife:10.0.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
-
     implementation 'com.github.dji-sdk:Mobile-UXSDK-Beta-Android:v0.5.1'
+
+    implementation('com.dji:dji-uxsdk:4.14', {
+        exclude module: 'dji-sdk'
+    })
 }
 repositories {
     mavenLocal()
