@@ -70,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
     protected TextView registeredTextView;
     @BindView(R.id.text_view_product_name)
     protected TextView productNameTextView;
-    @BindView(R.id.edit_text_bridge_ip)
-    protected EditText bridgeModeEditText;
 
     //region Fields
     private AtomicBoolean isRegistrationInProgress = new AtomicBoolean(false);
@@ -170,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         isAppStarted = true;
         checkAndRequestPermissions();
-        setBridgeModeEditText();
         versionTextView.setText(getResources().getString(R.string.sdk_version,
                 DJISDKManager.getInstance().getSDKVersion()));
     }
@@ -237,48 +234,6 @@ public class MainActivity extends AppCompatActivity {
         if (isRegistrationInProgress.compareAndSet(false, true)) {
             AsyncTask.execute(() -> DJISDKManager.getInstance().registerApp(MainActivity.this, registrationCallback));
         }
-    }
-
-    /**
-     * Initialize the bridge mode edit text
-     */
-    private void setBridgeModeEditText() {
-        bridgeModeEditText.setText(PreferenceManager.getDefaultSharedPreferences(this)
-                .getString(LAST_USED_BRIDGE_IP, ""));
-        bridgeModeEditText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH
-                    || actionId == EditorInfo.IME_ACTION_DONE
-                    || event != null
-                    && event.getAction() == KeyEvent.ACTION_DOWN
-                    && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                if (event != null && event.isShiftPressed()) {
-                    return false;
-                } else {
-                }
-            }
-            return false; // pass on to other listeners.
-        });
-        bridgeModeEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Nothing to do
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Nothing to do
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s != null && s.toString().contains("\n")) {
-                    // the user is done typing.
-                    // remove new line character
-                    final String currentText = bridgeModeEditText.getText().toString();
-                    bridgeModeEditText.setText(currentText.substring(0, currentText.indexOf('\n')));
-                }
-            }
-        });
     }
 
 
