@@ -87,15 +87,6 @@
         android:text="停止"
         android:textSize="11sp" />
 
-    <Button
-        android:id="@+id/moveTo_btn"
-        android:layout_width="75dp"
-        android:layout_height="40dp"
-        android:layout_below="@+id/reload_btn"
-        android:layout_toEndOf="@+id/stop_btn"
-        android:text="移动到"
-        android:textSize="11sp" />
-
     <!-- Widget to see first person view (FPV) -->
     <dji.ux.beta.core.widget.fpv.FPVWidget
         android:id="@+id/FPVWidget"
