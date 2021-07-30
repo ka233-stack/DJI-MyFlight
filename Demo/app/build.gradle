@@ -106,8 +106,9 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
+    // ux-beta-sdk
     implementation 'com.github.dji-sdk:Mobile-UXSDK-Beta-Android:v0.5.1'
-
+    // ux-sdk
     implementation('com.dji:dji-uxsdk:4.14', {
         exclude module: 'dji-sdk'
     })
