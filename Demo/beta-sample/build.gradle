@@ -28,10 +28,10 @@ android {
     dexOptions {
         javaMaxHeapSize "3g"
     }
-    lintOptions{
+    lintOptions {
         abortOnError false
     }
-    packagingOptions{
+    packagingOptions {
         doNotStrip "*/*/libdjivideo.so"
         doNotStrip "*/*/libSDKRelativeJNI.so"
         doNotStrip "*/*/libFlyForbid.so"
@@ -70,7 +70,7 @@ android {
 
 dependencies {
 
-    implementation ('com.dji:dji-sdk:4.15', {
+    implementation('com.dji:dji-sdk:4.15', {
         /**
          * Comment the "library-anti-distortion" if your app needs Anti Distortion for Mavic 2 Pro
          * and Mavic 2 Zoom.
@@ -81,14 +81,8 @@ dependencies {
          */
         exclude module: 'library-anti-distortion'
         exclude module: 'fly-safe-database'
-
-        /**
-         * Uncomment the following line to exclude Amap from the app.
-         * Note that Google Play Store does not allow APKs that include this library.
-         */
-        // exclude group: 'com.amap.api'
     })
-    compileOnly ('com.dji:dji-sdk-provided:4.15')
+    compileOnly('com.dji:dji-sdk-provided:4.15')
 
     // UXSDK dependencies
     implementation 'androidx.annotation:annotation:1.1.0'
@@ -100,6 +94,15 @@ dependencies {
     implementation 'com.amap.api:3dmap:6.9.2'
     implementation 'com.amap.api:search:6.9.2'
     implementation 'com.amap.api:location:4.7.0'
+    // HERE maps
+    implementation files('libs/HERE-sdk-3.15.0.aar')
+    // Mapbox
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.2.0'
+    // Google maps
+    implementation 'com.google.android.gms:play-services-base:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-places:16.0.0'
 
     // SDK dependencies
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
@@ -111,10 +114,10 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
+    // ux-beta-sdk
     implementation 'com.github.dji-sdk:Mobile-UXSDK-Beta-Android:v0.5.1'
 }
 repositories {
     mavenLocal()
     maven { url 'https://mapbox.bintray.com/mapbox' }
-    jcenter()
 }

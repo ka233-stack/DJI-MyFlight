@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.dji.myFlight">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.dji.ux.beta.sample">
 
     <!-- DJI SDK needs these permissions -->
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -18,7 +18,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <uses-feature
         android:name="android.hardware.usb.host"
         android:required="false" />
@@ -27,25 +26,47 @@
         android:required="true" />
 
     <application
-        android:name="com.dji.myFlight.SampleApplication"
+        android:name="com.dji.ux.beta.sample.SampleApplication"
         android:allowBackup="true"
-        android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/dji_ux_sample_app_name"
+        tools:replace="android:label"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
-        tools:replace="android:label">
+        android:extractNativeLibs="true"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <!-- DJI SDK -->
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
         <uses-library android:name="com.android.future.usb.accessory" />
 
         <meta-data
             android:name="com.dji.sdk.API_KEY"
             android:value="@string/dji_ux_sample_dji_sdk_api_key" />
+        <!-- Here Maps -->
+        <meta-data
+            android:name="com.here.android.maps.appid"
+            android:value="@string/dji_ux_sample_here_maps_id" />
+        <meta-data
+            android:name="com.here.android.maps.apptoken"
+            android:value="@string/dji_ux_sample_here_maps_app_token" />
+        <meta-data
+            android:name="com.here.android.maps.license.key"
+            android:value="@string/dji_ux_sample_here_maps_license_key" />
+
+        <service
+            android:name="com.here.android.mpa.service.MapService"
+            android:label="HereMapService">
+            <intent-filter>
+                <!--Note, action name should not be changed.-->
+                <action android:name="com.here.android.mpa.service.MapService.v3" />
+            </intent-filter>
+        </service>
+
+        <!-- Google Maps -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/dji_ux_sample_google_maps_api_key" />
 
         <!-- AMaps -->
         <meta-data
@@ -53,7 +74,7 @@
             android:value="@string/dji_ux_sample_amaps_api_key" />
 
         <activity
-            android:name="com.dji.myFlight.MainActivity"
+            android:name=".MainActivity"
             android:launchMode="singleTop"
             android:screenOrientation="sensorLandscape">
             <intent-filter>
@@ -63,15 +84,32 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".showcase.widgetlist.WidgetsActivity"
+            android:screenOrientation="sensorLandscape" />
+
         <!-- Add android:windowSoftInputMode="adjustNothing" to activity tag if API 30-->
         <activity
-            android:name="com.dji.myFlight.DefaultLayoutActivity"
+            android:name=".showcase.defaultlayout.DefaultLayoutActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/AppTheme" />
 
         <activity
-            android:name="com.dji.myFlight.DJIConnectionControlActivity"
+            android:name=".showcase.map.MapWidgetActivity"
+            android:label="Map Widget"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/MapTheme" />
+        <activity
+            android:name=".Waypoint1Activity"
+            android:label="Map Widget"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/MapTheme" />
+
+        <activity
+            android:name=".DJIConnectionControlActivity"
             android:theme="@android:style/Theme.Translucent">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />

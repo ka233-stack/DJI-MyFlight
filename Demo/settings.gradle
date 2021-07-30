@@ -1,3 +1,2 @@
-include ':appDemo'
-include ':beta-sample'
 include ':app'
+include ':beta-sample'

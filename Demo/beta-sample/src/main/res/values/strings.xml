@@ -1,5 +1,28 @@
+<!--
+  ~ Copyright (c) 2018-2020 DJI
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  ~
+  -->
+
 <resources>
-    <string name="dji_ux_sample_app_name">My Flight</string>
+    <string name="dji_ux_sample_app_name">DJI UX Sample App</string>
     <string name="no_product">No product connected</string>
     <string name="wsbridge_ip">WSBridge IP</string>
     <string name="sdk_version">Version: %1$s</string>
@@ -9,7 +32,7 @@
     <string name="registered">Registered</string>
     <string name="logs">Logs</string>
     <string name="showcase">Showcase</string>
-    <string name="widget_list">Widget List</string>
+    <string name="widget_list">way point</string>
     <string name="default_layout">Default Layout</string>
     <string name="map">Map</string>
 
@@ -118,5 +141,18 @@
     <string name="rtk_enabled_widget_title">RTK Enabled Widget</string>
     <string name="rtk_satellite_status_widget_title">RTK Satellite Status Widget</string>
     <string name="remaining_flight_time_widget_title">Remaining Flight Time Widget</string>
+
+    <string-array name="actionArray">
+        <item>无动作</item>
+        <item>自动返航</item>
+        <item>自动着陆</item>
+        <item>返回航线起始点</item>
+    </string-array>
+    <string-array name="angleArray">
+        <item>headingNext</item>
+        <item>headingInitDirec</item>
+        <item>headingRC</item>
+        <item>headingWP</item>
+    </string-array>
 
 </resources>

@@ -56,6 +56,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.imgBtn_control_manual) {
+            imgBtnControlManual.setEnabled(false);
             Intent intent = new Intent(this, ManualFlightActivity.class);
             startActivity(intent);
         } else if (id == R.id.imgBtn_control_routes) {
@@ -66,9 +67,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         } else if (id == R.id.fpvDemo_btn) {
             Intent intent = new Intent(this, FPVActivity.class);
             startActivity(intent);
-        } else if(id== R.id.beta_btn){
+        } else if (id == R.id.beta_btn) {
             showToast("Beta");
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        imgBtnControlManual.setEnabled(true);
     }
 
     private void showToast(final String toastMsg) {
