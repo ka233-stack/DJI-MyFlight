@@ -562,7 +562,8 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         }
         // 获取文件夹
         if (destDir == null) {
-            destDir = new File(dirPath);
+            // destDir = new File(dirPath + "/" + mediaType);
+            destDir = new File(dirPath + "/camera");
             runOnUiThread(() -> Toast.makeText(getApplicationContext(), "路径是" + destDir.getPath(), Toast.LENGTH_LONG).show());
             if (!destDir.exists()) {
                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), "创建本地文件夹", Toast.LENGTH_LONG).show());
