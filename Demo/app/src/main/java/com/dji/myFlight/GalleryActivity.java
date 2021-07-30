@@ -1,7 +1,6 @@
 package com.dji.myFlight;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
@@ -32,6 +30,7 @@ import dji.common.product.Model;
 import dji.common.util.CommonCallbacks;
 import dji.log.DJILog;
 import dji.sdk.base.BaseProduct;
+import dji.sdk.camera.Camera;
 import dji.sdk.media.DownloadListener;
 import dji.sdk.media.FetchMediaTask;
 import dji.sdk.media.FetchMediaTaskContent;
@@ -45,7 +44,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     private static final String TAG = GalleryActivity.class.getName();
 
     private Button mBackBtn, mDeleteBtn, mReloadBtn, mDownloadBtn, mStatusBtn;
-    private Button mPlayBtn, mResumeBtn, mPauseBtn, mStopBtn, mMoveToBtn;
+    private Button mPlayBtn, mResumeBtn, mPauseBtn, mStopBtn;
     private RecyclerView listView;
     private FileListAdapter mListAdapter;
     private List<MediaFile> mediaFileList = new ArrayList<MediaFile>();
@@ -53,20 +52,30 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     private MediaManager.FileListState currentFileListState = MediaManager.FileListState.UNKNOWN;
     private FetchMediaTaskScheduler scheduler;
     private ProgressDialog mLoadingDialog;
-    private ProgressDialog mDownloadDialog;
+    private ProgressDialog downloadDialog;
     private SlidingDrawer mPushDrawerSd;
-    File destDir = new File(Environment.getExternalStorageDirectory().getPath() + "/MediaManagerDemo/");
+    File destDir;
+    String dirPath;
     private int currentProgress = -1;
     private ImageView mDisplayImageView;
     private int lastClickViewIndex = -1;
     private View lastClickView;
     private TextView mPushTv;
+    private Camera camera;
+    private SettingsDefinitions.StorageLocation mediaStorageLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         initUI();
+        initData();
+    }
+
+    private void initData() {
+        camera = DemoApplication.getCameraInstance();
+        mediaManager = camera.getMediaManager();
+        dirPath = Environment.getExternalStorageDirectory().getPath() + "/MyFlight/";
     }
 
     @Override
@@ -98,10 +107,10 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
             }
         }
         if (isMavicAir2() || isM300()) {
-            if (DemoApplication.getCameraInstance() != null) {
-                DemoApplication.getCameraInstance().exitPlayback(djiError -> {
+            if (camera != null) {
+                camera.exitPlayback(djiError -> {
                     if (djiError != null) {
-                        DemoApplication.getCameraInstance().setFlatMode(SettingsDefinitions.FlatCameraMode.PHOTO_SINGLE, djiError1 -> {
+                        camera.setFlatMode(SettingsDefinitions.FlatCameraMode.PHOTO_SINGLE, djiError1 -> {
                             if (djiError1 != null) {
                                 setResultToToast("Set PHOTO_SINGLE Mode Failed. " + djiError1.getDescription());
                             }
@@ -109,7 +118,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                     }
                 });
             } else {
-                DemoApplication.getCameraInstance().setMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO, djiError -> {
+                camera.setMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO, djiError -> {
                     if (djiError != null) {
                         setResultToToast("Set SHOOT_PHOTO Mode Failed. " + djiError.getDescription());
                     }
@@ -138,17 +147,19 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         mLoadingDialog.setCanceledOnTouchOutside(false);
         mLoadingDialog.setCancelable(false);
 
-        //Init Download Dialog
-        mDownloadDialog = new ProgressDialog(GalleryActivity.this);
-        mDownloadDialog.setTitle("Downloading file");
-        mDownloadDialog.setIcon(android.R.drawable.ic_dialog_info);
-        mDownloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mDownloadDialog.setCanceledOnTouchOutside(false);
-        mDownloadDialog.setCancelable(true);
-        mDownloadDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        // 初始下载进度对话框
+        downloadDialog = new ProgressDialog(GalleryActivity.this);
+        downloadDialog.setTitle("正在下载");
+        downloadDialog.setIcon(android.R.drawable.ic_dialog_info);
+        downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        downloadDialog.setCanceledOnTouchOutside(false);
+        downloadDialog.setCancelable(true);
+        downloadDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 if (mediaManager != null) {
+                    // 停止下载过程(清理下载线程池)
+                    // 摄像机将退出MEDIA_DOWNLOAD模式, 进入SHOOT_PHOTO模式
                     mediaManager.exitMediaDownloading();
                 }
             }
@@ -165,7 +176,6 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         mResumeBtn = (Button) findViewById(R.id.resume_btn);
         mPauseBtn = (Button) findViewById(R.id.pause_btn);
         mStopBtn = (Button) findViewById(R.id.stop_btn);
-        mMoveToBtn = (Button) findViewById(R.id.moveTo_btn);
         mDisplayImageView = (ImageView) findViewById(R.id.imageView);
         mDisplayImageView.setVisibility(View.VISIBLE);
 
@@ -179,10 +189,11 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         mResumeBtn.setOnClickListener(this);
         mPauseBtn.setOnClickListener(this);
         mStopBtn.setOnClickListener(this);
-        mMoveToBtn.setOnClickListener(this);
-
     }
 
+    /**
+     * 显示mLoadingDialog对话框
+     */
     private void showProgressDialog() {
         runOnUiThread(() -> {
             if (mLoadingDialog != null) {
@@ -191,6 +202,9 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         });
     }
 
+    /**
+     * 隐藏mLoadingDialog对话框
+     */
     private void hideProgressDialog() {
         runOnUiThread(() -> {
             if (null != mLoadingDialog && mLoadingDialog.isShowing()) {
@@ -199,18 +213,24 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         });
     }
 
+    /**
+     * 显示下载进度对话框
+     */
     private void ShowDownloadProgressDialog() {
-        if (mDownloadDialog != null) {
+        if (downloadDialog != null) {
             runOnUiThread(() -> {
-                mDownloadDialog.incrementProgressBy(-mDownloadDialog.getProgress());
-                mDownloadDialog.show();
+                downloadDialog.incrementProgressBy(-downloadDialog.getProgress());
+                downloadDialog.show();
             });
         }
     }
 
+    /**
+     * 隐藏下载进度对话框
+     */
     private void HideDownloadProgressDialog() {
-        if (null != mDownloadDialog && mDownloadDialog.isShowing()) {
-            runOnUiThread(() -> mDownloadDialog.dismiss());
+        if (null != downloadDialog && downloadDialog.isShowing()) {
+            runOnUiThread(() -> downloadDialog.dismiss());
         }
     }
 
@@ -226,75 +246,88 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     }
 
     private void initMediaManager() {
-        if (DemoApplication.getProductInstance() == null) {
+        if (camera == null) {
             mediaFileList.clear();
             mListAdapter.notifyDataSetChanged();
             DJILog.e(TAG, "产品已断开连接");
-        }
-        if (null != DemoApplication.getCameraInstance()) {
-            if (DemoApplication.getCameraInstance().isMediaDownloadModeSupported()) {
-                mediaManager = DemoApplication.getCameraInstance().getMediaManager();
-                if (null != mediaManager) {
-                    mediaManager.addUpdateFileListStateListener(this.updateFileListStateListener);
-                    mediaManager.addMediaUpdatedVideoPlaybackStateListener(this.updatedVideoPlaybackStateListener);
-
-                    if (isMavicAir2() || isM300()) {
-                        DemoApplication.getCameraInstance().enterPlayback(djiError -> {
-                            if (djiError == null) {
-                                DJILog.e(TAG, "Set cameraMode success");
-                                showProgressDialog();
-                                getFileList();
-                            } else {
-                                setResultToToast("Set cameraMode failed");
-                            }
-                        });
-                    } else {
-                        DemoApplication.getCameraInstance().setMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD, error -> {
-                            if (error == null) {
-                                DJILog.e(TAG, "Set cameraMode success");
-                                showProgressDialog();
-                                getFileList();
-                            } else {
-                                setResultToToast("Set cameraMode failed");
-                            }
-                        });
-                    }
-
-                    // check video playback support
-                    if (mediaManager.isVideoPlaybackSupported()) {
-                        DJILog.e(TAG, "Camera support video playback!");
-                    } else {
-                        setResultToToast("Camera does not support video playback!");
-                    }
-                    scheduler = mediaManager.getScheduler();
+        } else if (!camera.isMediaDownloadModeSupported()) {
+            setResultToToast("不支持媒体下载模式");
+        } else if (mediaManager != null) {
+            // 获取存储位置
+            camera.getStorageLocation(new CommonCallbacks.CompletionCallbackWith<SettingsDefinitions.StorageLocation>() {
+                @Override
+                public void onSuccess(SettingsDefinitions.StorageLocation storageLocation) {
+                    DJILog.e(TAG, "获取存储位置成功");
+                    mediaStorageLocation = storageLocation;
                 }
+
+                @Override
+                public void onFailure(DJIError djiError) {
+                    setResultToToast("获取存储位置失败");
+                }
+            });
+
+            mediaManager.addUpdateFileListStateListener(this.updateFileListStateListener);
+            mediaManager.addMediaUpdatedVideoPlaybackStateListener(this.updatedVideoPlaybackStateListener);
+
+            if (isMavicAir2() || isM300()) {
+                camera.enterPlayback(djiError -> {
+                    if (djiError == null) {
+                        DJILog.e(TAG, "设置相机模式成功");
+                        showProgressDialog();
+                        getFileList();
+                    } else {
+                        setResultToToast("设置相机模式失败");
+                    }
+                });
             } else {
-                setResultToToast("不支持媒体下载模式");
+                camera.setMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD, error -> {
+                    if (error == null) {
+                        DJILog.e(TAG, "设置相机模式成功");
+                        showProgressDialog();
+                        getFileList();
+                    } else {
+                        setResultToToast("设置相机模式失败");
+                    }
+                });
             }
+
+            // 检查视频播放支持
+            if (mediaManager.isVideoPlaybackSupported()) {
+                DJILog.e(TAG, "相机支持视频播放!");
+            } else {
+                setResultToToast("相机不支持视频播放!");
+            }
+            scheduler = mediaManager.getScheduler();
         }
     }
 
+    /**
+     * 获取文件列表
+     */
     private void getFileList() {
-        mediaManager = DemoApplication.getCameraInstance().getMediaManager();
         if (mediaManager != null) {
-
             if ((currentFileListState == MediaManager.FileListState.SYNCING) || (currentFileListState == MediaManager.FileListState.DELETING)) {
-                DJILog.e(TAG, "Media Manager is busy.");
+                DJILog.e(TAG, "媒体管理器正忙");
             } else {
-                // 刷新存储的文件列表(内部存储)
-                mediaManager.refreshFileListOfStorageLocation(SettingsDefinitions.StorageLocation.INTERNAL_STORAGE, djiError -> {
-                    if (null == djiError) {
+                // 刷新存储的文件列表(当前存储位置)
+                mediaManager.refreshFileListOfStorageLocation(mediaStorageLocation, djiError -> {
+                    if (djiError == null) {
                         hideProgressDialog();
-
-                        //Reset data
+                        // Reset data
                         if (currentFileListState != MediaManager.FileListState.INCOMPLETE) {
                             mediaFileList.clear();
                             lastClickViewIndex = -1;
                             lastClickView = null;
                         }
-
-                        mediaFileList = mediaManager.getInternalStorageFileListSnapshot();
+                        // 获取文件
+                        if (mediaStorageLocation == SettingsDefinitions.StorageLocation.SDCARD) {
+                            mediaFileList = mediaManager.getSDCardFileListSnapshot();
+                        } else if (mediaStorageLocation == SettingsDefinitions.StorageLocation.INTERNAL_STORAGE) {
+                            mediaFileList = mediaManager.getInternalStorageFileListSnapshot();
+                        }
                         if (mediaFileList != null) {
+                            // 文件排序
                             Collections.sort(mediaFileList, (lhs, rhs) -> {
                                 if (lhs.getTimeCreated() < rhs.getTimeCreated()) {
                                     return 1;
@@ -303,12 +336,12 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                                 }
                                 return 0;
                             });
+                            scheduler.resume(error -> {
+                                if (error == null) {
+                                    getThumbnails();
+                                }
+                            });
                         }
-                        scheduler.resume(error -> {
-                            if (error == null) {
-                                getThumbnails();
-                            }
-                        });
                     } else {
                         hideProgressDialog();
                         setResultToToast("获取媒体文件列表失败: " + djiError.getDescription());
@@ -409,6 +442,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
 
             }
         }
+
     }
 
     private View.OnClickListener itemViewOnClickListener = new View.OnClickListener() {
@@ -515,12 +549,23 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     }
 
     private void downloadFileByIndex(final int index) {
-        if ((mediaFileList.get(index).getMediaType() == MediaFile.MediaType.PANORAMA)
-                || (mediaFileList.get(index).getMediaType() == MediaFile.MediaType.SHALLOW_FOCUS)) {
+        MediaFile mediaFile = mediaFileList.get(index);
+        MediaFile.MediaType mediaType = mediaFile.getMediaType();
+        if (mediaType == MediaFile.MediaType.PANORAMA || mediaType == MediaFile.MediaType.SHALLOW_FOCUS) {
             return;
         }
-
-        mediaFileList.get(index).fetchFileData(destDir, null, new DownloadListener<String>() {
+        // 获取文件夹
+        destDir = new File(dirPath);
+        if (!destDir.exists()) {
+            try {
+                // 按照指定的路径创建文件夹
+                destDir.mkdirs();
+            } catch (Exception e) {
+                setResultToText("无法打开本地文件夹");
+                return;
+            }
+        }
+        mediaFile.fetchFileData(destDir, null, new DownloadListener<String>() {
             @Override
             public void onFailure(DJIError error) {
                 HideDownloadProgressDialog();
@@ -533,10 +578,10 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
             }
 
             @Override
-            public void onRateUpdate(long total, long current, long persize) {
+            public void onRateUpdate(long total, long current, long perSize) {
                 int tmpProgress = (int) (1.0 * current / total * 100);
                 if (tmpProgress != currentProgress) {
-                    mDownloadDialog.setProgress(tmpProgress);
+                    downloadDialog.setProgress(tmpProgress);
                     currentProgress = tmpProgress;
                 }
             }
@@ -570,13 +615,13 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                 public void onSuccess(List<MediaFile> x, DJICameraError y) {
                     DJILog.e(TAG, "删除文件成功");
                     runOnUiThread(() -> {
-                        MediaFile file = mediaFileList.remove(index);
+                        mediaFileList.remove(index);
 
-                        //Reset select view
+                        // Reset select view
                         lastClickViewIndex = -1;
                         lastClickView = null;
 
-                        //Update recyclerView
+                        // Update recyclerView
                         mListAdapter.notifyItemRemoved(index);
                     });
                 }
@@ -601,33 +646,6 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                 }
             });
         }
-    }
-
-    private void moveToPosition() {
-
-        LayoutInflater li = LayoutInflater.from(this);
-        View promptsView = li.inflate(R.layout.prompt_input_position, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setView(promptsView);
-        final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextDialogUserInput);
-        alertDialogBuilder.setCancelable(false).setPositiveButton("OK", (dialog, id) -> {
-            String ms = userInput.getText().toString();
-            mediaManager.moveToPosition(Integer.parseInt(ms),
-                    new CommonCallbacks.CompletionCallback() {
-                        @Override
-                        public void onResult(DJIError error) {
-                            if (null != error) {
-                                setResultToToast("移动视频位置失败: " + error.getDescription());
-                            } else {
-                                DJILog.e(TAG, "成功移动视频位置");
-                            }
-                        }
-                    });
-        })
-                .setNegativeButton("取消", (dialog, id) -> dialog.cancel());
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-
     }
 
     @Override
@@ -689,10 +707,6 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                         DJILog.e(TAG, "停止视频成功");
                     }
                 });
-                break;
-            }
-            case R.id.moveTo_btn: {
-                moveToPosition();
                 break;
             }
             default:
