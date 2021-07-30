@@ -1,8 +1,10 @@
 package com.dji.myFlight;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +17,9 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,7 +59,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     private ProgressDialog mLoadingDialog;
     private ProgressDialog downloadDialog;
     private SlidingDrawer mPushDrawerSd;
-    File destDir;
+    File destDir = null;
     String dirPath;
     private int currentProgress = -1;
     private ImageView mDisplayImageView;
@@ -63,6 +68,8 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     private TextView mPushTv;
     private Camera camera;
     private SettingsDefinitions.StorageLocation mediaStorageLocation;
+
+    private static final int REQUEST_PERMISSION_CODE = 12345;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +190,6 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         mDeleteBtn.setOnClickListener(this);
         mDownloadBtn.setOnClickListener(this);
         mReloadBtn.setOnClickListener(this);
-        mDownloadBtn.setOnClickListener(this);
         mStatusBtn.setOnClickListener(this);
         mPlayBtn.setOnClickListener(this);
         mResumeBtn.setOnClickListener(this);
@@ -555,16 +561,18 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
             return;
         }
         // 获取文件夹
-        destDir = new File(dirPath);
-        if (!destDir.exists()) {
-            try {
-                // 按照指定的路径创建文件夹
+        if (destDir == null) {
+            destDir = new File(dirPath);
+            runOnUiThread(() -> Toast.makeText(getApplicationContext(), "路径是" + destDir.getPath(), Toast.LENGTH_LONG).show());
+            if (!destDir.exists()) {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "创建本地文件夹", Toast.LENGTH_LONG).show());
                 destDir.mkdirs();
-            } catch (Exception e) {
-                setResultToText("无法打开本地文件夹");
-                return;
+            } else {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "文件已经存在", Toast.LENGTH_LONG).show());
             }
         }
+
+
         mediaFile.fetchFileData(destDir, null, new DownloadListener<String>() {
             @Override
             public void onFailure(DJIError error) {
@@ -650,67 +658,47 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_btn: {
-                this.finish();
-                break;
+        int id = v.getId();
+        if (id == R.id.back_btn) {
+            this.finish();
+        } else if (id == R.id.delete_btn) {
+            deleteFileByIndex(lastClickViewIndex);
+        } else if (id == R.id.reload_btn) {
+            getFileList();
+        } else if (id == R.id.download_btn) {
+            downloadFileByIndex(lastClickViewIndex);
+        } else if (id == R.id.status_btn) {
+            if (mPushDrawerSd.isOpened()) {
+                mPushDrawerSd.animateClose();
+            } else {
+                mPushDrawerSd.animateOpen();
             }
-            case R.id.delete_btn: {
-                deleteFileByIndex(lastClickViewIndex);
-                break;
-            }
-            case R.id.reload_btn: {
-                getFileList();
-                break;
-            }
-            case R.id.download_btn: {
-                downloadFileByIndex(lastClickViewIndex);
-                break;
-            }
-            case R.id.status_btn: {
-                if (mPushDrawerSd.isOpened()) {
-                    mPushDrawerSd.animateClose();
+        } else if (id == R.id.play_btn) {
+            playVideo();
+        } else if (id == R.id.resume_btn) {
+            mediaManager.resume(error -> {
+                if (null != error) {
+                    setResultToToast("Resume Video Failed" + error.getDescription());
                 } else {
-                    mPushDrawerSd.animateOpen();
+                    DJILog.e(TAG, "Resume Video Success");
                 }
-                break;
-            }
-            case R.id.play_btn: {
-                playVideo();
-                break;
-            }
-            case R.id.resume_btn: {
-                mediaManager.resume(error -> {
-                    if (null != error) {
-                        setResultToToast("Resume Video Failed" + error.getDescription());
-                    } else {
-                        DJILog.e(TAG, "Resume Video Success");
-                    }
-                });
-                break;
-            }
-            case R.id.pause_btn: {
-                mediaManager.pause(error -> {
-                    if (null != error) {
-                        setResultToToast("暂停视频失败: " + error.getDescription());
-                    } else {
-                        DJILog.e(TAG, "暂停视频成功");
-                    }
-                });
-                break;
-            }
-            case R.id.stop_btn: {
-                mediaManager.stop(error -> {
-                    if (null != error) {
-                        setResultToToast("停止视频失败" + error.getDescription());
-                    } else {
-                        DJILog.e(TAG, "停止视频成功");
-                    }
-                });
-                break;
-            }
-            default:
-                break;
+            });
+        } else if (id == R.id.pause_btn) {
+            mediaManager.pause(error -> {
+                if (null != error) {
+                    setResultToToast("暂停视频失败: " + error.getDescription());
+                } else {
+                    DJILog.e(TAG, "暂停视频成功");
+                }
+            });
+        } else if (id == R.id.stop_btn) {
+            mediaManager.stop(error -> {
+                if (null != error) {
+                    setResultToToast("停止视频失败" + error.getDescription());
+                } else {
+                    DJILog.e(TAG, "停止视频成功");
+                }
+            });
         }
     }
 

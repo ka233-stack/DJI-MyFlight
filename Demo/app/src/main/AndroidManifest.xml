@@ -106,6 +106,7 @@
             android:name=".GalleryActivity"
             android:configChanges="orientation"
             android:screenOrientation="sensorLandscape"
+            android:requestLegacyExternalStorage="true"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ManualFlightActivity"
