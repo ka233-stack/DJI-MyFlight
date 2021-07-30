@@ -29,7 +29,7 @@ public class DemoApplication extends Application {
     public Handler mHandler;
 
     private Application instance;
-    
+
     public String loginStateTV_text;
     public String sdkVersionTV_text;
     public String mTextConnectionStatus_text;
@@ -94,7 +94,7 @@ public class DemoApplication extends Application {
     public static synchronized Camera getCameraInstance() {
         if (getProductInstance() == null) return null;
         Camera camera = null;
-        if (getProductInstance() instanceof Aircraft){
+        if (getProductInstance() instanceof Aircraft) {
             camera = ((Aircraft) getProductInstance()).getCamera();
         } else if (getProductInstance() instanceof HandHeld) {
             camera = ((HandHeld) getProductInstance()).getCamera();
@@ -105,12 +105,6 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if(DJISDKManager.getInstance().hasSDKRegistered()){
-            Toast.makeText(getApplicationContext(), "onCreate调用hasSDKRegistered结果为true(DemoApplication)", Toast.LENGTH_LONG).show();
-        }
-        else{
-            Toast.makeText(getApplicationContext(), "onCreate调用hasSDKRegistered结果为false(DemoApplication)", Toast.LENGTH_LONG).show();
-        }
         Log.d(TAG, "onCreate:DemoApplication");
         mHandler = new Handler(Looper.getMainLooper());
 
@@ -126,11 +120,10 @@ public class DemoApplication extends Application {
             public void onRegister(DJIError error) {
                 Handler handler = new Handler(Looper.getMainLooper());
                 if (error == DJISDKError.REGISTRATION_SUCCESS) {
-                    handler.post(() -> Toast.makeText(getApplicationContext(), "注册成功(DemoApplication)", Toast.LENGTH_LONG).show());
+                    handler.post(() -> Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_LONG).show());
                     DJISDKManager.getInstance().startConnectionToProduct();
                 } else {
-                    handler.post(() -> Toast.makeText(getApplicationContext(), error.getDescription(), Toast.LENGTH_LONG).show());
-                    handler.post(() -> Toast.makeText(getApplicationContext(), "注册SDK失败，检查网络是否可用", Toast.LENGTH_LONG).show());
+                    handler.post(() -> Toast.makeText(getApplicationContext(), "注册SDK失败: " + error.getDescription(), Toast.LENGTH_LONG).show());
                 }
                 Log.e("TAG", error.toString());
             }
