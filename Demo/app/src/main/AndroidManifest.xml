@@ -42,6 +42,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+        android:requestLegacyExternalStorage="true"
         tools:replace="android:label">
 
 
@@ -106,7 +107,6 @@
             android:name=".GalleryActivity"
             android:configChanges="orientation"
             android:screenOrientation="sensorLandscape"
-            android:requestLegacyExternalStorage="true"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ManualFlightActivity"
