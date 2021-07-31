@@ -291,7 +291,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                             updateDroneLocation();
                             if (lastDronePos != null)
                                 drawPolyline(lastDronePos, curDronePos, FINISHED_LINE);
-                            lastDronePos = curDronePos;
                         }
                     });
 
@@ -406,6 +405,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
      * 根据MCU的状态更新无人机的位置
      */
     private void updateDroneLocation() {
+        if (curDronePos == null)
+            return;
         droneMarkerOptions.position(curDronePos);
 
         runOnUiThread(() -> {
