@@ -482,13 +482,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     }
 
     private void enableDisableAdd() {
-        if (!isAdd) {
-            isAdd = true;
-            btn_addPoint_mode.setText("Exit");
-        } else {
-            isAdd = false;
-            btn_addPoint_mode.setText("Add");
-        }
+        isAdd = !isAdd;
+        btn_addPoint_mode.setText(isAdd ? "Exit" : "Add");
     }
 
 //    private void showSettingDialog(){
