@@ -59,7 +59,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private static final int TODO_LINE = 0;
     private static final int FINISHED_LINE = 1;
 
-
     private MapView mapView;
     private AMap aMap;
 
@@ -152,7 +151,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         btn_upload.setOnClickListener(this);
         btn_start.setOnClickListener(this);
         btn_stop.setOnClickListener(this);
-
     }
 
     private void initMapView() {
@@ -170,8 +168,57 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         markerOption.setFlat(true);//设置marker平贴地图效果
         aMap.addMarker(markerOption);
         aMap.moveCamera(CameraUpdateFactory.newLatLng(beijing));
-
+        // 绑定 Marker 被点击事件
+        aMap.setOnMarkerClickListener(markerClickListener);
+        // 绑定marker拖拽事件
+        aMap.setOnMarkerDragListener(markerDragListener);
     }
+
+    // 定义 Marker拖拽的监听
+    AMap.OnMarkerDragListener markerDragListener = new AMap.OnMarkerDragListener() {
+        /**
+         * 当marker开始被拖动时回调此方法, 这个marker的位置可以通过getPosition()方法返回。
+         * 这个位置可能与拖动的之前的marker位置不一样。
+         * @param marker 被拖动的marker对象
+         */
+        @Override
+        public void onMarkerDragStart(Marker marker) {
+            // TODO Auto-generated method stub
+
+        }
+
+        /**
+         * 在marker拖动完成后回调此方法, 这个marker的位置可以通过getPosition()方法返回
+         * 这个位置可能与拖动的之前的marker位置不一样
+         * @param marker 被拖动的marker对象
+         */
+        @Override
+        public void onMarkerDragEnd(Marker marker) {
+            // TODO Auto-generated method stub
+
+        }
+
+        /**
+         * 在marker拖动过程中回调此方法, 这个marker的位置可以通过getPosition()方法返回
+         * 这个位置可能与拖动的之前的marker位置不一样
+         * @param marker 被拖动的marker对象
+         */
+        @Override
+        public void onMarkerDrag(Marker marker) {
+            // TODO Auto-generated method stub
+
+        }
+    };
+
+    // 定义 Marker 点击事件监听
+    AMap.OnMarkerClickListener markerClickListener = new AMap.OnMarkerClickListener() {
+        // marker 对象被点击时回调的接口
+        // 返回 true 则表示接口已响应事件，否则返回false
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -439,6 +486,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             isAdd = true;
             btn_addPoint_mode.setText("Exit");
         } else {
+            isAdd = false;
             btn_addPoint_mode.setText("Add");
         }
     }
@@ -618,12 +666,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     }
 
     private void showToast(final String toastMsg) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show());
     }
 
     private void set_settings() {
