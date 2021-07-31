@@ -257,6 +257,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
         // 航点标点
         wayPointMarkerOptions = new MarkerOptions();
+        wayPointMarkerOptions.draggable(true);
         wayPointMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
     }
 
