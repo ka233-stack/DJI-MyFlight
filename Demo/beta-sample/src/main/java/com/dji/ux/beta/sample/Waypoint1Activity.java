@@ -464,6 +464,10 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         } else if (id == R.id.btn_clearPoint) {
             runOnUiThread(() -> aMap.clear());
             waypointList.clear();
+            // remove lines
+            for (Polyline line : todoLineList) {
+                line.remove();
+            }
             todoLineList.clear();
             waypointMissionBuilder.waypointList(waypointList);
             updateDroneLocation();
@@ -648,6 +652,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     }
 
     private void startWaypointMission() {
+        for (Polyline line : finishedLineList) {
+            line.remove();
+        }
         finishedLineList.clear();
         lastDronePos = null;
 
