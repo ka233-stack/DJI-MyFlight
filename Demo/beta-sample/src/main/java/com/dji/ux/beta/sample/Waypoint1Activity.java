@@ -457,7 +457,12 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private void markWaypoint(LatLng point) {
         //Create MarkerOptions object
         wayPointMarkerOptions.position(point);
-        wayPointMarkerOptions.icon(myIcon());
+        // set icon
+        View view = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
+        // set text
+        ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(waypointList.size() + 1));
+        wayPointMarkerOptions.icon(BitmapDescriptorFactory.fromView(view));
+
         Marker marker = aMap.addMarker(wayPointMarkerOptions);
         // Animation animation = new RotateAnimation(marker.getRotateAngle(),marker.getRotateAngle()+180,0,0,0);
         // long duration = 1000L;
@@ -470,14 +475,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             drawPolyline(lastPoint, point, TODO_LINE);
         }
         lastPoint = point;
-    }
-
-    private BitmapDescriptor myIcon() {
-        View viewCat = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
-        TextView text = (TextView) viewCat.findViewById(R.id.icon_text);
-        ImageView img = viewCat.findViewById(R.id.icon_img);
-        text.setText(String.valueOf(waypointList.size() + 1));
-        return (BitmapDescriptorFactory.fromView(viewCat));
     }
 
     @Override

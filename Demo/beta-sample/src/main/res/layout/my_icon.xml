@@ -3,26 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="18dp"
-    android:layout_height="28dp">
-
-    <ImageView
-        android:id="@+id/icon_img"
-        android:layout_width="12dp"
-        android:layout_height="4dp"
-        android:background="@drawable/fpv_gradient_bottom"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        />
+    android:layout_width="20sp"
+    android:layout_height="20sp">
 
     <TextView
         android:id="@+id/icon_text"
         android:layout_width="match_parent"
-        android:layout_height="18dp"
+        android:layout_height="20sp"
         android:background="@drawable/ic_marker_15"
+        android:backgroundTint="#E6FFFFFF"
         android:gravity="center_horizontal"
-        android:paddingTop="3.2dp"
+        android:paddingTop="0.5sp"
         android:text="1"
         android:textColor="@color/blue"
-        android:textSize="7dp" />
+        android:textSize="10sp"
+        android:textStyle="bold" />
 </RelativeLayout>
