@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -27,6 +28,8 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
+import com.amap.api.maps.model.animation.Animation;
+import com.amap.api.maps.model.animation.RotateAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +65,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private MapView mapView;
     private AMap aMap;
 
-
     private EditText editText_v, editText_v1;
     private Button btn_commit;
     private Button btn_addPoint_mode, btn_clearPoint;
@@ -79,9 +81,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
     PolylineOptions finishedPolylineOptions = new PolylineOptions();
     PolylineOptions todoPolylineOptions = new PolylineOptions();
-
-    private Button locate, add, clear;
-    private Button config, upload, start, stop;
 
     private boolean isAdd = false;
 
@@ -216,7 +215,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         // 返回 true 则表示接口已响应事件，否则返回false
         @Override
         public boolean onMarkerClick(Marker marker) {
-            return false;
+            showToast(marker.getPosition().toString());
+            return true;
         }
     };
 
@@ -242,14 +242,14 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
     private void initData() {
         // 飞机已走过的线
-        finishedPolylineOptions.width(10);
+        finishedPolylineOptions.width(15);
         finishedPolylineOptions.color(Color.argb(255, 0, 205, 0));
 
         // 飞机未走过的线
-        todoPolylineOptions.width(10);
+        todoPolylineOptions.width(15);
         todoPolylineOptions.setDottedLine(true);
         todoPolylineOptions.setDottedLineType(PolylineOptions.DOTTEDLINE_TYPE_SQUARE);
-        todoPolylineOptions.color(Color.argb(255, 255, 205, 255));
+        todoPolylineOptions.color(Color.argb(255, 255, 48, 48));
 
         // 飞机标点
         droneMarkerOptions = new MarkerOptions();
@@ -447,6 +447,12 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         //Create MarkerOptions object
         wayPointMarkerOptions.position(point);
         Marker marker = aMap.addMarker(wayPointMarkerOptions);
+        // Animation animation = new RotateAnimation(marker.getRotateAngle(),marker.getRotateAngle()+180,0,0,0);
+        // long duration = 1000L;
+        // animation.setDuration(duration);
+        // animation.setInterpolator(new LinearInterpolator());
+        // marker.setAnimation(animation);
+        // marker.startAnimation();
         mMarkers.put(mMarkers.size(), marker);
     }
 
@@ -458,6 +464,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         } else if (id == R.id.btn_clearPoint) {
             runOnUiThread(() -> aMap.clear());
             waypointList.clear();
+            todoLineList.clear();
             waypointMissionBuilder.waypointList(waypointList);
             updateDroneLocation();
         } else if (id == R.id.btn_upload) {
@@ -641,6 +648,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     }
 
     private void startWaypointMission() {
+        finishedLineList.clear();
+        lastDronePos = null;
 
         getWaypointMissionOperator().startMission(new CommonCallbacks.CompletionCallback() {
             @Override
