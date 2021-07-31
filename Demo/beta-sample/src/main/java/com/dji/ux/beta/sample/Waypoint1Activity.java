@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.FlightControllerState;
+import dji.common.flightcontroller.LocationCoordinate3D;
 import dji.common.mission.waypoint.Waypoint;
 import dji.common.mission.waypoint.WaypointMission;
 import dji.common.mission.waypoint.WaypointMissionDownloadEvent;
@@ -42,7 +44,6 @@ import dji.common.mission.waypoint.WaypointMissionFinishedAction;
 import dji.common.mission.waypoint.WaypointMissionFlightPathMode;
 import dji.common.mission.waypoint.WaypointMissionHeadingMode;
 import dji.common.mission.waypoint.WaypointMissionUploadEvent;
-import dji.common.useraccount.UserAccountState;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.base.BaseProduct;
 import dji.sdk.flightcontroller.FlightController;
@@ -50,35 +51,42 @@ import dji.sdk.mission.waypoint.WaypointMissionOperator;
 import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
-import dji.sdk.useraccount.UserAccountManager;
 
-public class Waypoint1Activity extends FragmentActivity implements View.OnClickListener, OnMapClickListener{
+public class Waypoint1Activity extends FragmentActivity implements View.OnClickListener, OnMapClickListener {
 
     protected static final String TAG = "Waypoint1Activity";
+
+    private static final int TODO_LINE = 0;
+    private static final int FINISHED_LINE = 1;
+
 
     private MapView mapView;
     private AMap aMap;
 
-    private int markCount=0;
-    private List<LatLng> latLngs = new ArrayList<LatLng>();
-    private Polyline lines;
 
-    private EditText editText_v,editText_v1;
+    private EditText editText_v, editText_v1;
     private Button btn_commit;
-    private Button btn_addPoint_mode,btn_clearPoint;
-    private EditText speed_edittext,altitude_edittext;
-    private Spinner action_spinner,angle_spinner;
-    private Button btn_upload,btn_start,btn_stop;
+    private Button btn_addPoint_mode, btn_clearPoint;
+    private EditText speed_edittext, altitude_edittext;
+    private Spinner action_spinner, angle_spinner;
+    private Button btn_upload, btn_start, btn_stop;
 
+    private LatLng lastPoint = null;
+    private LatLng lastDronePos = null;
+    private LatLng curDronePos = null;
 
+    private List<Polyline> finishedLineList = new ArrayList<>();
+    private List<Polyline> todoLineList = new ArrayList<>();
+
+    PolylineOptions finishedPolylineOptions = new PolylineOptions();
+    PolylineOptions todoPolylineOptions = new PolylineOptions();
 
     private Button locate, add, clear;
     private Button config, upload, start, stop;
 
     private boolean isAdd = false;
 
-    private double droneLocationLat = 181, droneLocationLng = 181;
-    private final Map<Integer, Marker> mMarkers = new ConcurrentHashMap<Integer, Marker>();
+    private final Map<Integer, Marker> mMarkers = new ConcurrentHashMap<>();
     private Marker droneMarker = null;
 
     private float altitude = 100.0f;
@@ -91,20 +99,22 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private WaypointMissionOperator instance;
     private WaypointMissionFinishedAction mFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
     private WaypointMissionHeadingMode mHeadingMode = WaypointMissionHeadingMode.AUTO;
+    private MarkerOptions droneMarkerOptions;
+    private MarkerOptions wayPointMarkerOptions;
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         initFlightController();
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         unregisterReceiver(mReceiver);
         removeListener();
         super.onDestroy();
@@ -113,33 +123,28 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     /**
      * @Description : RETURN Button RESPONSE FUNCTION
      */
-    public void onReturn(View view){
+    public void onReturn(View view) {
         Log.d(TAG, "onReturn");
         this.finish();
     }
 
-    private void setResultToToast(final String string){
-        Waypoint1Activity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(Waypoint1Activity.this, string, Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void setResultToToast(final String string) {
+        Waypoint1Activity.this.runOnUiThread(() -> Toast.makeText(Waypoint1Activity.this, string, Toast.LENGTH_SHORT).show());
     }
 
     private void initUI() {
-        editText_v=(EditText)findViewById(R.id.point_v);
-        editText_v1=(EditText)findViewById(R.id.point_v1);
-        btn_commit=(Button) findViewById(R.id.btn_commit);
-        btn_addPoint_mode=(Button) findViewById(R.id.btn_addPoint_mode);
-        btn_clearPoint=(Button) findViewById(R.id.btn_clearPoint);
-        speed_edittext=(EditText)findViewById(R.id.speed_edittxet);
-        altitude_edittext=(EditText)findViewById(R.id.altitude_edittext);
-        action_spinner=(Spinner)findViewById(R.id.action_spinner);
-        angle_spinner=(Spinner)findViewById(R.id.angle_spinner);
-        btn_upload=(Button) findViewById(R.id.btn_upload);
-        btn_start=(Button) findViewById(R.id.btn_start);
-        btn_stop=(Button) findViewById(R.id.btn_stop);
+        editText_v = (EditText) findViewById(R.id.point_v);
+        editText_v1 = (EditText) findViewById(R.id.point_v1);
+        btn_commit = (Button) findViewById(R.id.btn_commit);
+        btn_addPoint_mode = (Button) findViewById(R.id.btn_addPoint_mode);
+        btn_clearPoint = (Button) findViewById(R.id.btn_clearPoint);
+        speed_edittext = (EditText) findViewById(R.id.speed_edittxet);
+        altitude_edittext = (EditText) findViewById(R.id.altitude_edittext);
+        action_spinner = (Spinner) findViewById(R.id.action_spinner);
+        angle_spinner = (Spinner) findViewById(R.id.angle_spinner);
+        btn_upload = (Button) findViewById(R.id.btn_upload);
+        btn_start = (Button) findViewById(R.id.btn_start);
+        btn_stop = (Button) findViewById(R.id.btn_stop);
 
         btn_commit.setOnClickListener(this);
         btn_addPoint_mode.setOnClickListener(this);
@@ -157,9 +162,15 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             aMap.setOnMapClickListener(this);// add the listener for click for amap object
         }
 
-        LatLng shenzhen = new LatLng(22.5362, 113.9454);
-        aMap.addMarker(new MarkerOptions().position(shenzhen).title("Marker in Shenzhen"));
-        aMap.moveCamera(CameraUpdateFactory.newLatLng(shenzhen));
+        LatLng beijing = new LatLng(39.9149, 116.4039);
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(beijing);
+        markerOption.title("天安门");
+        // 将Marker设置为贴地显示，可以双指下拉地图查看效果
+        markerOption.setFlat(true);//设置marker平贴地图效果
+        aMap.addMarker(markerOption);
+        aMap.moveCamera(CameraUpdateFactory.newLatLng(beijing));
+
     }
 
     @Override
@@ -177,39 +188,38 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
         initMapView();
         initUI();
+        initData();
         addListener();
-        onProductConnectionChange();
+        initFlightController();
+    }
+
+    private void initData() {
+        // 飞机已走过的线
+        finishedPolylineOptions.width(10);
+        finishedPolylineOptions.color(Color.argb(255, 0, 205, 0));
+
+        // 飞机未走过的线
+        todoPolylineOptions.width(10);
+        todoPolylineOptions.setDottedLine(true);
+        todoPolylineOptions.setDottedLineType(PolylineOptions.DOTTEDLINE_TYPE_SQUARE);
+        todoPolylineOptions.color(Color.argb(255, 255, 205, 255));
+
+        // 飞机标点
+        droneMarkerOptions = new MarkerOptions();
+        droneMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.aircraft));
+
+        // 航点标点
+        wayPointMarkerOptions = new MarkerOptions();
+        wayPointMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
     }
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            onProductConnectionChange();
+            initFlightController();
         }
     };
-
-    private void onProductConnectionChange()
-    {
-        initFlightController();
-        loginAccount();
-    }
-
-    private void loginAccount(){
-
-        UserAccountManager.getInstance().logIntoDJIUserAccount(this,
-                new CommonCallbacks.CompletionCallbackWith<UserAccountState>() {
-                    @Override
-                    public void onSuccess(final UserAccountState userAccountState) {
-                        Log.e(TAG, "Login Success");
-                    }
-                    @Override
-                    public void onFailure(DJIError error) {
-                        setResultToToast("Login Error:"
-                                + error.getDescription());
-                    }
-                });
-    }
 
     private void initFlightController() {
 
@@ -227,9 +237,13 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                         @Override
                         public void onUpdate(FlightControllerState
                                                      djiFlightControllerCurrentState) {
-                            droneLocationLat = djiFlightControllerCurrentState.getAircraftLocation().getLatitude();
-                            droneLocationLng = djiFlightControllerCurrentState.getAircraftLocation().getLongitude();
+                            lastDronePos = curDronePos;
+                            LocationCoordinate3D location = djiFlightControllerCurrentState.getAircraftLocation();
+                            curDronePos = new LatLng(location.getLatitude(), location.getLongitude());
                             updateDroneLocation();
+                            if (lastDronePos != null)
+                                drawPolyline(lastDronePos, curDronePos, FINISHED_LINE);
+                            lastDronePos = curDronePos;
                         }
                     });
 
@@ -283,154 +297,148 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         return instance;
     }
 
-    @Override
-    public void onMapClick(LatLng point) {
-        if (isAdd){
+    private void addPointByLonLat() {
+        double point_v = Double.parseDouble(editText_v.getText().toString());
+        double point_v1 = Double.parseDouble(editText_v1.getText().toString());
+        showToast(editText_v.toString());
+        showToast(editText_v1.toString());
+        if (editText_v.getText().equals("") || editText_v.getText() == null || editText_v1.getText().equals("") || editText_v1.getText() == null)
+            showToast("Please Enter First");
+        else {
+            LatLng point = new LatLng(point_v, point_v1);
             markWaypoint(point);
+            if (lastPoint != null) {
+                drawPolyline(lastPoint, point, TODO_LINE);
+            }
+            lastPoint = point;
             Waypoint mWaypoint = new Waypoint(point.latitude, point.longitude, altitude);
-            //Add Waypoints to Waypoint arraylist;
             if (waypointMissionBuilder != null) {
                 waypointList.add(mWaypoint);
                 waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
-            }else
-            {
+            } else {
                 waypointMissionBuilder = new WaypointMission.Builder();
                 waypointList.add(mWaypoint);
                 waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
             }
-        }else{
-            setResultToToast("Cannot Add Waypoint");
         }
     }
 
-    public static boolean checkGpsCoordination(double latitude, double longitude) {
+    @Override
+    public void onMapClick(LatLng point) {
+        if (isAdd) {
+            markWaypoint(point);
+            Waypoint mWaypoint = new Waypoint(point.latitude, point.longitude, altitude);
+            //Add Waypoints to Waypoint arraylist;
+            waypointList.add(mWaypoint);
+            if (lastPoint != null)
+                drawPolyline(lastPoint, point, TODO_LINE);
+            lastPoint = point;
+            if (waypointMissionBuilder == null) {
+                waypointMissionBuilder = new WaypointMission.Builder();
+            }
+            waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
+        } else {
+            setResultToToast("无法添加航点");
+        }
+    }
+
+
+    /**
+     * 检查GPS坐标
+     *
+     * @param pos
+     * @return
+     */
+    public static boolean checkGpsCoordination(LatLng pos) {
+        double latitude = pos.latitude, longitude = pos.longitude;
         return (latitude > -90 && latitude < 90 && longitude > -180 && longitude < 180) && (latitude != 0f && longitude != 0f);
     }
 
-    // Update the drone location based on states from MCU.
-    private void updateDroneLocation(){
+    /**
+     * 根据MCU的状态更新无人机的位置
+     */
+    private void updateDroneLocation() {
+        droneMarkerOptions.position(curDronePos);
 
-        LatLng pos = new LatLng(droneLocationLat, droneLocationLng);
-        //Create MarkerOptions object
-        final MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(pos);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.aircraft));
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (droneMarker != null) {
-                    droneMarker.remove();
-                }
-
-                if (checkGpsCoordination(droneLocationLat, droneLocationLng)) {
-                    droneMarker = aMap.addMarker(markerOptions);
-                }
+        runOnUiThread(() -> {
+            if (droneMarker != null) {
+                droneMarker.remove();
+            }
+            if (checkGpsCoordination(curDronePos)) {
+                droneMarker = aMap.addMarker(droneMarkerOptions);
             }
         });
     }
 
-    private void markWaypoint(LatLng point){
-        //Create MarkerOptions object
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(point);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        Marker marker = aMap.addMarker(markerOptions);
-        marker.showInfoWindow();
-        mMarkers.put(mMarkers.size(), marker);
-        latLngs.add(point);
-        linkWaypoint();
-    }
-
-    private void linkWaypoint(){
-        lines = aMap.addPolyline(new PolylineOptions().addAll(latLngs).width(10));
-    }
-
-    private void addPointByLonLat(){
-        double point_v =  Double.parseDouble(editText_v.getText().toString());
-        double point_v1 =  Double.parseDouble(editText_v1.getText().toString());
-        showToast(editText_v.toString());
-        showToast(editText_v1.toString());
-        if(editText_v.getText().equals("") || editText_v.getText()==null || editText_v1.getText().equals("") || editText_v1.getText()==null)
-            showToast("Please Enter First");
-        else{
-            LatLng point=new LatLng(point_v,point_v1);
-            markWaypoint(point);
-            Waypoint mWaypoint = new Waypoint(point.latitude, point.longitude, altitude);
-            if (waypointMissionBuilder != null) {
-                waypointList.add(mWaypoint);
-                waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
-            }else
-            {
-                waypointMissionBuilder = new WaypointMission.Builder();
-                waypointList.add(mWaypoint);
-                waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
-            }
+    /**
+     * 绘制航线
+     *
+     * @param firstPoint
+     * @param secondPoint
+     */
+    private void drawPolyline(LatLng firstPoint, LatLng secondPoint, int type) {
+        if (type == TODO_LINE) {
+            todoPolylineOptions.add(firstPoint, secondPoint);
+            Polyline polyline = aMap.addPolyline(todoPolylineOptions);
+            todoLineList.add(polyline);
+        } else {
+            finishedPolylineOptions.add(firstPoint, secondPoint);
+            Polyline polyline = aMap.addPolyline(finishedPolylineOptions);
+            finishedLineList.add(polyline);
         }
+    }
+
+
+    /**
+     * 标记航点
+     *
+     * @param point
+     */
+    private void markWaypoint(LatLng point) {
+        //Create MarkerOptions object
+        wayPointMarkerOptions.position(point);
+        Marker marker = aMap.addMarker(wayPointMarkerOptions);
+        mMarkers.put(mMarkers.size(), marker);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_addPoint_mode:{
-                enableDisableAdd();
-                break;
+        int id = v.getId();
+        if (id == R.id.btn_addPoint_mode) {
+            enableDisableAdd();
+        } else if (id == R.id.btn_clearPoint) {
+            runOnUiThread(() -> aMap.clear());
+            waypointList.clear();
+            waypointMissionBuilder.waypointList(waypointList);
+            updateDroneLocation();
+        } else if (id == R.id.btn_upload) {
+            set_settings();
+            if (!checkConditions()) {
+                showToast("请检查输入的参数");
+            } else {
+                configWayPointMission();
+                uploadWayPointMission();
             }
-            case R.id.btn_clearPoint: {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        aMap.clear();
-                    }
-                });
-                markCount=0;
-                waypointList.clear();
-                latLngs.clear();
-                waypointMissionBuilder.waypointList(waypointList);
-                updateDroneLocation();
-                break;
-            }
-            case R.id.btn_upload:{
-                set_settings();
-                if(!checkConditions()){
-                    showToast("请检查输入的参数");
-                }
-                else {
-                    configWayPointMission();
-                    uploadWayPointMission();
-                }
-                break;
-            }
-            case R.id.btn_start:{
-                startWaypointMission();
-                break;
-            }
-            case R.id.btn_stop:{
-                stopWaypointMission();
-                break;
-            }
-            case R.id.btn_commit:{
-                addPointByLonLat();
-                break;
-            }
-            default:
-                break;
+        } else if (id == R.id.btn_start) {
+            startWaypointMission();
+        } else if (id == R.id.btn_stop) {
+            stopWaypointMission();
+        } else if (id == R.id.btn_commit) {
+            addPointByLonLat();
         }
     }
 
-    private void cameraUpdate(){
-        LatLng pos = new LatLng(droneLocationLat, droneLocationLng);
+    private void cameraUpdate() {
         float zoomlevel = (float) 18.0;
-        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(pos, zoomlevel);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(curDronePos, zoomlevel);
         aMap.moveCamera(cu);
     }
 
-    private void enableDisableAdd(){
-        if (isAdd == false) {
+    private void enableDisableAdd() {
+        if (!isAdd) {
             isAdd = true;
             btn_addPoint_mode.setText("Exit");
-        }else{
-            isAdd = false;
+        } else {
             btn_addPoint_mode.setText("Add");
         }
     }
@@ -519,32 +527,32 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 //                .show();
 //    }
 
-    String nulltoIntegerDefalt(String value){
-        if(!isIntValue(value)) value="0";
+    String nulltoIntegerDefalt(String value) {
+        if (!isIntValue(value)) value = "0";
         return value;
     }
 
-    boolean isIntValue(String val)
-    {
+    boolean isIntValue(String val) {
         try {
-            val=val.replace(" ","");
+            val = val.replace(" ", "");
             Integer.parseInt(val);
-        } catch (Exception e) {return false;}
+        } catch (Exception e) {
+            return false;
+        }
         return true;
     }
 
-    private void configWayPointMission(){
+    private void configWayPointMission() {
 
-        if (waypointMissionBuilder == null){
+        if (waypointMissionBuilder == null) {
 
             waypointMissionBuilder = new WaypointMission.Builder().finishedAction(mFinishedAction)
-                                                                  .headingMode(mHeadingMode)
-                                                                  .autoFlightSpeed(mSpeed)
-                                                                  .maxFlightSpeed(mSpeed)
-                                                                  .flightPathMode(WaypointMissionFlightPathMode.NORMAL);
+                    .headingMode(mHeadingMode)
+                    .autoFlightSpeed(mSpeed)
+                    .maxFlightSpeed(mSpeed)
+                    .flightPathMode(WaypointMissionFlightPathMode.NORMAL);
 
-        }else
-        {
+        } else {
             waypointMissionBuilder.finishedAction(mFinishedAction)
                     .headingMode(mHeadingMode)
                     .autoFlightSpeed(mSpeed)
@@ -553,9 +561,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
         }
 
-        if (waypointMissionBuilder.getWaypointList().size() > 0){
+        if (waypointMissionBuilder.getWaypointList().size() > 0) {
 
-            for (int i=0; i< waypointMissionBuilder.getWaypointList().size(); i++){
+            for (int i = 0; i < waypointMissionBuilder.getWaypointList().size(); i++) {
                 waypointMissionBuilder.getWaypointList().get(i).altitude = altitude;
             }
 
@@ -571,7 +579,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
     }
 
-    private void uploadWayPointMission(){
+    private void uploadWayPointMission() {
 
         getWaypointMissionOperator().uploadMission(new CommonCallbacks.CompletionCallback() {
             @Override
@@ -587,7 +595,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
     }
 
-    private void startWaypointMission(){
+    private void startWaypointMission() {
 
         getWaypointMissionOperator().startMission(new CommonCallbacks.CompletionCallback() {
             @Override
@@ -598,7 +606,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
     }
 
-    private void stopWaypointMission(){
+    private void stopWaypointMission() {
 
         getWaypointMissionOperator().stopMission(new CommonCallbacks.CompletionCallback() {
             @Override
@@ -618,13 +626,13 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         });
     }
 
-    private void set_settings(){
-        this.mSpeed=Float.parseFloat(speed_edittext.getText().toString());
-        this.altitude=Float.parseFloat(altitude_edittext.getText().toString());
-        String action,angle;
-        action=action_spinner.getSelectedItem().toString();
-        angle=angle_spinner.getSelectedItem().toString();
-        switch(action){
+    private void set_settings() {
+        this.mSpeed = Float.parseFloat(speed_edittext.getText().toString());
+        this.altitude = Float.parseFloat(altitude_edittext.getText().toString());
+        String action, angle;
+        action = action_spinner.getSelectedItem().toString();
+        angle = angle_spinner.getSelectedItem().toString();
+        switch (action) {
             case "无动作":
                 mFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
                 break;
@@ -641,7 +649,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                 showToast("完成动作有误");
                 break;
         }
-        switch(angle){
+        switch (angle) {
             case "headingNext":
                 mHeadingMode = WaypointMissionHeadingMode.AUTO;
                 break;
@@ -660,15 +668,15 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         }
     }
 
-    private boolean checkConditions(){
-        boolean flag=true;
-        if((mSpeed<-15) || (mSpeed>15)){
+    private boolean checkConditions() {
+        boolean flag = true;
+        if ((mSpeed < -15) || (mSpeed > 15)) {
             showToast("飞行速度要介于-15到15之间，请重新输入");
-            flag=false;
+            flag = false;
         }
-        if(altitude>120){
+        if (altitude > 120) {
             showToast("飞行高度不可过高");
-            flag=false;
+            flag = false;
         }
         return flag;
     }
