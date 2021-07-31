@@ -34,8 +34,10 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ScrollView
         android:id="@+id/settings_scroll_view"
@@ -44,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.35">
+        app:layout_constraintWidth_percent="0.3">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -357,5 +359,111 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    <ScrollView
+        android:id="@+id/point_settings_scroll_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_gray"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/changePoint_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="更改某点坐标"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/changePoint_separator"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/map_settings_item_separator"
+                android:background="@color/colorAccent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/changePoint_text" />
+
+            <EditText
+                android:id="@+id/change_point_v"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请先选点"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/changePoint_separator" />
+
+            <EditText
+                android:id="@+id/change_point_v1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请先选点"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/change_point_v" />
+
+            <Button
+                android:id="@+id/btn_change_commit"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="提交更改"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/change_point_v1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/btn_settings"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:background="@color/light_gray_300"
+        android:padding="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_settings_white_24dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/btn_chang_settings"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:background="@color/light_gray_300"
+        android:padding="5dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_settings_white_24dp"
+        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,8 +9,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,6 +103,20 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private WaypointMissionFinishedAction mFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
     private WaypointMissionHeadingMode mHeadingMode = WaypointMissionHeadingMode.AUTO;
 
+    private boolean isPanelOpen_copy = false;
+    private boolean isPanelOpen = true;
+    protected ScrollView scrollView;
+    protected ScrollView point_settings_scroll_view;
+    protected ImageView btnPanel;
+
+    private boolean selectedWaypoint=false;
+    protected EditText change_point_v,change_point_v1;
+    protected Button btn_change_commit;
+    private Marker changeMarker;
+    protected ImageView btn_chang_settings;
+    protected TextView changePoint_text;
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -149,6 +167,16 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         btn_upload.setOnClickListener(this);
         btn_start.setOnClickListener(this);
         btn_stop.setOnClickListener(this);
+
+        scrollView = (ScrollView) findViewById(R.id.settings_scroll_view);
+        btnPanel = (ImageView) findViewById(R.id.btn_settings);
+        change_point_v = (EditText) findViewById(R.id.change_point_v);
+        change_point_v1 = (EditText) findViewById(R.id.change_point_v1);
+        btn_change_commit = (Button) findViewById(R.id.btn_change_commit);
+        btn_chang_settings = (ImageView) findViewById(R.id.btn_chang_settings);
+        btn_change_commit.setOnClickListener(this);
+        changePoint_text = (TextView) findViewById(R.id.changePoint_text);
+        point_settings_scroll_view = (ScrollView) findViewById(R.id.point_settings_scroll_view);
     }
 
     private void initMapView() {
@@ -247,6 +275,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         @Override
         public boolean onMarkerClick(Marker marker) {
             showToast(marker.getPosition().toString());
+            selectedWaypoint = true;
+            changeMarker = marker;
+            showLatLng(marker);
             return true;
         }
     };
@@ -268,6 +299,20 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         initUI();
         addListener();
         initFlightController();
+
+        btnPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                movePanel();
+            }
+        });
+
+        btn_chang_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                movePanel_copy();
+            }
+        });
     }
 
     private PolylineOptions getFinishedPolylineOptions() {
@@ -522,6 +567,10 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             waypointMissionBuilder.waypointList(waypointList);
             updateDroneLocation();
             lastPoint = null;
+
+            selectedWaypoint=false;
+            changeMarker=null;
+            showLatLng(changeMarker);
         } else if (id == R.id.btn_upload) {
             set_settings();
             if (!checkConditions()) {
@@ -536,6 +585,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             stopWaypointMission();
         } else if (id == R.id.btn_commit) {
             addPointByLonLat();
+        } else if (id == R.id.btn_change_commit){
+            changeCommit(changeMarker);
         }
     }
 
@@ -786,5 +837,157 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             flag = false;
         }
         return flag;
+    }
+
+    private void movePanel() {
+        int translationStart;
+        int translationEnd;
+        if (isPanelOpen) {
+            translationStart = 0;
+            translationEnd = -scrollView.getWidth();
+        } else {
+
+            scrollView.bringToFront();
+            translationStart = -scrollView.getWidth();
+            translationEnd = 0;
+        }
+        TranslateAnimation animate = new TranslateAnimation(
+                translationStart, translationEnd, 0, 0);
+        animate.setDuration(300);
+        animate.setFillAfter(true);
+        animate.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(android.view.animation.Animation animation) {
+                // do nothing
+            }
+
+            @Override
+            public void onAnimationEnd(android.view.animation.Animation animation) {
+                if (isPanelOpen) {
+                    mapView.bringToFront();
+
+                }
+                btnPanel.bringToFront();
+                isPanelOpen = !isPanelOpen;
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // do nothing
+            }
+        });
+        scrollView.startAnimation(animate);
+    }
+
+    private void movePanel_copy() {
+        int translationStart;
+        int translationEnd;
+        if (isPanelOpen_copy) {
+            translationStart = 0;
+            translationEnd = +point_settings_scroll_view.getWidth();
+        } else {
+
+            point_settings_scroll_view.bringToFront();
+            translationStart = +point_settings_scroll_view.getWidth();
+            translationEnd = 0;
+        }
+        TranslateAnimation animate = new TranslateAnimation(
+                translationStart, translationEnd, 0, 0);
+        animate.setDuration(300);
+        animate.setFillAfter(true);
+        animate.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(android.view.animation.Animation animation) {
+                // do nothing
+            }
+
+            @Override
+            public void onAnimationEnd(android.view.animation.Animation animation) {
+                if (isPanelOpen_copy) {
+                    mapView.bringToFront();
+
+                }
+                btnPanel.bringToFront();
+                isPanelOpen_copy = !isPanelOpen_copy;
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // do nothing
+            }
+        });
+        point_settings_scroll_view.startAnimation(animate);
+    }
+
+    private void showLatLng(Marker mark){
+        if(selectedWaypoint) {
+            LatLng position = mark.getPosition();
+            int index;
+            index = -1;
+            for (Map.Entry<Integer, Marker> mapEntry : mMarkers.entrySet()) {
+                if (mapEntry.getValue().equals(mark))
+                    index = mapEntry.getKey();
+            }
+            changePoint_text.setText("更改某点坐标(点"+String.valueOf(index+1)+")");
+            change_point_v.setText(String.valueOf(position.latitude));
+            change_point_v1.setText(String.valueOf(position.longitude));
+        }
+        else{
+            changePoint_text.setText("更改某点坐标");
+            change_point_v.setText("请先选点");
+            change_point_v1.setText("请先选点");
+        }
+    }
+
+    private void changeCommit(Marker marker){
+        if(!selectedWaypoint){
+            showToast("请先选中一个点");
+        }
+        else{
+            double change_v = Double.parseDouble(change_point_v.getText().toString());
+            double change_v1 = Double.parseDouble(change_point_v1.getText().toString());
+            LatLng position = new LatLng(change_v,change_v1);
+            marker.setPosition(position);
+
+            int index, lastIndex;
+            index = -1;
+            lastIndex = todoLineList.size();
+            for (Map.Entry<Integer, Marker> mapEntry : mMarkers.entrySet()) {
+                if (mapEntry.getValue().equals(marker))
+                    index = mapEntry.getKey();
+            }
+
+            if (index == -1) { // 不存在该marker
+                showToast("找不到该marker");
+                return;
+            }
+            if (index < lastIndex) { // 后面还有marker
+                Polyline polyline = todoLineList.get(index);
+                LatLng pos = polyline.getOptions().getPoints().get(1);
+                polyline.remove();
+                todoLineList.remove(index);
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(marker.getPosition(), pos);
+                todoLineList.add(index, aMap.addPolyline(polylineOptions));
+            }
+            if (index > 0) { // 前面还有marker
+                Polyline polyline = todoLineList.get(index - 1);
+                LatLng pos = polyline.getOptions().getPoints().get(0);
+                polyline.remove();
+                todoLineList.remove(index - 1);
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(pos, marker.getPosition());
+                todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
+            }
+
+            LatLng pos = marker.getPosition();
+            Waypoint waypoint = new Waypoint(pos.latitude, pos.longitude, altitude);
+            waypointList.set(index, waypoint);
+            // 设置lastPoint
+            if (index == lastIndex)
+                lastPoint = marker.getPosition();
+        }
     }
 }
