@@ -484,6 +484,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             todoLineList.clear();
             waypointMissionBuilder.waypointList(waypointList);
             updateDroneLocation();
+            lastPoint=null;
+            todoPolylineOptions=new PolylineOptions();
+            initData();
         } else if (id == R.id.btn_upload) {
             set_settings();
             if (!checkConditions()) {
