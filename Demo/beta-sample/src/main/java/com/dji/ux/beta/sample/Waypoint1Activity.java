@@ -7,11 +7,14 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -22,6 +25,7 @@ import com.amap.api.maps.AMap.OnMapClickListener;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
@@ -446,6 +450,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private void markWaypoint(LatLng point) {
         //Create MarkerOptions object
         wayPointMarkerOptions.position(point);
+        wayPointMarkerOptions.icon(myIcon());
         Marker marker = aMap.addMarker(wayPointMarkerOptions);
         // Animation animation = new RotateAnimation(marker.getRotateAngle(),marker.getRotateAngle()+180,0,0,0);
         // long duration = 1000L;
@@ -454,6 +459,14 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         // marker.setAnimation(animation);
         // marker.startAnimation();
         mMarkers.put(mMarkers.size(), marker);
+    }
+
+    private BitmapDescriptor myIcon(){
+        View viewCat = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
+        TextView text = (TextView) viewCat.findViewById(R.id.icon_text);
+        ImageView img = viewCat.findViewById(R.id.icon_img);
+        text.setText(String.valueOf(waypointList.size()+1));
+        return (BitmapDescriptorFactory.fromView(viewCat));
     }
 
     @Override
