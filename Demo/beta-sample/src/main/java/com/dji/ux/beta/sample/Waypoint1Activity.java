@@ -239,28 +239,40 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
         initMapView();
         initUI();
-        initData();
+
+        // init options
+        initFinishedPolylineOptions();
+        initTodoPolylineOptions();
+        initDroneMarkerOptions();
+        initWayPointMarkerOptions();
+
         addListener();
         initFlightController();
     }
 
-    private void initData() {
+    private void initFinishedPolylineOptions() {
         // 飞机已走过的线
         finishedPolylineOptions = new PolylineOptions();
         finishedPolylineOptions.width(15);
         finishedPolylineOptions.color(Color.argb(255, 0, 205, 0));
+    }
 
+    private void initTodoPolylineOptions() {
         // 飞机未走过的线
         todoPolylineOptions = new PolylineOptions();
         todoPolylineOptions.width(15);
         todoPolylineOptions.setDottedLine(true);
         todoPolylineOptions.setDottedLineType(PolylineOptions.DOTTEDLINE_TYPE_SQUARE);
         todoPolylineOptions.color(Color.argb(255, 255, 48, 48));
+    }
 
+    private void initDroneMarkerOptions() {
         // 飞机标点
         droneMarkerOptions = new MarkerOptions();
         droneMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.aircraft));
+    }
 
+    private void initWayPointMarkerOptions() {
         // 航点标点
         wayPointMarkerOptions = new MarkerOptions();
         wayPointMarkerOptions.draggable(true);
@@ -460,11 +472,11 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         lastPoint = point;
     }
 
-    private BitmapDescriptor myIcon(){
+    private BitmapDescriptor myIcon() {
         View viewCat = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
         TextView text = (TextView) viewCat.findViewById(R.id.icon_text);
         ImageView img = viewCat.findViewById(R.id.icon_img);
-        text.setText(String.valueOf(waypointList.size()+1));
+        text.setText(String.valueOf(waypointList.size() + 1));
         return (BitmapDescriptorFactory.fromView(viewCat));
     }
 
@@ -483,9 +495,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             todoLineList.clear();
             waypointMissionBuilder.waypointList(waypointList);
             updateDroneLocation();
-            lastPoint=null;
-            todoPolylineOptions=new PolylineOptions();
-            initData();
+            lastPoint = null;
+            todoPolylineOptions = new PolylineOptions();
+            initTodoPolylineOptions();
         } else if (id == R.id.btn_upload) {
             set_settings();
             if (!checkConditions()) {
@@ -671,6 +683,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             line.remove();
         }
         finishedLineList.clear();
+        initFinishedPolylineOptions();
         lastDronePos = null;
 
         getWaypointMissionOperator().startMission(new CommonCallbacks.CompletionCallback() {
