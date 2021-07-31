@@ -83,8 +83,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private List<Polyline> finishedLineList = new ArrayList<>();
     private List<Polyline> todoLineList = new ArrayList<>();
 
-    PolylineOptions finishedPolylineOptions = new PolylineOptions();
-    PolylineOptions todoPolylineOptions = new PolylineOptions();
+    PolylineOptions finishedPolylineOptions;
+    PolylineOptions todoPolylineOptions;
 
     private boolean isAdd = false;
 
@@ -246,10 +246,12 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
     private void initData() {
         // 飞机已走过的线
+        finishedPolylineOptions = new PolylineOptions();
         finishedPolylineOptions.width(15);
         finishedPolylineOptions.color(Color.argb(255, 0, 205, 0));
 
         // 飞机未走过的线
+        todoPolylineOptions = new PolylineOptions();
         todoPolylineOptions.width(15);
         todoPolylineOptions.setDottedLine(true);
         todoPolylineOptions.setDottedLineType(PolylineOptions.DOTTEDLINE_TYPE_SQUARE);
