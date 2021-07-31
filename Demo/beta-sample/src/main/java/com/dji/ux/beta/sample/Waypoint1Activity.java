@@ -358,10 +358,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         else {
             LatLng point = new LatLng(point_v, point_v1);
             markWaypoint(point);
-            if (lastPoint != null) {
-                drawPolyline(lastPoint, point, TODO_LINE);
-            }
-            lastPoint = point;
             Waypoint mWaypoint = new Waypoint(point.latitude, point.longitude, altitude);
             if (waypointMissionBuilder != null) {
                 waypointList.add(mWaypoint);
@@ -381,9 +377,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             Waypoint mWaypoint = new Waypoint(point.latitude, point.longitude, altitude);
             //Add Waypoints to Waypoint arraylist;
             waypointList.add(mWaypoint);
-            if (lastPoint != null)
-                drawPolyline(lastPoint, point, TODO_LINE);
-            lastPoint = point;
             if (waypointMissionBuilder == null) {
                 waypointMissionBuilder = new WaypointMission.Builder();
             }
@@ -459,6 +452,10 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         // marker.setAnimation(animation);
         // marker.startAnimation();
         mMarkers.put(mMarkers.size(), marker);
+        if (lastPoint != null) {
+            drawPolyline(lastPoint, point, TODO_LINE);
+        }
+        lastPoint = point;
     }
 
     private BitmapDescriptor myIcon(){
