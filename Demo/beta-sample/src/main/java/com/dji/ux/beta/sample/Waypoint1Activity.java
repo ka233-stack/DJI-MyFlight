@@ -24,6 +24,8 @@ import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.Polyline;
+import com.amap.api.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private MapView mapView;
     private AMap aMap;
 
-
+    private int markCount=0;
+    private List<LatLng> latLngs = new ArrayList<LatLng>();
+    private Polyline lines;
 
     private EditText editText_v,editText_v1;
     private Button btn_commit;
@@ -332,7 +336,14 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         markerOptions.position(point);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         Marker marker = aMap.addMarker(markerOptions);
+        marker.showInfoWindow();
         mMarkers.put(mMarkers.size(), marker);
+        latLngs.add(point);
+        linkWaypoint();
+    }
+
+    private void linkWaypoint(){
+        lines = aMap.addPolyline(new PolylineOptions().addAll(latLngs).width(10));
     }
 
     private void addPointByLonLat(){
@@ -371,9 +382,10 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                     public void run() {
                         aMap.clear();
                     }
-
                 });
+                markCount=0;
                 waypointList.clear();
+                latLngs.clear();
                 waypointMissionBuilder.waypointList(waypointList);
                 updateDroneLocation();
                 break;
