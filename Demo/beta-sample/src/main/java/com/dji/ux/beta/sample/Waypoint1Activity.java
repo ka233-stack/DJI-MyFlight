@@ -9,10 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,15 +23,12 @@ import com.amap.api.maps.AMap.OnMapClickListener;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
-import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
-import com.amap.api.maps.model.animation.Animation;
-import com.amap.api.maps.model.animation.RotateAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,15 +71,17 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private Spinner action_spinner, angle_spinner;
     private Button btn_upload, btn_start, btn_stop;
 
+    // 上一个航点坐标点
     private LatLng lastPoint = null;
+    // 上一个飞机位置
     private LatLng lastDronePos = null;
+    // 当前飞机位置
     private LatLng curDronePos = null;
 
+    // 飞机已飞行轨迹列表
     private List<Polyline> finishedLineList = new ArrayList<>();
+    // 航点轨迹列表
     private List<Polyline> todoLineList = new ArrayList<>();
-
-    PolylineOptions finishedPolylineOptions;
-    PolylineOptions todoPolylineOptions;
 
     private boolean isAdd = false;
 
@@ -101,8 +98,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private WaypointMissionOperator instance;
     private WaypointMissionFinishedAction mFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
     private WaypointMissionHeadingMode mHeadingMode = WaypointMissionHeadingMode.AUTO;
-    private MarkerOptions droneMarkerOptions;
-    private MarkerOptions wayPointMarkerOptions;
 
     @Override
     protected void onResume() {
@@ -179,6 +174,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
     // 定义 Marker拖拽的监听
     AMap.OnMarkerDragListener markerDragListener = new AMap.OnMarkerDragListener() {
+        int index, lastIndex;
+
         /**
          * 当marker开始被拖动时回调此方法, 这个marker的位置可以通过getPosition()方法返回。
          * 这个位置可能与拖动的之前的marker位置不一样。
@@ -186,7 +183,12 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
          */
         @Override
         public void onMarkerDragStart(Marker marker) {
-            // TODO Auto-generated method stub
+            index = -1;
+            lastIndex = todoLineList.size();
+            for (Map.Entry<Integer, Marker> mapEntry : mMarkers.entrySet()) {
+                if (mapEntry.getValue().equals(marker))
+                    index = mapEntry.getKey();
+            }
 
         }
 
@@ -197,8 +199,13 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
          */
         @Override
         public void onMarkerDragEnd(Marker marker) {
-            // TODO Auto-generated method stub
-
+            // 更改 wayPoint
+            LatLng pos = marker.getPosition();
+            Waypoint waypoint = new Waypoint(pos.latitude, pos.longitude, altitude);
+            waypointList.set(index, waypoint);
+            // 设置lastPoint
+            if (index == lastIndex)
+                lastPoint = marker.getPosition();
         }
 
         /**
@@ -208,8 +215,28 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
          */
         @Override
         public void onMarkerDrag(Marker marker) {
-            // TODO Auto-generated method stub
-
+            if (index == -1) { // 不存在该marker
+                showToast("找不到该marker");
+                return;
+            }
+            if (index < lastIndex) { // 后面还有marker
+                Polyline polyline = todoLineList.get(index);
+                LatLng pos = polyline.getOptions().getPoints().get(1);
+                polyline.remove();
+                todoLineList.remove(index);
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(marker.getPosition(), pos);
+                todoLineList.add(index, aMap.addPolyline(polylineOptions));
+            }
+            if (index > 0) { // 前面还有marker
+                Polyline polyline = todoLineList.get(index - 1);
+                LatLng pos = polyline.getOptions().getPoints().get(0);
+                polyline.remove();
+                todoLineList.remove(index - 1);
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(pos, marker.getPosition());
+                todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
+            }
         }
     };
 
@@ -239,44 +266,41 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
         initMapView();
         initUI();
-
-        // init options
-        initFinishedPolylineOptions();
-        initTodoPolylineOptions();
-        initDroneMarkerOptions();
-        initWayPointMarkerOptions();
-
         addListener();
         initFlightController();
     }
 
-    private void initFinishedPolylineOptions() {
+    private PolylineOptions getFinishedPolylineOptions() {
         // 飞机已走过的线
-        finishedPolylineOptions = new PolylineOptions();
+        PolylineOptions finishedPolylineOptions = new PolylineOptions();
         finishedPolylineOptions.width(15);
         finishedPolylineOptions.color(Color.argb(255, 0, 205, 0));
+        return finishedPolylineOptions;
     }
 
-    private void initTodoPolylineOptions() {
+    private PolylineOptions getTodoPolylineOptions() {
         // 飞机未走过的线
-        todoPolylineOptions = new PolylineOptions();
+        PolylineOptions todoPolylineOptions = new PolylineOptions();
         todoPolylineOptions.width(15);
         todoPolylineOptions.setDottedLine(true);
         todoPolylineOptions.setDottedLineType(PolylineOptions.DOTTEDLINE_TYPE_SQUARE);
         todoPolylineOptions.color(Color.argb(255, 255, 48, 48));
+        return todoPolylineOptions;
     }
 
-    private void initDroneMarkerOptions() {
+    private MarkerOptions getDroneMarkerOptions() {
         // 飞机标点
-        droneMarkerOptions = new MarkerOptions();
+        MarkerOptions droneMarkerOptions = new MarkerOptions();
         droneMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.aircraft));
+        return droneMarkerOptions;
     }
 
-    private void initWayPointMarkerOptions() {
+    private MarkerOptions getWayPointMarkerOptions() {
         // 航点标点
-        wayPointMarkerOptions = new MarkerOptions();
+        MarkerOptions wayPointMarkerOptions = new MarkerOptions();
         wayPointMarkerOptions.draggable(true);
         wayPointMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        return wayPointMarkerOptions;
     }
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -418,6 +442,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private void updateDroneLocation() {
         if (curDronePos == null)
             return;
+        MarkerOptions droneMarkerOptions = getDroneMarkerOptions();
         droneMarkerOptions.position(curDronePos);
 
         runOnUiThread(() -> {
@@ -438,10 +463,12 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
      */
     private void drawPolyline(LatLng firstPoint, LatLng secondPoint, int type) {
         if (type == TODO_LINE) {
+            PolylineOptions todoPolylineOptions = getTodoPolylineOptions();
             todoPolylineOptions.add(firstPoint, secondPoint);
             Polyline polyline = aMap.addPolyline(todoPolylineOptions);
             todoLineList.add(polyline);
         } else {
+            PolylineOptions finishedPolylineOptions = getFinishedPolylineOptions();
             finishedPolylineOptions.add(firstPoint, secondPoint);
             Polyline polyline = aMap.addPolyline(finishedPolylineOptions);
             finishedLineList.add(polyline);
@@ -456,6 +483,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
      */
     private void markWaypoint(LatLng point) {
         //Create MarkerOptions object
+        MarkerOptions wayPointMarkerOptions = getWayPointMarkerOptions();
         wayPointMarkerOptions.position(point);
         // set icon
         View view = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
@@ -484,6 +512,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             enableDisableAdd();
         } else if (id == R.id.btn_clearPoint) {
             runOnUiThread(() -> aMap.clear());
+            mMarkers.clear();
             waypointList.clear();
             // remove lines
             for (Polyline line : todoLineList) {
@@ -493,8 +522,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             waypointMissionBuilder.waypointList(waypointList);
             updateDroneLocation();
             lastPoint = null;
-            todoPolylineOptions = new PolylineOptions();
-            initTodoPolylineOptions();
         } else if (id == R.id.btn_upload) {
             set_settings();
             if (!checkConditions()) {
@@ -680,7 +707,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             line.remove();
         }
         finishedLineList.clear();
-        initFinishedPolylineOptions();
         lastDronePos = null;
 
         getWaypointMissionOperator().startMission(new CommonCallbacks.CompletionCallback() {
