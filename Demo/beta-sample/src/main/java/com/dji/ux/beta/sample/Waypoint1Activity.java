@@ -37,8 +37,6 @@ import com.amap.api.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.FlightControllerState;
@@ -71,7 +69,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
     private EditText editText_v, editText_v1;
     private Button btn_commit;
-    private Button btn_addPoint_mode, btn_clearPoint;
+    private Button btn_addPoint_mode, btnClearAllPoints;
     private EditText speed_edittext, altitude_edittext;
     private Spinner action_spinner, angle_spinner;
     private Button btn_upload, btn_start, btn_stop;
@@ -156,7 +154,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         editText_v1 = (EditText) findViewById(R.id.point_v1);
         btn_commit = (Button) findViewById(R.id.btn_commit);
         btn_addPoint_mode = (Button) findViewById(R.id.btn_addPoint_mode);
-        btn_clearPoint = (Button) findViewById(R.id.btn_clearPoint);
+        btnClearAllPoints = (Button) findViewById(R.id.btn_clear_all_points);
         speed_edittext = (EditText) findViewById(R.id.speed_edittxet);
         altitude_edittext = (EditText) findViewById(R.id.altitude_edittext);
         action_spinner = (Spinner) findViewById(R.id.action_spinner);
@@ -167,7 +165,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
         btn_commit.setOnClickListener(this);
         btn_addPoint_mode.setOnClickListener(this);
-        btn_clearPoint.setOnClickListener(this);
+        btnClearAllPoints.setOnClickListener(this);
         btn_upload.setOnClickListener(this);
         btn_start.setOnClickListener(this);
         btn_stop.setOnClickListener(this);
@@ -185,7 +183,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         point_settings_scroll_view = (ScrollView) findViewById(R.id.point_settings_scroll_view);
         btn_change_mode = (ImageView) findViewById(R.id.btn_change_mode);
         btn_change_mode.setOnClickListener(this);
-        btn_clearLastPoint = (Button) findViewById(R.id.btn_clearLastPoint);
+        btn_clearLastPoint = (Button) findViewById(R.id.btn_clear_point);
         btn_clearLastPoint.setOnClickListener(this);
     }
 
@@ -244,6 +242,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             LatLng pos = marker.getPosition();
             Waypoint waypoint = new Waypoint(pos.latitude, pos.longitude, altitude);
             waypointList.set(index, waypoint);
+            waypointMissionBuilder.waypointList(waypointList);
             // 设置lastPoint
             if (index == lastIndex)
                 lastPoint = marker.getPosition();
@@ -287,7 +286,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         // 返回 true 则表示接口已响应事件，否则返回false
         @Override
         public boolean onMarkerClick(Marker marker) {
-            showToast(marker.getPosition().toString());
             selectedWaypoint = true;
             changeMarker = marker;
             showLatLng(marker);
@@ -570,7 +568,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         int id = v.getId();
         if (id == R.id.btn_addPoint_mode) {
             enableDisableAdd();
-        } else if (id == R.id.btn_clearPoint) {
+        } else if (id == R.id.btn_clear_all_points) {
             runOnUiThread(() -> aMap.clear());
             markerList.clear();
             waypointList.clear();
@@ -608,8 +606,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             movePanel_copy();
         } else if (id == R.id.btn_change_mode) {
             change_mode();
-        } else if (id == R.id.btn_clearLastPoint) {
-            clearLastPoint();
+        } else if (id == R.id.btn_clear_point) {
+            clearPoint();
         }
     }
 
@@ -1020,29 +1018,83 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         }
     }
 
-    private void clearLastPoint() {
-        if (markerList.size() > 0 && markerList.get(markerList.size() - 1).equals(changeMarker)) {
-            selectedWaypoint = false;
-            changeMarker = null;
-            showLatLng(changeMarker);
-        }
-        if (markerList.size() > 0) {
-            markerList.get(markerList.size() - 1).destroy();
-            markerList.remove(markerList.size() - 1);
-        }
-        if (waypointList.size() > 0) {
-            waypointList.remove(waypointList.size() - 1);
-        }
-        if (todoLineList.size() > 0) {
-            todoLineList.get(todoLineList.size() - 1).remove();
-            todoLineList.remove(todoLineList.size() - 1);
-        }
-        waypointMissionBuilder.waypointList(waypointList);
-        updateDroneLocation();
-        if (markerList.size() > 0) {
-            lastPoint = markerList.get(markerList.size() - 1).getPosition();
-        } else {
+    private void clearPoint() {
+        int index, lastIndex;
+        index = -1;
+        lastIndex = markerList.size() - 1;
+        if (markerList.contains(changeMarker))
+            index = markerList.indexOf(changeMarker);
+
+        ////////////////////////////////////////////////
+
+        if (index == -1) { // 不存在该marker
+            showToast("找不到该marker");
+            return;
+        } else if (index == 0 && lastIndex == 0) { // 只有一个标记
+            // 移除标记
+            changeMarker.remove();
+            markerList.remove(index);
+            // 移除航点
+            waypointList.remove(index);
             lastPoint = null;
+        } else if (index == 0) { // 第一个标记
+            // 移除标记
+            changeMarker.remove();
+            markerList.remove(index);
+            // 移除画线
+            Polyline polyline = todoLineList.get(index);
+            polyline.remove();
+            todoLineList.remove(index);
+            // 更新后续标记数字
+            for (int i = 0; i < lastIndex; i++) {
+                View view = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
+                ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(i + 1));
+                markerList.get(i).setIcon(BitmapDescriptorFactory.fromView(view));
+            }
+            // 移除航点
+            waypointList.remove(index);
+        } else if (index == lastIndex) { // 最后一个标记
+            // 移除标记
+            changeMarker.remove();
+            markerList.remove(index);
+            // 移除画线
+            Polyline polyline = todoLineList.get(index - 1);
+            polyline.remove();
+            todoLineList.remove(index - 1);
+            // 移除航点
+            waypointList.remove(index);
+            // 设置lastPoint
+            lastPoint = markerList.get(lastIndex - 1).getPosition();
+        } else { // 中间标记
+            // 移除标记
+            changeMarker.remove();
+            markerList.remove(index);
+            // 移除画线 并重新画线连接前后两标记
+            Polyline prevLine = todoLineList.get(index - 1);
+            Polyline nextLine = todoLineList.get(index);
+            LatLng prevPos = prevLine.getOptions().getPoints().get(0);
+            LatLng nextPos = nextLine.getOptions().getPoints().get(1);
+            prevLine.remove();
+            nextLine.remove();
+            todoLineList.remove(index - 1);
+            todoLineList.remove(index - 1);
+            PolylineOptions polylineOptions = getTodoPolylineOptions();
+            polylineOptions.add(prevPos, nextPos);
+            todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
+            // 更新后续标记数字
+            for (int i = index; i < lastIndex; i++) {
+                View view = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
+                ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(i + 1));
+                markerList.get(i).setIcon(BitmapDescriptorFactory.fromView(view));
+            }
+            // 移除航点
+            waypointList.remove(index);
         }
+        selectedWaypoint = false;
+        changeMarker = null;
+        showLatLng(null);
+
+        // 更新航点任务
+        waypointMissionBuilder.waypointList(waypointList);
     }
 }

@@ -1,26 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2018-2020 DJI
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
-  ~ of this software and associated documentation files (the "Software"), to deal
-  ~ in the Software without restriction, including without limitation the rights
-  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  ~ copies of the Software, and to permit persons to whom the Software is
-  ~ furnished to do so, subject to the following conditions:
-  ~
-  ~ The above copyright notice and this permission notice shall be included in all
-  ~ copies or substantial portions of the Software.
-  ~
-  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  ~ SOFTWARE.
-  ~
-  -->
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -83,10 +61,10 @@
                 android:id="@+id/point_v"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="22.5362"
                 android:background="@drawable/selector_map_type_bg"
-                android:padding="10dp"
                 android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="22.5362"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addPoint_separator" />
@@ -95,10 +73,10 @@
                 android:id="@+id/point_v1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="113.9454"
                 android:background="@drawable/selector_map_type_bg"
-                android:padding="10dp"
                 android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="113.9454"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/point_v" />
@@ -153,7 +131,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/editPoint_separator" />
 
             <Button
-                android:id="@+id/btn_clearPoint"
+                android:id="@+id/btn_clear_all_points"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
@@ -163,18 +141,6 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_addPoint_mode" />
-
-            <Button
-                android:id="@+id/btn_clearLastPoint"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="@dimen/map_settings_item_separator"
-                android:background="@drawable/selector_map_type_bg"
-                android:padding="10dp"
-                android:text="清除最后的点"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_clearPoint" />
 
             <TextView
                 android:id="@+id/settings_text"
@@ -189,7 +155,7 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_clearLastPoint" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_clear_all_points" />
 
             <View
                 android:id="@+id/settings_separator"
@@ -220,10 +186,10 @@
                 android:id="@+id/speed_edittxet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5"
                 android:background="@drawable/selector_map_type_bg"
-                android:padding="10dp"
                 android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/speed_text" />
@@ -247,10 +213,10 @@
                 android:id="@+id/altitude_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5"
                 android:background="@drawable/selector_map_type_bg"
-                android:padding="10dp"
                 android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/altitude_text" />
@@ -380,10 +346,10 @@
         android:id="@+id/point_settings_scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.6"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.3"
-        app:layout_constraintHeight_percent="0.6">
+        app:layout_constraintWidth_percent="0.3">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -420,10 +386,10 @@
                 android:id="@+id/change_point_v"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="请先选点"
                 android:background="@drawable/selector_map_type_bg"
-                android:padding="10dp"
                 android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="请先选点"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/changePoint_separator" />
@@ -432,10 +398,10 @@
                 android:id="@+id/change_point_v1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="请先选点"
                 android:background="@drawable/selector_map_type_bg"
-                android:padding="10dp"
                 android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="请先选点"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/change_point_v" />
@@ -447,10 +413,22 @@
                 android:layout_marginTop="@dimen/map_settings_item_separator"
                 android:background="@drawable/selector_map_type_bg"
                 android:padding="10dp"
-                android:text="提交更改"
+                android:text="修改"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/change_point_v1" />
+
+            <Button
+                android:id="@+id/btn_clear_point"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="清除"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_change_commit" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
