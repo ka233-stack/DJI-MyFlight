@@ -27,6 +27,7 @@ import com.amap.api.maps.AMap.OnMapClickListener;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
@@ -183,13 +184,15 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         point_settings_scroll_view = (ScrollView) findViewById(R.id.point_settings_scroll_view);
     }
 
+    private UiSettings mUiSettings;//定义一个UiSettings对象
+
+
     private void initMapView() {
 
         if (aMap == null) {
             aMap = mapView.getMap();
             aMap.setOnMapClickListener(this);// add the listener for click for amap object
         }
-
         LatLng beijing = new LatLng(39.9149, 116.4039);
         MarkerOptions markerOption = new MarkerOptions();
         markerOption.position(beijing);
@@ -198,6 +201,10 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         markerOption.setFlat(true);//设置marker平贴地图效果
         aMap.addMarker(markerOption);
         aMap.moveCamera(CameraUpdateFactory.newLatLng(beijing));
+
+        mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
+        mUiSettings.setZoomControlsEnabled(false);
+
         // 绑定 Marker 被点击事件
         aMap.setOnMarkerClickListener(markerClickListener);
         // 绑定marker拖拽事件
@@ -455,7 +462,20 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             }
             waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
         } else {
-            setResultToToast("无法添加航点");
+            switch (aMap.getMapType()) {
+                case AMap.MAP_TYPE_NORMAL: {
+                    aMap.setMapType(AMap.MAP_TYPE_SATELLITE);
+                    break;
+                }
+                case AMap.MAP_TYPE_SATELLITE: {
+                    aMap.setMapType(AMap.MAP_TYPE_NIGHT);
+                    break;
+                }
+                case AMap.MAP_TYPE_NIGHT: {
+                    aMap.setMapType(AMap.MAP_TYPE_NORMAL);
+                    break;
+                }
+            }
         }
     }
 
