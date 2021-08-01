@@ -90,7 +90,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
 
     private boolean isAdd = false;
 
-    private final Map<Integer, Marker> mMarkers = new ConcurrentHashMap<>();
+    // 地图标记列表
+    private final List<Marker> markerList = new ArrayList<>();
     private Marker droneMarker = null;
 
     private float altitude = 100.0f;
@@ -227,12 +228,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         @Override
         public void onMarkerDragStart(Marker marker) {
             index = -1;
-            lastIndex = todoLineList.size();
-            for (Map.Entry<Integer, Marker> mapEntry : mMarkers.entrySet()) {
-                if (mapEntry.getValue().equals(marker))
-                    index = mapEntry.getKey();
-            }
-
+            lastIndex = markerList.size() - 1;
+            if (markerList.contains(marker))
+                index = markerList.indexOf(marker);
         }
 
         /**
@@ -470,7 +468,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         }
     }
 
-    private void change_mode(){
+    private void change_mode() {
         switch (aMap.getMapType()) {
             case AMap.MAP_TYPE_NORMAL: {
                 aMap.setMapType(AMap.MAP_TYPE_SATELLITE);
@@ -560,7 +558,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         // animation.setInterpolator(new LinearInterpolator());
         // marker.setAnimation(animation);
         // marker.startAnimation();
-        mMarkers.put(mMarkers.size(), marker);
+        markerList.add(marker);
         if (lastPoint != null) {
             drawPolyline(lastPoint, point, TODO_LINE);
         }
@@ -574,7 +572,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             enableDisableAdd();
         } else if (id == R.id.btn_clearPoint) {
             runOnUiThread(() -> aMap.clear());
-            mMarkers.clear();
+            markerList.clear();
             waypointList.clear();
             // remove lines
             for (Polyline line : todoLineList) {
@@ -958,15 +956,13 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         point_settings_scroll_view.startAnimation(animate);
     }
 
-    private void showLatLng(Marker mark) {
+    private void showLatLng(Marker marker) {
         if (selectedWaypoint) {
-            LatLng position = mark.getPosition();
+            LatLng position = marker.getPosition();
             int index;
             index = -1;
-            for (Map.Entry<Integer, Marker> mapEntry : mMarkers.entrySet()) {
-                if (mapEntry.getValue().equals(mark))
-                    index = mapEntry.getKey();
-            }
+            if (markerList.contains(marker))
+                index = markerList.indexOf(marker);
             changePoint_text.setText("更改某点坐标(点" + String.valueOf(index + 1) + ")");
             change_point_v.setText(String.valueOf(position.latitude));
             change_point_v1.setText(String.valueOf(position.longitude));
@@ -989,10 +985,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             int index, lastIndex;
             index = -1;
             lastIndex = todoLineList.size();
-            for (Map.Entry<Integer, Marker> mapEntry : mMarkers.entrySet()) {
-                if (mapEntry.getValue().equals(marker))
-                    index = mapEntry.getKey();
-            }
+            if (markerList.contains(marker))
+                index = markerList.indexOf(marker);
 
             if (index == -1) { // 不存在该marker
                 showToast("找不到该marker");
@@ -1026,29 +1020,28 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         }
     }
 
-    private void clearLastPoint(){
-        if(mMarkers.size()>0 && mMarkers.get(mMarkers.size()-1).equals(changeMarker)){
+    private void clearLastPoint() {
+        if (markerList.size() > 0 && markerList.get(markerList.size() - 1).equals(changeMarker)) {
             selectedWaypoint = false;
             changeMarker = null;
             showLatLng(changeMarker);
         }
-        if (mMarkers.size()>0) {
-            mMarkers.get(mMarkers.size() - 1).destroy();
-            mMarkers.remove(mMarkers.size() - 1);
+        if (markerList.size() > 0) {
+            markerList.get(markerList.size() - 1).destroy();
+            markerList.remove(markerList.size() - 1);
         }
-        if (waypointList.size()>0) {
+        if (waypointList.size() > 0) {
             waypointList.remove(waypointList.size() - 1);
         }
-        if (todoLineList.size()>0) {
+        if (todoLineList.size() > 0) {
             todoLineList.get(todoLineList.size() - 1).remove();
             todoLineList.remove(todoLineList.size() - 1);
         }
         waypointMissionBuilder.waypointList(waypointList);
         updateDroneLocation();
-        if (mMarkers.size()>0) {
-            lastPoint = mMarkers.get(mMarkers.size() - 1).getPosition();
-        }
-        else {
+        if (markerList.size() > 0) {
+            lastPoint = markerList.get(markerList.size() - 1).getPosition();
+        } else {
             lastPoint = null;
         }
     }
