@@ -116,6 +116,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private Marker changeMarker;
     protected ImageView btn_change_settings;
     protected TextView changePoint_text;
+    protected ImageView btn_change_mode;
 
 
     //
@@ -182,6 +183,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         btn_change_commit.setOnClickListener(this);
         changePoint_text = (TextView) findViewById(R.id.changePoint_text);
         point_settings_scroll_view = (ScrollView) findViewById(R.id.point_settings_scroll_view);
+        btn_change_mode = (ImageView) findViewById(R.id.btn_change_mode);
+        btn_change_mode.setOnClickListener(this);
     }
 
     private UiSettings mUiSettings;//定义一个UiSettings对象
@@ -462,23 +465,26 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             }
             waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
         } else {
-            switch (aMap.getMapType()) {
-                case AMap.MAP_TYPE_NORMAL: {
-                    aMap.setMapType(AMap.MAP_TYPE_SATELLITE);
-                    break;
-                }
-                case AMap.MAP_TYPE_SATELLITE: {
-                    aMap.setMapType(AMap.MAP_TYPE_NIGHT);
-                    break;
-                }
-                case AMap.MAP_TYPE_NIGHT: {
-                    aMap.setMapType(AMap.MAP_TYPE_NORMAL);
-                    break;
-                }
-            }
+            
         }
     }
 
+    private void change_mode(){
+        switch (aMap.getMapType()) {
+            case AMap.MAP_TYPE_NORMAL: {
+                aMap.setMapType(AMap.MAP_TYPE_SATELLITE);
+                break;
+            }
+            case AMap.MAP_TYPE_SATELLITE: {
+                aMap.setMapType(AMap.MAP_TYPE_NIGHT);
+                break;
+            }
+            case AMap.MAP_TYPE_NIGHT: {
+                aMap.setMapType(AMap.MAP_TYPE_NORMAL);
+                break;
+            }
+        }
+    }
 
     /**
      * 检查GPS坐标
@@ -601,6 +607,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             movePanel();
         } else if (id == R.id.btn_change_settings) {
             movePanel_copy();
+        } else if (id == R.id.btn_change_mode) {
+            change_mode();
         }
     }
 
@@ -864,6 +872,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             scrollView.bringToFront();
             btnPanel.bringToFront();
             btn_change_settings.bringToFront();
+            btn_change_mode.bringToFront();
             translationStart = -scrollView.getWidth();
             translationEnd = 0;
         }
@@ -884,6 +893,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                     point_settings_scroll_view.bringToFront();
                     btnPanel.bringToFront();
                     btn_change_settings.bringToFront();
+                    btn_change_mode.bringToFront();
                 }
                 btnPanel.bringToFront();
                 isPanelOpen = !isPanelOpen;
@@ -909,6 +919,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             point_settings_scroll_view.bringToFront();
             btnPanel.bringToFront();
             btn_change_settings.bringToFront();
+            btn_change_mode.bringToFront();
             translationStart = +point_settings_scroll_view.getWidth();
             translationEnd = 0;
         }
@@ -929,6 +940,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                     scrollView.bringToFront();
                     btnPanel.bringToFront();
                     btn_change_settings.bringToFront();
+                    btn_change_mode.bringToFront();
                 }
                 btnPanel.bringToFront();
                 isPanelOpen_copy = !isPanelOpen_copy;
