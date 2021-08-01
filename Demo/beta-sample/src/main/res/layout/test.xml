@@ -368,10 +368,10 @@
         android:id="@+id/point_settings_scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.3">
+        app:layout_constraintWidth_percent="0.3"
+        app:layout_constraintHeight_percent="0.6">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
