@@ -164,6 +164,18 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_addPoint_mode" />
 
+            <Button
+                android:id="@+id/btn_clearLastPoint"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="清除最后的点"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_clearPoint" />
+
             <TextView
                 android:id="@+id/settings_text"
                 android:layout_width="0dp"
@@ -177,7 +189,7 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_clearPoint" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_clearLastPoint" />
 
             <View
                 android:id="@+id/settings_separator"

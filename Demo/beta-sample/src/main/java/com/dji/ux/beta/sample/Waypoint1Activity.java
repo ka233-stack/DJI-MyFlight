@@ -117,8 +117,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     protected ImageView btn_change_settings;
     protected TextView changePoint_text;
     protected ImageView btn_change_mode;
-
-
+    protected Button btn_clearLastPoint;
     //
 
     @Override
@@ -185,6 +184,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         point_settings_scroll_view = (ScrollView) findViewById(R.id.point_settings_scroll_view);
         btn_change_mode = (ImageView) findViewById(R.id.btn_change_mode);
         btn_change_mode.setOnClickListener(this);
+        btn_clearLastPoint = (Button) findViewById(R.id.btn_clearLastPoint);
+        btn_clearLastPoint.setOnClickListener(this);
     }
 
     private UiSettings mUiSettings;//定义一个UiSettings对象
@@ -465,7 +466,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             }
             waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
         } else {
-            
+
         }
     }
 
@@ -609,6 +610,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             movePanel_copy();
         } else if (id == R.id.btn_change_mode) {
             change_mode();
+        } else if (id == R.id.btn_clearLastPoint) {
+            clearLastPoint();
         }
     }
 
@@ -1020,6 +1023,33 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             // 设置lastPoint
             if (index == lastIndex)
                 lastPoint = marker.getPosition();
+        }
+    }
+
+    private void clearLastPoint(){
+        if(mMarkers.size()>0 && mMarkers.get(mMarkers.size()-1).equals(changeMarker)){
+            selectedWaypoint = false;
+            changeMarker = null;
+            showLatLng(changeMarker);
+        }
+        if (mMarkers.size()>0) {
+            mMarkers.get(mMarkers.size() - 1).destroy();
+            mMarkers.remove(mMarkers.size() - 1);
+        }
+        if (waypointList.size()>0) {
+            waypointList.remove(waypointList.size() - 1);
+        }
+        if (todoLineList.size()>0) {
+            todoLineList.get(todoLineList.size() - 1).remove();
+            todoLineList.remove(todoLineList.size() - 1);
+        }
+        waypointMissionBuilder.waypointList(waypointList);
+        updateDroneLocation();
+        if (mMarkers.size()>0) {
+            lastPoint = mMarkers.get(mMarkers.size() - 1).getPosition();
+        }
+        else {
+            lastPoint = null;
         }
     }
 }
