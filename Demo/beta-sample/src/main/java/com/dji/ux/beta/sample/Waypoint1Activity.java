@@ -115,6 +115,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     protected TextView changePoint_text;
     protected ImageView btn_change_mode;
     protected Button btn_clearLastPoint;
+
+    private UiSettings mUiSettings;//定义一个UiSettings对象
     //
 
     @Override
@@ -182,8 +184,6 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         btn_clearLastPoint = (Button) findViewById(R.id.btn_clear_point);
         btn_clearLastPoint.setOnClickListener(this);
     }
-
-    private UiSettings mUiSettings;//定义一个UiSettings对象
 
 
     private void initMapView() {
