@@ -103,7 +103,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     private WaypointMissionFinishedAction mFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
     private WaypointMissionHeadingMode mHeadingMode = WaypointMissionHeadingMode.AUTO;
 
-    private boolean isPanelOpen_copy = false;
+    private boolean isPanelOpen_copy = true;
     private boolean isPanelOpen = true;
     protected ScrollView scrollView;
     protected ScrollView point_settings_scroll_view;
@@ -116,6 +116,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     protected ImageView btn_chang_settings;
     protected TextView changePoint_text;
 
+
+    //
 
     @Override
     protected void onResume() {
@@ -848,6 +850,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         } else {
 
             scrollView.bringToFront();
+            btnPanel.bringToFront();
+            btn_chang_settings.bringToFront();
             translationStart = -scrollView.getWidth();
             translationEnd = 0;
         }
@@ -865,7 +869,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             public void onAnimationEnd(android.view.animation.Animation animation) {
                 if (isPanelOpen) {
                     mapView.bringToFront();
-
+                    point_settings_scroll_view.bringToFront();
+                    btnPanel.bringToFront();
+                    btn_chang_settings.bringToFront();
                 }
                 btnPanel.bringToFront();
                 isPanelOpen = !isPanelOpen;
@@ -889,6 +895,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         } else {
 
             point_settings_scroll_view.bringToFront();
+            btnPanel.bringToFront();
+            btn_chang_settings.bringToFront();
             translationStart = +point_settings_scroll_view.getWidth();
             translationEnd = 0;
         }
@@ -906,7 +914,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             public void onAnimationEnd(android.view.animation.Animation animation) {
                 if (isPanelOpen_copy) {
                     mapView.bringToFront();
-
+                    scrollView.bringToFront();
+                    btnPanel.bringToFront();
+                    btn_chang_settings.bringToFront();
                 }
                 btnPanel.bringToFront();
                 isPanelOpen_copy = !isPanelOpen_copy;
