@@ -181,7 +181,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         point_settings_scroll_view = (ScrollView) findViewById(R.id.point_settings_scroll_view);
         btn_change_mode = (ImageView) findViewById(R.id.btn_change_mode);
         btn_change_mode.setOnClickListener(this);
-        btn_clearLastPoint = (Button) findViewById(R.id.btn_clear_point);
+        btn_clearLastPoint = (Button) findViewById(R.id.btn_remove_point);
         btn_clearLastPoint.setOnClickListener(this);
     }
 
@@ -282,8 +282,26 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         // 返回 true 则表示接口已响应事件，否则返回false
         @Override
         public boolean onMarkerClick(Marker marker) {
+            int index = markerList.indexOf(marker);
+            // 更改当前点样式
+            View view = LayoutInflater.from(Waypoint1Activity.this).inflate(R.layout.my_icon_selected, null);
+            ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
+            marker.setIcon(BitmapDescriptorFactory.fromView(view));
+            // 更改前一标点样式
+            if (selectedMarker != null && !marker.equals(selectedMarker)) {
+                index = markerList.indexOf(selectedMarker);
+                if (index != 0) {
+                    view = LayoutInflater.from(Waypoint1Activity.this).inflate(R.layout.my_icon, null);
+                    ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
+                    selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
+                } else {
+                    view = LayoutInflater.from(Waypoint1Activity.this).inflate(R.layout.my_icon_start, null);
+                    ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
+                    selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
+                }
+            }
             selectedMarker = marker;
-            showDetailPanel(marker);
+            showSelectedMarkerDetailPanel();
             return true;
         }
     };
@@ -456,10 +474,23 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                 waypointMissionBuilder = new WaypointMission.Builder();
             }
             waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
-        }
-        // 关闭标点信息面板
-        if (detailPanelVisible) {
-            moveDetailPanel();
+        } else if (selectedMarker != null) {
+            // 更改标点样式
+            int index = markerList.indexOf(selectedMarker);
+            View view;
+            if (index == 0) {
+                view = LayoutInflater.from(this).inflate(R.layout.my_icon_start, null);
+            } else {
+                view = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
+            }
+            ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
+            selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
+            // 取消选中点
+            selectedMarker = null;
+            // 关闭标点信息面板
+            if (detailPanelVisible) {
+                moveDetailPanel();
+            }
         }
     }
 
@@ -543,8 +574,21 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         //Create MarkerOptions object
         MarkerOptions wayPointMarkerOptions = getWayPointMarkerOptions();
         wayPointMarkerOptions.position(point);
+
+        View view;
+        // 更改前一标点样式
+        if (selectedMarker != null && !markerList.isEmpty()) {
+            int index = markerList.indexOf(selectedMarker);
+            if (index == 0) {
+                view = LayoutInflater.from(this).inflate(R.layout.my_icon_start, null);
+            } else {
+                view = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
+            }
+            ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
+            selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
+        }
         // set icon
-        View view = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
+        view = LayoutInflater.from(this).inflate(R.layout.my_icon_selected, null);
         // set text
         ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(waypointList.size() + 1));
         wayPointMarkerOptions.icon(BitmapDescriptorFactory.fromView(view));
@@ -561,6 +605,9 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             drawPolyline(lastPoint, point, TODO_LINE);
         }
         lastPoint = point;
+        // 显示信息面板
+        selectedMarker = marker;
+        showSelectedMarkerDetailPanel();
     }
 
     @Override
@@ -604,8 +651,8 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             movePanel();
         } else if (id == R.id.btn_change_mode) {
             changeMapType();
-        } else if (id == R.id.btn_clear_point) {
-            clearPoint();
+        } else if (id == R.id.btn_remove_point) {
+            removePoint();
         }
     }
 
@@ -947,12 +994,12 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         point_settings_scroll_view.startAnimation(animate);
     }
 
-    private void showDetailPanel(Marker marker) {
-        LatLng position = marker.getPosition();
+    private void showSelectedMarkerDetailPanel() {
+        LatLng position = selectedMarker.getPosition();
         int index;
         index = -1;
-        if (markerList.contains(marker))
-            index = markerList.indexOf(marker);
+        if (markerList.contains(selectedMarker))
+            index = markerList.indexOf(selectedMarker);
         changePoint_text.setText(String.format("标点%d", index + 1));
         change_point_v.setText(String.valueOf(position.latitude));
         change_point_v1.setText(String.valueOf(position.longitude));
@@ -1011,7 +1058,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     /**
      * 清除某一标记
      */
-    private void clearPoint() {
+    private void removePoint() {
         if (selectedMarker == null || !markerList.contains(selectedMarker)) { // 不存在该标记
             showToast("找不到航点");
         } else {
@@ -1028,8 +1075,11 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                 polyline.remove();
                 todoLineList.remove(index);
                 // 更新后续标记数字
-                for (int i = 0; i < lastIndex; i++) {
-                    View view = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
+                View view = LayoutInflater.from(this).inflate(R.layout.my_icon_start, null);
+                ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(1));
+                markerList.get(0).setIcon(BitmapDescriptorFactory.fromView(view));
+                for (int i = 1; i < lastIndex; i++) {
+                    view = LayoutInflater.from(this).inflate(R.layout.my_icon, null);
                     ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(i + 1));
                     markerList.get(i).setIcon(BitmapDescriptorFactory.fromView(view));
                 }
