@@ -295,7 +295,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                     ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
                     selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
                 } else {
-                    view = LayoutInflater.from(Waypoint1Activity.this).inflate(R.layout.icon_marker_start, null);
+                    view = LayoutInflater.from(Waypoint1Activity.this).inflate(R.layout.icon_marker_starting_point, null);
                     ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
                     selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
                 }
@@ -479,7 +479,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
             int index = markerList.indexOf(selectedMarker);
             View view;
             if (index == 0) {
-                view = LayoutInflater.from(this).inflate(R.layout.icon_marker_start, null);
+                view = LayoutInflater.from(this).inflate(R.layout.icon_marker_starting_point, null);
             } else {
                 view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
             }
@@ -580,7 +580,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         if (selectedMarker != null && !markerList.isEmpty()) {
             int index = markerList.indexOf(selectedMarker);
             if (index == 0) {
-                view = LayoutInflater.from(this).inflate(R.layout.icon_marker_start, null);
+                view = LayoutInflater.from(this).inflate(R.layout.icon_marker_starting_point, null);
             } else {
                 view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
             }
@@ -1075,7 +1075,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
                 polyline.remove();
                 todoLineList.remove(index);
                 // 更新后续标记数字
-                View view = LayoutInflater.from(this).inflate(R.layout.icon_marker_start, null);
+                View view = LayoutInflater.from(this).inflate(R.layout.icon_marker_starting_point, null);
                 ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(1));
                 markerList.get(0).setIcon(BitmapDescriptorFactory.fromView(view));
                 for (int i = 1; i < lastIndex; i++) {
