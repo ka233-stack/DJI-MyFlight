@@ -351,6 +351,8 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
             }
         });
+
+        moveDetailPanel(0);
     }
 
     private PolylineOptions getFinishedPolylineOptions() {
@@ -514,7 +516,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             selectedMarker = null;
             // 关闭标点信息面板
             if (detailPanelVisible) {
-                moveDetailPanel();
+                moveDetailPanel(300);
             }
         }
     }
@@ -654,7 +656,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             lastPointPos = null;
             // 关闭标点信息面板
             if (detailPanelVisible) {
-                moveDetailPanel();
+                moveDetailPanel(300);
             }
         } else if (id == R.id.btn_upload) {
             set_settings();
@@ -888,7 +890,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         scrollView.startAnimation(animate);
     }
 
-    private void moveDetailPanel() {
+    private void moveDetailPanel(long time) {
         int translationStart;
         int translationEnd;
         if (detailPanelVisible) {
@@ -905,7 +907,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         }
         TranslateAnimation animate = new TranslateAnimation(
                 translationStart, translationEnd, 0, 0);
-        animate.setDuration(300);
+        animate.setDuration(time);
         animate.setFillAfter(true);
         animate.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -942,7 +944,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         change_point_v.setText(String.valueOf(position.latitude));
         change_point_v1.setText(String.valueOf(position.longitude));
         if (!detailPanelVisible) {
-            moveDetailPanel();
+            moveDetailPanel(300);
         }
     }
 
@@ -1054,7 +1056,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             waypointMissionBuilder.waypointList(waypointList);
             // 关闭标点信息面板
             if (detailPanelVisible) {
-                moveDetailPanel();
+                moveDetailPanel(300);
             }
         }
     }
