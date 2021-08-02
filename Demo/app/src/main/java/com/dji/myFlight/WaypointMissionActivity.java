@@ -625,8 +625,6 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         markerList.add(marker);
         if (lastPointPos != null) {
             drawPolyline(lastPointPos, point, TODO_LINE);
-        } else if (curDronePos != null) {
-            drawPolyline(curDronePos, point, TODO_LINE);
         }
         lastPointPos = point;
         // 显示信息面板
