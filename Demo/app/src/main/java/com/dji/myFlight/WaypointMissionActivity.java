@@ -1025,7 +1025,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                 polyline.remove();
                 todoLineList.remove(index - 1);
                 // 设置前一个坐标点
-                lastPointPos = markerList.get(lastIndex).getPosition();
+                lastPointPos = markerList.get(lastIndex - 1).getPosition();
             } else { // 中间标记
                 // 移除画线 并重新画线连接前后两标记
                 Polyline prevLine = todoLineList.get(index - 1);
