@@ -78,7 +78,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     private Button btn_upload, btn_start, btn_stop;
 
     // 上一个航点坐标点
-    private LatLng lastPoint = null;
+    private LatLng lastPointPos = null;
     // 上一个飞机位置
     private LatLng lastDronePos = null;
     // 当前飞机位置
@@ -123,7 +123,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
     protected FPVWidget fpvWidget;
 
-    protected TextView angle_detail;
+    protected TextView tvAngleDescription;
 
     @Override
     protected void onResume() {
@@ -185,9 +185,9 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         change_point_v1 = (EditText) findViewById(R.id.change_point_v1);
         btn_change_commit = (Button) findViewById(R.id.btn_change_commit);
         btn_change_commit.setOnClickListener(this);
-        changePoint_text = (TextView) findViewById(R.id.changePoint_text);
+        changePoint_text = (TextView) findViewById(R.id.title_point_detail);
         point_settings_scroll_view = (ScrollView) findViewById(R.id.point_settings_scroll_view);
-        btn_change_mode = (ImageView) findViewById(R.id.btn_change_mode);
+        btn_change_mode = (ImageView) findViewById(R.id.btn_change_map_type);
         btn_change_mode.setOnClickListener(this);
         btn_clearLastPoint = (Button) findViewById(R.id.btn_remove_point);
         btn_clearLastPoint.setOnClickListener(this);
@@ -195,7 +195,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         fpvWidget = (FPVWidget) findViewById(R.id.widget_fpv);
         fpvWidget.setOnClickListener(this);
 
-        angle_detail = (TextView) findViewById(R.id.angle_detail);
+        tvAngleDescription = (TextView) findViewById(R.id.angle_description);
     }
 
 
@@ -245,7 +245,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             waypointMissionBuilder.waypointList(waypointList);
             // 设置lastPoint
             if (index == lastIndex)
-                lastPoint = marker.getPosition();
+                lastPointPos = marker.getPosition();
         }
 
         /**
@@ -294,15 +294,9 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             // 更改前一标点样式
             if (selectedMarker != null && !marker.equals(selectedMarker)) {
                 index = markerList.indexOf(selectedMarker);
-                if (index != 0) {
-                    view = LayoutInflater.from(WaypointMissionActivity.this).inflate(R.layout.icon_marker, null);
-                    ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
-                    selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
-                } else {
-                    view = LayoutInflater.from(WaypointMissionActivity.this).inflate(R.layout.icon_marker_starting_point, null);
-                    ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
-                    selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
-                }
+                view = LayoutInflater.from(WaypointMissionActivity.this).inflate(R.layout.icon_marker, null);
+                ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
+                selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
             }
             selectedMarker = marker;
             showSelectedMarkerDetailPanel();
@@ -314,7 +308,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.test);
+        setContentView(R.layout.activity_way_point_mission);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(DemoApplication.FLAG_CONNECTION_CHANGE);
@@ -334,19 +328,19 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                 String select = parent.getItemAtPosition(position).toString();
                 switch (select) {
                     case "headingNext": {
-                        angle_detail.setText("飞机的航向将总是沿飞行方向。");
+                        tvAngleDescription.setText("飞机的航向将总是沿飞行方向");
                         break;
                     }
                     case "headingInitDirec": {
-                        angle_detail.setText("飞机的航向将被设定为到达第一个航点时的航向。在到达第一个航点之前，飞机的航向可以由遥控器控制。当飞机到达第一个航点时，其航向将被固定。");
+                        tvAngleDescription.setText("飞机的航向将被设定为到达第一个航点时的航向。在到达第一个航点之前，飞机的航向可以由遥控器控制。当飞机到达第一个航点时，其航向将被固定");
                         break;
                     }
                     case "headingRC": {
-                        angle_detail.setText("飞机的航向将由远程控制器控制。");
+                        tvAngleDescription.setText("飞机的航向将由远程控制器控制");
                         break;
                     }
                     case "headingWP": {
-                        angle_detail.setText("到达航点后，飞机将旋转其航向。");
+                        tvAngleDescription.setText("到达航点后，飞机将旋转其航向");
                         break;
                     }
                     default:
@@ -412,19 +406,17 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         }
 
         if (mFlightController != null) {
-            mFlightController.setStateCallback(
-                    new FlightControllerState.Callback() {
-                        @Override
-                        public void onUpdate(FlightControllerState
-                                                     djiFlightControllerCurrentState) {
-                            lastDronePos = curDronePos;
-                            LocationCoordinate3D location = djiFlightControllerCurrentState.getAircraftLocation();
-                            curDronePos = new LatLng(location.getLatitude(), location.getLongitude());
-                            updateDroneLocation();
-                            if (lastDronePos != null)
-                                drawPolyline(lastDronePos, curDronePos, FINISHED_LINE);
-                        }
-                    });
+            mFlightController.setStateCallback(new FlightControllerState.Callback() {
+                @Override
+                public void onUpdate(FlightControllerState djiFlightControllerCurrentState) {
+                    lastDronePos = curDronePos;
+                    LocationCoordinate3D location = djiFlightControllerCurrentState.getAircraftLocation();
+                    curDronePos = new LatLng(location.getLatitude(), location.getLongitude());
+                    updateDroneLocation();
+                    if (lastDronePos != null)
+                        drawPolyline(lastDronePos, curDronePos, FINISHED_LINE);
+                }
+            });
             cameraUpdate();
 
         }
@@ -479,14 +471,9 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
     private void addPointByLonLat() {
 <<<<<<< HEAD
-<<<<<<< HEAD
         if ((editText_v.getText().toString().equals("")) || (editText_v1.getText().toString().equals(""))) {
-=======
-        if((editText_v.getText().toString().equals("")) || (editText_v1.getText().toString().equals(""))){
->>>>>>> parent of 080a518 (change style)
             showToast("请先输入经纬度");
-        }
-        else {
+        } else {
             double point_v = Double.parseDouble(editText_v.getText().toString());
             double point_v1 = Double.parseDouble(editText_v1.getText().toString());
             showToast(editText_v.toString());
@@ -542,12 +529,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         } else if (selectedMarker != null) {
             // 更改标点样式
             int index = markerList.indexOf(selectedMarker);
-            View view;
-            if (index == 0) {
-                view = LayoutInflater.from(this).inflate(R.layout.icon_marker_starting_point, null);
-            } else {
-                view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
-            }
+            View view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
             ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
             selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
             // 取消选中点
@@ -644,11 +626,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         // 更改前一标点样式
         if (selectedMarker != null && !markerList.isEmpty()) {
             int index = markerList.indexOf(selectedMarker);
-            if (index == 0) {
-                view = LayoutInflater.from(this).inflate(R.layout.icon_marker_starting_point, null);
-            } else {
-                view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
-            }
+            view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
             ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
             selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
         }
@@ -666,10 +644,12 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         // marker.setAnimation(animation);
         // marker.startAnimation();
         markerList.add(marker);
-        if (lastPoint != null) {
-            drawPolyline(lastPoint, point, TODO_LINE);
+        if (lastPointPos != null) {
+            drawPolyline(lastPointPos, point, TODO_LINE);
+        } else if (curDronePos != null) {
+            drawPolyline(curDronePos, point, TODO_LINE);
         }
-        lastPoint = point;
+        lastPointPos = point;
         // 显示信息面板
         selectedMarker = marker;
         showSelectedMarkerDetailPanel();
@@ -694,7 +674,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             }
             waypointMissionBuilder.waypointList(waypointList);
             updateDroneLocation();
-            lastPoint = null;
+            lastPointPos = null;
             // 关闭标点信息面板
             if (detailPanelVisible) {
                 moveDetailPanel();
@@ -717,7 +697,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             changePointPos(selectedMarker);
         } else if (id == R.id.btn_settings) {
             movePanel();
-        } else if (id == R.id.btn_change_mode) {
+        } else if (id == R.id.btn_change_map_type) {
             changeMapType();
         } else if (id == R.id.btn_remove_point) {
             removePoint();
@@ -828,10 +808,9 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     private void set_settings() {
 <<<<<<< HEAD
 
-        if((speed_edittext.getText().toString().equals("")) || (altitude_edittext.getText().toString().equals(""))){
+        if ((speed_edittext.getText().toString().equals("")) || (altitude_edittext.getText().toString().equals(""))) {
             showToast("您还没有输入速度或者高度的值");
-        }
-        else {
+        } else {
             this.mSpeed = Float.parseFloat(speed_edittext.getText().toString());
             this.altitude = Float.parseFloat(altitude_edittext.getText().toString());
         }
@@ -1019,16 +998,12 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                 waypointList.set(index, waypoint);
                 // 设置lastPoint
                 if (index == lastIndex)
-<<<<<<< HEAD
                     lastPointPos = marker.getPosition();
 =======
             if (index == -1) { // 不存在该marker
                 showToast("找不到该marker");
                 return;
 >>>>>>> parent of 5633917 (喜提晚饭)
-=======
-                    lastPoint = marker.getPosition();
->>>>>>> parent of 080a518 (change style)
             }
             if (index < lastIndex) { // 后面还有marker
                 Polyline polyline = todoLineList.get(index);
@@ -1062,6 +1037,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
      * 清除某一标记
      */
     private void removePoint() {
+        View view;
         if (selectedMarker == null || !markerList.contains(selectedMarker)) { // 不存在该标记
             showToast("找不到航点");
         } else {
@@ -1071,44 +1047,30 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             markerList.remove(index);
             if (index == 0 && lastIndex == 0) { // 只有一个标记
                 // 设置前一个坐标点
-                lastPoint = null;
-            } else if (index == 0) { // 第一个标记
+                lastPointPos = null;
+            } else if (index == lastIndex) { // 最后一个标记
                 // 移除画线
                 Polyline polyline = todoLineList.get(index);
                 polyline.remove();
                 todoLineList.remove(index);
-                // 更新后续标记数字
-                View view = LayoutInflater.from(this).inflate(R.layout.icon_marker_starting_point, null);
-                ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(1));
-                markerList.get(0).setIcon(BitmapDescriptorFactory.fromView(view));
-                for (int i = 1; i < lastIndex; i++) {
-                    view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
-                    ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(i + 1));
-                    markerList.get(i).setIcon(BitmapDescriptorFactory.fromView(view));
-                }
-            } else if (index == lastIndex) { // 最后一个标记
-                // 移除画线
-                Polyline polyline = todoLineList.get(index - 1);
-                polyline.remove();
-                todoLineList.remove(index - 1);
                 // 设置前一个坐标点
-                lastPoint = markerList.get(lastIndex - 1).getPosition();
-            } else { // 中间标记
+                lastPointPos = markerList.get(lastIndex).getPosition();
+            } else { // 中间/第一个标记
                 // 移除画线 并重新画线连接前后两标记
-                Polyline prevLine = todoLineList.get(index - 1);
-                Polyline nextLine = todoLineList.get(index);
+                Polyline prevLine = todoLineList.get(index);
+                Polyline nextLine = todoLineList.get(index + 1);
                 LatLng prevPos = prevLine.getOptions().getPoints().get(0);
                 LatLng nextPos = nextLine.getOptions().getPoints().get(1);
                 prevLine.remove();
                 nextLine.remove();
-                todoLineList.remove(index - 1);
-                todoLineList.remove(index - 1);
+                todoLineList.remove(index);
+                todoLineList.remove(index);
                 PolylineOptions polylineOptions = getTodoPolylineOptions();
                 polylineOptions.add(prevPos, nextPos);
-                todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
+                todoLineList.add(index, aMap.addPolyline(polylineOptions));
                 // 更新后续标记数字
                 for (int i = index; i < lastIndex; i++) {
-                    View view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
+                    view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
                     ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(i + 1));
                     markerList.get(i).setIcon(BitmapDescriptorFactory.fromView(view));
                 }
