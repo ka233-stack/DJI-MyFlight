@@ -60,7 +60,7 @@ import dji.ux.beta.core.widget.fpv.FPVWidget;
 
 public class WaypointMissionActivity extends FragmentActivity implements View.OnClickListener, OnMapClickListener {
 
-    protected static final String TAG = "Waypoint1Activity";
+    protected static final String TAG = "WaypointMissionActivity";
 
     private static final int TODO_LINE = 0;
     private static final int FINISHED_LINE = 1;
@@ -118,7 +118,6 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     protected Button btn_clearLastPoint;
 
     private UiSettings mUiSettings;//定义一个UiSettings对象
-    //
 
     protected FPVWidget fpvWidget;
 
@@ -660,7 +659,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             changeMapType();
         } else if (id == R.id.btn_remove_point) {
             removePoint();
-        } else if (id == R.id.widget_fpv){
+        } else if (id == R.id.widget_fpv) {
             Intent intent = new Intent(this, FPVForWayPointActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
