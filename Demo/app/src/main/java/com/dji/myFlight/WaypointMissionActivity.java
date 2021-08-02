@@ -341,20 +341,20 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String select = parent.getItemAtPosition(position).toString();
-                switch(select) {
-                    case "headingNext" :{
+                switch (select) {
+                    case "headingNext": {
                         angle_detail.setText("飞机的航向将总是沿飞行方向。");
                         break;
                     }
-                    case "headingInitDirec" :{
+                    case "headingInitDirec": {
                         angle_detail.setText("飞机的航向将被设定为到达第一个航点时的航向。在到达第一个航点之前，飞机的航向可以由遥控器控制。当飞机到达第一个航点时，其航向将被固定。");
                         break;
                     }
-                    case "headingRC" :{
+                    case "headingRC": {
                         angle_detail.setText("飞机的航向将由远程控制器控制。");
                         break;
                     }
-                    case "headingWP" :{
+                    case "headingWP": {
                         angle_detail.setText("到达航点后，飞机将旋转其航向。");
                         break;
                     }
@@ -421,7 +421,6 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         }
 
         if (mFlightController != null) {
-
             mFlightController.setStateCallback(
                     new FlightControllerState.Callback() {
                         @Override
@@ -435,6 +434,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                                 drawPolyline(lastDronePos, curDronePos, FINISHED_LINE);
                         }
                     });
+            cameraUpdate();
 
         }
     }
@@ -708,114 +708,17 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         }
     }
 
+    //改变可视区域为指定位置
     private void cameraUpdate() {
-        float zoomlevel = (float) 18.0;
-        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(curDronePos, zoomlevel);
-        aMap.moveCamera(cu);
+
+        float zoomLevel = (float) 18.0;
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curDronePos, zoomLevel);
+        aMap.moveCamera(cameraUpdate);
     }
 
     private void enableDisableAdd() {
         isAdd = !isAdd;
         btn_addPoint_mode.setText(isAdd ? "Exit" : "Add");
-    }
-
-//    private void showSettingDialog(){
-//        LinearLayout wayPointSettings = (LinearLayout)getLayoutInflater().inflate(R.layout.dialog_waypointsetting, null);
-//
-//        final TextView wpAltitude_TV = (TextView) wayPointSettings.findViewById(R.id.altitude);
-//        RadioGroup speed_RG = (RadioGroup) wayPointSettings.findViewById(R.id.speed);
-//        RadioGroup actionAfterFinished_RG = (RadioGroup) wayPointSettings.findViewById(R.id.actionAfterFinished);
-//        RadioGroup heading_RG = (RadioGroup) wayPointSettings.findViewById(R.id.heading);
-//
-//        speed_RG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
-//
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                if (checkedId == R.id.lowSpeed){
-//                    mSpeed = 3.0f;
-//                } else if (checkedId == R.id.MidSpeed){
-//                    mSpeed = 5.0f;
-//                } else if (checkedId == R.id.HighSpeed){
-//                    mSpeed = 10.0f;
-//                }
-//            }
-//
-//        });
-//
-//        actionAfterFinished_RG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                Log.d(TAG, "Select finish action");
-//                if (checkedId == R.id.finishNone){
-//                    mFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
-//                } else if (checkedId == R.id.finishGoHome){
-//                    mFinishedAction = WaypointMissionFinishedAction.GO_HOME;
-//                } else if (checkedId == R.id.finishAutoLanding){
-//                    mFinishedAction = WaypointMissionFinishedAction.AUTO_LAND;
-//                } else if (checkedId == R.id.finishToFirst){
-//                    mFinishedAction = WaypointMissionFinishedAction.GO_FIRST_WAYPOINT;
-//                }
-//            }
-//        });
-//
-//        heading_RG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                Log.d(TAG, "Select heading");
-//
-//                if (checkedId == R.id.headingNext) {
-//                    mHeadingMode = WaypointMissionHeadingMode.AUTO;
-//                } else if (checkedId == R.id.headingInitDirec) {
-//                    mHeadingMode = WaypointMissionHeadingMode.USING_INITIAL_DIRECTION;
-//                } else if (checkedId == R.id.headingRC) {
-//                    mHeadingMode = WaypointMissionHeadingMode.CONTROL_BY_REMOTE_CONTROLLER;
-//                } else if (checkedId == R.id.headingWP) {
-//                    mHeadingMode = WaypointMissionHeadingMode.USING_WAYPOINT_HEADING;
-//                }
-//            }
-//        });
-//
-//        new AlertDialog.Builder(this)
-//                .setTitle("")
-//                .setView(wayPointSettings)
-//                .setPositiveButton("Finish",new DialogInterface.OnClickListener(){
-//                    public void onClick(DialogInterface dialog, int id) {
-//
-//                        String altitudeString = wpAltitude_TV.getText().toString();
-//                        altitude = Integer.parseInt(nulltoIntegerDefalt(altitudeString));
-//                        Log.e(TAG,"altitude "+altitude);
-//                        Log.e(TAG,"speed "+mSpeed);
-//                        Log.e(TAG, "mFinishedAction "+mFinishedAction);
-//                        Log.e(TAG, "mHeadingMode "+mHeadingMode);
-//                        configWayPointMission();
-//                    }
-//
-//                })
-//                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        dialog.cancel();
-//                    }
-//
-//                })
-//                .create()
-//                .show();
-//    }
-
-    String nulltoIntegerDefalt(String value) {
-        if (!isIntValue(value)) value = "0";
-        return value;
-    }
-
-    boolean isIntValue(String val) {
-        try {
-            val = val.replace(" ", "");
-            Integer.parseInt(val);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
     }
 
     private void configWayPointMission() {

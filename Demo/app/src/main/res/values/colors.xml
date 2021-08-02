@@ -43,5 +43,5 @@
     <color name="blue">#0000FF</color>
     <color name="background_blue">#242d34</color>
     <color name="transparent">#00000000</color>
-    <color name="dark_gray">#80000000</color>
+    <color name="dark_gray">#BF1C1C1C</color>
 </resources>
