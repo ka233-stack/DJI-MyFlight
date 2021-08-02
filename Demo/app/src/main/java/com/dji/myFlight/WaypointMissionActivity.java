@@ -88,6 +88,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     private List<Polyline> finishedLineList = new ArrayList<>();
     // 航点轨迹列表
     private List<Polyline> todoLineList = new ArrayList<>();
+    private Polyline firstLine;
 
     private boolean isAdd = false;
 
@@ -256,6 +257,12 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             if (index == -1) { // 不存在该marker
                 showToast("找不到该marker");
                 return;
+            }
+            if (index == 0) {
+                firstLine.remove();
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(curDronePos, marker.getPosition());
+                firstLine = aMap.addPolyline(polylineOptions);
             }
             if (index < lastIndex) { // 后面还有marker
                 Polyline polyline = todoLineList.get(index);
@@ -625,6 +632,10 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         markerList.add(marker);
         if (lastPointPos != null) {
             drawPolyline(lastPointPos, point, TODO_LINE);
+        } else if (curDronePos != null) {
+            PolylineOptions todoPolylineOptions = getTodoPolylineOptions();
+            todoPolylineOptions.add(curDronePos, point);
+            firstLine = aMap.addPolyline(todoPolylineOptions);
         }
         lastPointPos = point;
         // 显示信息面板
@@ -964,6 +975,12 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                 showToast("找不到该marker");
                 return;
             }
+            if (index == 0) {
+                firstLine.remove();
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(curDronePos, markerList.get(0).getPosition());
+                firstLine = aMap.addPolyline(polylineOptions);
+            }
             if (index < lastIndex) { // 后面还有marker
                 Polyline polyline = todoLineList.get(index);
                 LatLng pos = polyline.getOptions().getPoints().get(1);
@@ -1011,7 +1028,8 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                 polyline.remove();
                 todoLineList.remove(index);
                 if (curDronePos != null) {
-                    // TODO
+                    firstLine.remove();
+                    firstLine = null;
                 }
                 // 更新后续标记数字
                 for (int i = index; i < lastIndex; i++) {
