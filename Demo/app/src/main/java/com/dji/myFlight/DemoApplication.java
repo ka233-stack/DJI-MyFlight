@@ -30,41 +30,41 @@ public class DemoApplication extends Application {
 
     private Application instance;
 
-    public String loginStateTV_text;
-    public String sdkVersionTV_text;
-    public String mTextConnectionStatus_text;
-    public String appActivationStateTV_text;
+    public String loginState;
+    public String sdkVersion;
+    public String connectionStatus;
+    public String appActivationState;
 
-    public String getLoginStateTV_text() {
-        return loginStateTV_text;
+    public String getLoginState() {
+        return loginState;
     }
 
-    public void setLoginStateTV_text(String loginStateTV_text) {
-        this.loginStateTV_text = loginStateTV_text;
+    public void setLoginState(String loginState) {
+        this.loginState = loginState;
     }
 
-    public String getSdkVersionTV_text() {
-        return sdkVersionTV_text;
+    public String getSdkVersion() {
+        return sdkVersion;
     }
 
-    public void setSdkVersionTV_text(String sdkVersionTV_text) {
-        this.sdkVersionTV_text = sdkVersionTV_text;
+    public void setSdkVersion(String sdkVersion) {
+        this.sdkVersion = sdkVersion;
     }
 
-    public String getmTextConnectionStatus_text() {
-        return mTextConnectionStatus_text;
+    public String getConnectionStatus() {
+        return connectionStatus;
     }
 
-    public void setmTextConnectionStatus_text(String mTextConnectionStatus_text) {
-        this.mTextConnectionStatus_text = mTextConnectionStatus_text;
+    public void setConnectionStatus(String connectionStatus) {
+        this.connectionStatus = connectionStatus;
     }
 
-    public String getAppActivationStateTV_text() {
-        return appActivationStateTV_text;
+    public String getAppActivationState() {
+        return appActivationState;
     }
 
-    public void setAppActivationStateTV_text(String appActivationStateTV_text) {
-        this.appActivationStateTV_text = appActivationStateTV_text;
+    public void setAppActivationState(String appActivationState) {
+        this.appActivationState = appActivationState;
     }
 
     public void setContext(Application application) {
@@ -105,17 +105,10 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate:DemoApplication");
         mHandler = new Handler(Looper.getMainLooper());
 
-        /**
-         * When starting SDK services, an instance of interface DJISDKManager.DJISDKManagerCallback will be used to listen to
-         * the SDK Registration result and the product changing.
-         */
-        // 监听SDK的注册结果
-        DJISDKManager.SDKManagerCallback mDJISDKManagerCallback = new DJISDKManager.SDKManagerCallback() {
-
-            //Listens to the SDK registration result
+        // 回调监听SDK的注册结果
+        DJISDKManager.SDKManagerCallback sdkManagerCallback = new DJISDKManager.SDKManagerCallback() {
             @Override
             public void onRegister(DJIError error) {
                 Handler handler = new Handler(Looper.getMainLooper());
@@ -177,10 +170,9 @@ public class DemoApplication extends Application {
         //Check the permissions before registering the application for android system 6.0 above.
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permissionCheck2 = ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_PHONE_STATE);
-        if (DJISDKManager.getInstance().hasSDKRegistered()) {
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (permissionCheck == 0 && permissionCheck2 == 0)) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (permissionCheck == 0 && permissionCheck2 == 0)) {
             //This is used to start SDK services and initiate SDK.
-            DJISDKManager.getInstance().registerApp(getApplicationContext(), mDJISDKManagerCallback);
+            DJISDKManager.getInstance().registerApp(getApplicationContext(), sdkManagerCallback);
             Toast.makeText(getApplicationContext(), "应用注册中(DemoApplication)", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(getApplicationContext(), "请检查权限许可", Toast.LENGTH_LONG).show();

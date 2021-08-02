@@ -47,8 +47,8 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
     private TextView mTextConnectionStatus;
     private TextView mTextProduct;
-    private Button mBtnOpen;
-    private TextView sdkVersionTV;
+    private Button btnOpen;
+    private TextView tvSDKVersion;
     protected Button loginBtn;
     protected Button logoutBtn;
     protected TextView bindingStateTV;
@@ -82,7 +82,6 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: ConnectionActivity");
         isAppStarted = true;
         checkAndRequestPermissions();
         setContentView(R.layout.activity_connection);
@@ -208,10 +207,10 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     public void onPause() {
         Log.e(TAG, "onPause");
         super.onPause();
-        ((MApplication) getApplicationContext()).demoApplication.setLoginStateTV_text(loginStateTV.getText().toString());
-        ((MApplication) getApplicationContext()).demoApplication.setSdkVersionTV_text(sdkVersionTV.getText().toString());
-        ((MApplication) getApplicationContext()).demoApplication.setmTextConnectionStatus_text(mTextConnectionStatus.getText().toString());
-        ((MApplication) getApplicationContext()).demoApplication.setAppActivationStateTV_text(appActivationStateTV.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setLoginState(loginStateTV.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setSdkVersion(tvSDKVersion.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setConnectionStatus(mTextConnectionStatus.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setAppActivationState(appActivationStateTV.getText().toString());
     }
 
     @Override
@@ -237,11 +236,11 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     private void initUI() {
         mTextConnectionStatus = (TextView) findViewById(R.id.text_connection_status);
         mTextProduct = (TextView) findViewById(R.id.text_product_info);
-        mBtnOpen = (Button) findViewById(R.id.btn_open);
-        mBtnOpen.setOnClickListener(this);
-        // mBtnOpen.setEnabled(false);
-        sdkVersionTV = (TextView) findViewById(R.id.text_sdk_version);
-        sdkVersionTV.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
+        btnOpen = (Button) findViewById(R.id.btn_open);
+        btnOpen.setOnClickListener(this);
+        // btnOpen.setEnabled(false);
+        tvSDKVersion = (TextView) findViewById(R.id.text_sdk_version);
+        tvSDKVersion.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
         bindingStateTV = (TextView) findViewById(R.id.tv_binding_state_info);
         appActivationStateTV = (TextView) findViewById(R.id.tv_activation_state_info);
         loginStateTV = (TextView) findViewById(R.id.login_state_info);
@@ -300,7 +299,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
         if (null != mProduct && mProduct.isConnected()) {
             Log.v(TAG, "refreshSDK: True");
-            mBtnOpen.setEnabled(true);
+            btnOpen.setEnabled(true);
 
             String str = mProduct instanceof Aircraft ? "无人机" : "手持云台";
             mTextConnectionStatus.setText(String.format("状态: 已连接%s", str));
@@ -312,7 +311,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             }
         } else {
             Log.v(TAG, "refreshSDK: False");
-            mBtnOpen.setEnabled(false);
+            btnOpen.setEnabled(false);
 
             mTextProduct.setText(R.string.product_information);
             mTextConnectionStatus.setText(R.string.connection_loose);

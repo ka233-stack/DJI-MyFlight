@@ -3,7 +3,6 @@ package com.dji.myFlight;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +26,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         initUI();
-        tvLoginState.setText(((MApplication) getApplicationContext()).demoApplication.getLoginStateTV_text());
-        tvSDKVersion.setText(((MApplication) getApplicationContext()).demoApplication.getSdkVersionTV_text());
-        tvConnectionStatus.setText(((MApplication) getApplicationContext()).demoApplication.getmTextConnectionStatus_text());
+        tvLoginState.setText(((MApplication) getApplicationContext()).demoApplication.getLoginState());
+        tvSDKVersion.setText(((MApplication) getApplicationContext()).demoApplication.getSdkVersion());
+        tvConnectionStatus.setText(((MApplication) getApplicationContext()).demoApplication.getConnectionStatus());
     }
 
     private void initUI() {
