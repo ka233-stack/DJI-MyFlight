@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -122,6 +123,8 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
     protected FPVWidget fpvWidget;
 
+    protected TextView angle_detail;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -191,6 +194,8 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
         fpvWidget = (FPVWidget) findViewById(R.id.widget_fpv);
         fpvWidget.setOnClickListener(this);
+
+        angle_detail = (TextView) findViewById(R.id.angle_detail);
     }
 
 
@@ -331,6 +336,38 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         initUI();
         addListener();
         initFlightController();
+
+        angle_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String select = parent.getItemAtPosition(position).toString();
+                switch(select) {
+                    case "headingNext" :{
+                        angle_detail.setText("飞机的航向将总是沿飞行方向。");
+                        break;
+                    }
+                    case "headingInitDirec" :{
+                        angle_detail.setText("飞机的航向将被设定为到达第一个航点时的航向。在到达第一个航点之前，飞机的航向可以由遥控器控制。当飞机到达第一个航点时，其航向将被固定。");
+                        break;
+                    }
+                    case "headingRC" :{
+                        angle_detail.setText("飞机的航向将由远程控制器控制。");
+                        break;
+                    }
+                    case "headingWP" :{
+                        angle_detail.setText("到达航点后，飞机将旋转其航向。");
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private PolylineOptions getFinishedPolylineOptions() {
