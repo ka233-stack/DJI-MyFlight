@@ -225,10 +225,8 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
          */
         @Override
         public void onMarkerDragStart(Marker marker) {
-            index = -1;
+            index = markerList.indexOf(marker);
             lastIndex = markerList.size() - 1;
-            if (markerList.contains(marker))
-                index = markerList.indexOf(marker);
         }
 
         /**
@@ -261,7 +259,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             }
             if (index < lastIndex) { // 后面还有marker
                 Polyline polyline = todoLineList.get(index);
-                LatLng pos = polyline.getOptions().getPoints().get(1);
+                LatLng pos = polyline.getOptions().getPoints().get(1); // 后一坐标
                 polyline.remove();
                 todoLineList.remove(index);
                 PolylineOptions polylineOptions = getTodoPolylineOptions();
@@ -601,7 +599,6 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         //Create MarkerOptions object
         MarkerOptions wayPointMarkerOptions = getWayPointMarkerOptions();
         wayPointMarkerOptions.position(point);
-
         View view;
         // 更改前一标点样式
         if (selectedMarker != null && !markerList.isEmpty()) {
@@ -674,7 +671,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         } else if (id == R.id.btn_commit) {
             addPointByLonLat();
         } else if (id == R.id.btn_change_commit) {
-            changePointPos(selectedMarker);
+            changePointPos();
         } else if (id == R.id.btn_settings) {
             movePanel();
         } else if (id == R.id.btn_change_map_type) {
@@ -940,10 +937,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
     private void showSelectedMarkerDetailPanel() {
         LatLng position = selectedMarker.getPosition();
-        int index;
-        index = -1;
-        if (markerList.contains(selectedMarker))
-            index = markerList.indexOf(selectedMarker);
+        int index = markerList.indexOf(selectedMarker);
         changePoint_text.setText(String.format("标点%d", index + 1));
         change_point_v.setText(String.valueOf(position.latitude));
         change_point_v1.setText(String.valueOf(position.longitude));
@@ -952,54 +946,47 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         }
     }
 
-    private void changePointPos(Marker marker) {
+    private void changePointPos() {
         if (selectedMarker == null) {
             showToast("请先选中一个点");
+            return;
+        }
+        if ((change_point_v.getText().toString().equals("")) || (change_point_v1.getText().toString().equals(""))) {
+            showToast("请先输入经纬度");
         } else {
-            if ((change_point_v.getText().toString().equals("")) || (change_point_v1.getText().toString().equals(""))) {
-                showToast("请先输入经纬度");
-            } else {
-                double change_v = Double.parseDouble(change_point_v.getText().toString());
-                double change_v1 = Double.parseDouble(change_point_v1.getText().toString());
-                LatLng position = new LatLng(change_v, change_v1);
-                marker.setPosition(position);
+            double latitude = Double.parseDouble(change_point_v.getText().toString());
+            double longitude = Double.parseDouble(change_point_v1.getText().toString());
+            LatLng position = new LatLng(latitude, longitude);
+            selectedMarker.setPosition(position);
 
-                int index, lastIndex;
-                index = -1;
-                lastIndex = todoLineList.size();
-                if (markerList.contains(marker))
-                    index = markerList.indexOf(marker);
-
-                if (index == -1) { // 不存在该marker
-                    showToast("找不到该marker");
-                    return;
-                }
-                if (index < lastIndex) { // 后面还有marker
-                    Polyline polyline = todoLineList.get(index);
-                    LatLng pos = polyline.getOptions().getPoints().get(1);
-                    polyline.remove();
-                    todoLineList.remove(index);
-                    PolylineOptions polylineOptions = getTodoPolylineOptions();
-                    polylineOptions.add(marker.getPosition(), pos);
-                    todoLineList.add(index, aMap.addPolyline(polylineOptions));
-                }
-                if (index > 0) { // 前面还有marker
-                    Polyline polyline = todoLineList.get(index - 1);
-                    LatLng pos = polyline.getOptions().getPoints().get(0);
-                    polyline.remove();
-                    todoLineList.remove(index - 1);
-                    PolylineOptions polylineOptions = getTodoPolylineOptions();
-                    polylineOptions.add(pos, marker.getPosition());
-                    todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
-                }
-
-                LatLng pos = marker.getPosition();
-                Waypoint waypoint = new Waypoint(pos.latitude, pos.longitude, altitude);
-                waypointList.set(index, waypoint);
-                // 设置lastPoint
-                if (index == lastIndex)
-                    lastPointPos = marker.getPosition();
+            int index = markerList.indexOf(selectedMarker), lastIndex = markerList.size() - 1;
+            if (index == -1) { // 不存在该marker
+                showToast("找不到该marker");
+                return;
             }
+            if (index < lastIndex) { // 后面还有marker
+                Polyline polyline = todoLineList.get(index);
+                LatLng pos = polyline.getOptions().getPoints().get(1);
+                polyline.remove();
+                todoLineList.remove(index);
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(selectedMarker.getPosition(), pos);
+                todoLineList.add(index, aMap.addPolyline(polylineOptions));
+            }
+            if (index > 0) { // 前面还有marker
+                Polyline polyline = todoLineList.get(index - 1);
+                LatLng pos = polyline.getOptions().getPoints().get(0);
+                polyline.remove();
+                todoLineList.remove(index - 1);
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(pos, selectedMarker.getPosition());
+                todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
+            }
+            Waypoint waypoint = new Waypoint(position.latitude, position.longitude, altitude);
+            waypointList.set(index, waypoint);
+            // 设置lastPoint
+            if (index == lastIndex)
+                lastPointPos = selectedMarker.getPosition();
         }
     }
 
@@ -1018,28 +1005,40 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             if (index == 0 && lastIndex == 0) { // 只有一个标记
                 // 设置前一个坐标点
                 lastPointPos = null;
-            } else if (index == lastIndex) { // 最后一个标记
+            } else if (index == 0) { // 第一个标记
                 // 移除画线
-                showToast(String.valueOf(index));
                 Polyline polyline = todoLineList.get(index);
                 polyline.remove();
                 todoLineList.remove(index);
+                if (curDronePos != null) {
+                    // TODO
+                }
+                // 更新后续标记数字
+                for (int i = index; i < lastIndex; i++) {
+                    view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
+                    ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(i + 1));
+                    markerList.get(i).setIcon(BitmapDescriptorFactory.fromView(view));
+                }
+            } else if (index == lastIndex) { // 最后一个标记
+                // 移除画线
+                Polyline polyline = todoLineList.get(index - 1);
+                polyline.remove();
+                todoLineList.remove(index - 1);
                 // 设置前一个坐标点
                 lastPointPos = markerList.get(lastIndex).getPosition();
-            } else { // 中间/第一个标记
+            } else { // 中间标记
                 // 移除画线 并重新画线连接前后两标记
-                showToast(String.valueOf(index));
-                Polyline prevLine = todoLineList.get(index);
-                Polyline nextLine = todoLineList.get(index + 1);
+                Polyline prevLine = todoLineList.get(index - 1);
+                Polyline nextLine = todoLineList.get(index);
                 LatLng prevPos = prevLine.getOptions().getPoints().get(0);
                 LatLng nextPos = nextLine.getOptions().getPoints().get(1);
                 prevLine.remove();
                 nextLine.remove();
-                todoLineList.remove(index);
-                todoLineList.remove(index);
+                todoLineList.remove(index - 1);
+                todoLineList.remove(index - 1);
                 PolylineOptions polylineOptions = getTodoPolylineOptions();
                 polylineOptions.add(prevPos, nextPos);
-                todoLineList.add(index, aMap.addPolyline(polylineOptions));
+                todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
                 // 更新后续标记数字
                 for (int i = index; i < lastIndex; i++) {
                     view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
