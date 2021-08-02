@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="dji_sdk_api_key">fa6ed13d8274d96531439ae9</string>
+    <string name="dji_ux_sample_here_maps_id">YOUR HERE MAPS ID</string>
+    <string name="dji_ux_sample_here_maps_app_token">YOUR HERE MAPS APP TOKEN</string>
+    <string name="dji_ux_sample_here_maps_license_key">YOUR HERE MAPS LICENSE KEY</string>
+    <string name="dji_ux_sample_google_maps_api_key">YOUR GOOGLE MAPS API KEY</string>
+    <string name="amaps_api_key">d7c50b15d53fb71c9585ddc3f709dd00</string>
+    <string name="dji_ux_sample_mapbox_token">YOUR_MAPBOX_TOKEN</string>
+</resources>

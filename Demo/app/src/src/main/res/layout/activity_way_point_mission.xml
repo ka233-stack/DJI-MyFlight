@@ -33,7 +33,7 @@
             android:padding="8dp">
 
             <TextView
-                android:id="@+id/addPoint_text"
+                android:id="@+id/title_seeting_panel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -55,40 +55,45 @@
                 android:background="@color/colorAccent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addPoint_text" />
+                app:layout_constraintTop_toBottomOf="@+id/title_seeting_panel" />
 
             <EditText
                 android:id="@+id/point_v"
-                android:layout_width="wrap_content"
+                android:layout_width="150sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
                 android:inputType="numberDecimal"
-                android:padding="10dp"
+                android:padding="5sp"
                 android:text="22.5362"
+                android:textSize="14sp"
+                android:textColor="@color/yellow"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addPoint_separator" />
 
             <EditText
                 android:id="@+id/point_v1"
-                android:layout_width="wrap_content"
+                android:layout_width="150sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
                 android:inputType="numberDecimal"
-                android:padding="10dp"
+                android:padding="5sp"
                 android:text="113.9454"
+                android:textSize="14sp"
+                android:textColor="@color/yellow"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/point_v" />
 
             <Button
                 android:id="@+id/btn_commit"
-                android:layout_width="0dp"
+                android:layout_width="100sp"
                 android:layout_height="40dp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
                 android:background="@drawable/selector_map_type_bg"
                 android:padding="10dp"
                 android:text="提交"
+                android:textColor="@color/lightBlue"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/point_v1" />
@@ -113,31 +118,33 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_margin="@dimen/map_settings_item_separator"
-                android:background="@color/colorAccent"
+                android:background="@color/white"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editPoint_text" />
 
             <Button
                 android:id="@+id/btn_addPoint_mode"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_width="150sp"
+                android:layout_height="40sp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
                 android:background="@drawable/selector_map_type_bg"
                 android:padding="10dp"
                 android:text="加点"
+                android:textColor="@color/lightBlue"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editPoint_separator" />
 
             <Button
                 android:id="@+id/btn_clear_all_points"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_width="150sp"
+                android:layout_height="40sp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
                 android:background="@drawable/selector_map_type_bg"
                 android:padding="10dp"
                 android:text="清除所有点"
+                android:textColor="@color/red"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_addPoint_mode" />
@@ -162,14 +169,14 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_margin="@dimen/map_settings_item_separator"
-                android:background="@color/colorAccent"
+                android:background="@color/white"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/settings_text" />
 
             <TextView
                 android:id="@+id/speed_text"
-                android:layout_width="0dp"
+                android:layout_width="50sp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:background="@color/transparent"
@@ -178,25 +185,27 @@
                 android:text="速度"
                 android:textColor="@color/white"
                 android:textStyle="bold"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/settings_separator" />
 
             <EditText
                 android:id="@+id/speed_edittxet"
-                android:layout_width="wrap_content"
+                android:layout_width="50sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
                 android:inputType="numberDecimal"
-                android:padding="10dp"
+                android:padding="5sp"
                 android:text="5"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/speed_text" />
+                android:textColor="@color/yellow"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@+id/speed_text"
+                app:layout_constraintTop_toBottomOf="@+id/settings_separator" />
 
             <TextView
                 android:id="@+id/altitude_text"
-                android:layout_width="0dp"
+                android:layout_width="50sp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:background="@color/transparent"
@@ -205,21 +214,21 @@
                 android:text="高度"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/speed_edittxet" />
+                app:layout_constraintStart_toEndOf="@+id/speed_edittxet"
+                app:layout_constraintTop_toBottomOf="@+id/settings_separator"  />
 
             <EditText
                 android:id="@+id/altitude_edittext"
-                android:layout_width="wrap_content"
+                android:layout_width="50sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
                 android:inputType="numberDecimal"
-                android:padding="10dp"
+                android:padding="5sp"
                 android:text="5"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/altitude_text" />
+                android:textSize="14sp"
+                android:textColor="@color/yellow"
+                app:layout_constraintStart_toEndOf="@+id/altitude_text"
+                app:layout_constraintTop_toBottomOf="@+id/settings_separator" />
 
             <TextView
                 android:id="@+id/action_text"
@@ -278,17 +287,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/angle_text" />
 
             <TextView
-                android:id="@+id/angle_detail"
+                android:id="@+id/angle_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:background="@color/transparent"
                 android:gravity="center"
                 android:padding="5dp"
+                android:singleLine="false"
                 android:text="信息解释"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:singleLine="false"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/angle_spinner" />
@@ -298,10 +306,10 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_margin="@dimen/map_settings_item_separator"
-                android:background="@color/colorAccent"
+                android:background="@color/white"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/angle_detail" />
+                app:layout_constraintTop_toBottomOf="@+id/angle_description" />
 
             <TextView
                 android:id="@+id/start_text"
@@ -323,7 +331,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_margin="@dimen/map_settings_item_separator"
-                android:background="@color/colorAccent"
+                android:background="@color/white"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/start_text" />
@@ -336,6 +344,7 @@
                 android:background="@drawable/selector_map_type_bg"
                 android:padding="10dp"
                 android:text="上传航线"
+                android:textColor="@color/lightBlue"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/start_separator" />
@@ -348,6 +357,7 @@
                 android:background="@drawable/selector_map_type_bg"
                 android:padding="10dp"
                 android:text="开始飞行"
+                android:textColor="@color/lightBlue"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_upload" />
@@ -360,6 +370,7 @@
                 android:background="@drawable/selector_map_type_bg"
                 android:padding="10dp"
                 android:text="停止飞行"
+                android:textColor="@color/red"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_start" />
@@ -371,11 +382,12 @@
     <ScrollView
         android:id="@+id/point_settings_scroll_view"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.3">
+        app:layout_constraintWidth_percent="0.3"
+        android:background="@color/dark_gray">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -384,14 +396,14 @@
             android:padding="8dp">
 
             <TextView
-                android:id="@+id/changePoint_text"
+                android:id="@+id/title_point_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:background="@color/transparent"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="更改某点坐标"
+                android:text="某点坐标"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -403,58 +415,66 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_margin="@dimen/map_settings_item_separator"
-                android:background="@color/colorAccent"
+                android:background="@color/white"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/changePoint_text" />
+                app:layout_constraintTop_toBottomOf="@+id/title_point_detail" />
 
             <EditText
                 android:id="@+id/change_point_v"
-                android:layout_width="wrap_content"
+                android:layout_width="150sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
                 android:inputType="numberDecimal"
-                android:padding="10dp"
+                android:padding="5sp"
                 android:text="请先选点"
+                android:textSize="14sp"
+                android:textColor="@color/yellow"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/changePoint_separator" />
 
             <EditText
                 android:id="@+id/change_point_v1"
-                android:layout_width="wrap_content"
+                android:layout_width="150sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
                 android:inputType="numberDecimal"
-                android:padding="10dp"
+                android:padding="5sp"
                 android:text="请先选点"
+                android:textSize="14sp"
+                android:textColor="@color/yellow"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/change_point_v" />
 
             <Button
                 android:id="@+id/btn_change_commit"
-                android:layout_width="0dp"
+                android:layout_width="80sp"
                 android:layout_height="40dp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
                 android:background="@drawable/selector_map_type_bg"
                 android:padding="10dp"
                 android:text="修改"
+                android:textColor="@color/lightBlue"
+                app:layout_constraintHorizontal_bias="0.1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/change_point_v1" />
 
             <Button
                 android:id="@+id/btn_remove_point"
-                android:layout_width="0dp"
+                android:layout_width="80sp"
                 android:layout_height="40dp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
                 android:background="@drawable/selector_map_type_bg"
                 android:padding="10dp"
                 android:text="清除"
+                android:textColor="@color/red"
+                app:layout_constraintHorizontal_bias="0.9"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_change_commit" />
+                app:layout_constraintTop_toBottomOf="@+id/change_point_v1" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -474,31 +494,30 @@
         app:srcCompat="@drawable/ic_settings_white_24dp"
         tools:ignore="ContentDescription" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/btn_change_mode"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btn_change_map_type"
+        style="@style/circle_button"
+        android:layout_width="45sp"
+        android:layout_height="45sp"
         android:layout_margin="5dp"
-        android:background="@color/light_gray_300"
-        android:padding="5dp"
+        android:scaleType="centerInside"
+        android:tint="#80000000"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_settings_white_24dp"
-        tools:ignore="ContentDescription" />
+        app:srcCompat="@android:drawable/ic_menu_mapmode" />
+
 
     <dji.ux.beta.core.widget.fpv.FPVWidget
         android:id="@+id/widget_fpv"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.25"
         app:layout_constraintRight_toRightOf="parent"
-        app:uxsdk_onStateChange="@+id/widget_fpv_interaction"
-        app:uxsdk_sourceCameraNameVisibility="false"
         app:layout_constraintWidth_percent="0.25"
-        app:layout_constraintHeight_percent="0.25">
+        app:uxsdk_onStateChange="@+id/widget_fpv_interaction"
+        app:uxsdk_sourceCameraNameVisibility="false">
 
         <dji.ux.beta.core.widget.radar.RadarWidget
             android:id="@+id/widget_radar"
