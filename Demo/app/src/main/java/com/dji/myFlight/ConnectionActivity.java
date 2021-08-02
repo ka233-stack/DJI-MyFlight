@@ -45,15 +45,15 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
     private static boolean isAppStarted = false;
 
-    private TextView mTextConnectionStatus;
-    private TextView mTextProduct;
+    private TextView tvConnectionStatus;
+    private TextView tvProduct;
     private Button btnOpen;
     private TextView tvSDKVersion;
-    protected Button loginBtn;
-    protected Button logoutBtn;
-    protected TextView bindingStateTV;
-    protected TextView appActivationStateTV;
-    protected TextView loginStateTV;
+    protected Button btnLogin;
+    protected Button btnLogout;
+    protected TextView tvBindingState;
+    protected TextView tvAppActivationState;
+    protected TextView tvUsername;
     // 添加侦听器获取应用程序激活状态和飞行器绑定状态
     private AppActivationManager appActivationManager;
     private AppActivationState.AppActivationStateListener activationStateListener;
@@ -207,10 +207,10 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     public void onPause() {
         Log.e(TAG, "onPause");
         super.onPause();
-        ((MApplication) getApplicationContext()).demoApplication.setLoginState(loginStateTV.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setLoginState(tvUsername.getText().toString());
         ((MApplication) getApplicationContext()).demoApplication.setSdkVersion(tvSDKVersion.getText().toString());
-        ((MApplication) getApplicationContext()).demoApplication.setConnectionStatus(mTextConnectionStatus.getText().toString());
-        ((MApplication) getApplicationContext()).demoApplication.setAppActivationState(appActivationStateTV.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setConnectionStatus(tvConnectionStatus.getText().toString());
+        ((MApplication) getApplicationContext()).demoApplication.setAppActivationState(tvAppActivationState.getText().toString());
     }
 
     @Override
@@ -234,54 +234,52 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     }
 
     private void initUI() {
-        mTextConnectionStatus = (TextView) findViewById(R.id.text_connection_status);
-        mTextProduct = (TextView) findViewById(R.id.text_product_info);
+        tvConnectionStatus = (TextView) findViewById(R.id.text_connection_status);
+        tvProduct = (TextView) findViewById(R.id.text_product_info);
         btnOpen = (Button) findViewById(R.id.btn_open);
         btnOpen.setOnClickListener(this);
         // btnOpen.setEnabled(false);
         tvSDKVersion = (TextView) findViewById(R.id.text_sdk_version);
         tvSDKVersion.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
-        bindingStateTV = (TextView) findViewById(R.id.tv_binding_state_info);
-        appActivationStateTV = (TextView) findViewById(R.id.tv_activation_state_info);
-        loginStateTV = (TextView) findViewById(R.id.login_state_info);
-        loginBtn = (Button) findViewById(R.id.btn_login);
-        logoutBtn = (Button) findViewById(R.id.btn_logout);
-        loginBtn.setOnClickListener(this);
-        logoutBtn.setOnClickListener(this);
+        tvBindingState = (TextView) findViewById(R.id.tv_binding_state_info);
+        tvAppActivationState = (TextView) findViewById(R.id.tv_activation_state_info);
+        tvUsername = (TextView) findViewById(R.id.login_state_info);
+        btnLogin = (Button) findViewById(R.id.btn_login);
+        btnLogout = (Button) findViewById(R.id.btn_logout);
+        btnLogin.setOnClickListener(this);
+        btnLogout.setOnClickListener(this);
     }
 
     private void initData() {
         setUpListener();
         appActivationManager = DJISDKManager.getInstance().getAppActivationManager();
         if (appActivationManager != null) {
-            showToast("adding listeners");
             appActivationManager.addAppActivationStateListener(activationStateListener);
             appActivationManager.addAircraftBindingStateListener(bindingStateListener);
-            appActivationStateTV.setText(appActivationManager.getAppActivationState().toString());
-            bindingStateTV.setText(appActivationManager.getAircraftBindingState().toString());
+            tvAppActivationState.setText(appActivationManager.getAppActivationState().toString());
+            tvBindingState.setText(appActivationManager.getAircraftBindingState().toString());
         }
     }
 
     private void setUpListener() {
         // Example of Listener
-        showToast("setting up listener");
         activationStateListener = new AppActivationState.AppActivationStateListener() {
             @Override
             public void onUpdate(final AppActivationState appActivationState) {
-                ConnectionActivity.this.runOnUiThread(() -> appActivationStateTV.setText(appActivationState.toString()));
+                ConnectionActivity.this.runOnUiThread(() -> tvAppActivationState.setText(appActivationState.toString()));
             }
         };
-        bindingStateListener = bindingState -> ConnectionActivity.this.runOnUiThread(() -> bindingStateTV.setText(bindingState.toString()));
+        bindingStateListener = bindingState -> ConnectionActivity.this.runOnUiThread(() -> tvBindingState.setText(bindingState.toString()));
     }
 
     private void tearDownListener() {
         if (activationStateListener != null) {
             appActivationManager.removeAppActivationStateListener(activationStateListener);
-            appActivationStateTV.setText(AppActivationState.UNKNOWN.toString());
+            tvAppActivationState.setText(AppActivationState.UNKNOWN.toString());
         }
         if (bindingStateListener != null) {
             appActivationManager.removeAircraftBindingStateListener(bindingStateListener);
-            bindingStateTV.setText(AircraftBindingState.UNKNOWN.toString());
+            tvBindingState.setText(AircraftBindingState.UNKNOWN.toString());
         }
     }
 
@@ -302,19 +300,19 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             btnOpen.setEnabled(true);
 
             String str = mProduct instanceof Aircraft ? "无人机" : "手持云台";
-            mTextConnectionStatus.setText(String.format("状态: 已连接%s", str));
+            tvConnectionStatus.setText(String.format("状态: 已连接%s", str));
 
             if (null != mProduct.getModel()) {
-                mTextProduct.setText(mProduct.getModel().getDisplayName());
+                tvProduct.setText(mProduct.getModel().getDisplayName());
             } else {
-                mTextProduct.setText(R.string.product_information);
+                tvProduct.setText(R.string.product_information);
             }
         } else {
             Log.v(TAG, "refreshSDK: False");
             btnOpen.setEnabled(false);
 
-            mTextProduct.setText(R.string.product_information);
-            mTextConnectionStatus.setText(R.string.connection_loose);
+            tvProduct.setText(R.string.product_information);
+            tvConnectionStatus.setText(R.string.connection_loose);
         }
     }
 
@@ -322,7 +320,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.btn_open) {
-            if (appActivationStateTV != null && bindingStateTV != null) {
+            if (tvAppActivationState != null && tvBindingState != null) {
                 Intent intent = new Intent(this, DashboardActivity.class);
                 startActivity(intent);
             }
@@ -338,12 +336,11 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
                 new CommonCallbacks.CompletionCallbackWith<UserAccountState>() {
                     @Override
                     public void onSuccess(final UserAccountState userAccountState) {
-                        showToast("登录成功");
                         UserAccountManager.getInstance().getLoggedInDJIUserAccountName(
                                 new CommonCallbacks.CompletionCallbackWith<String>() {
                                     @Override
                                     public void onSuccess(final String username) {
-                                        ConnectionActivity.this.runOnUiThread(() -> loginStateTV.setText(username));
+                                        ConnectionActivity.this.runOnUiThread(() -> tvUsername.setText(username));
                                     }
 
                                     @Override
@@ -364,7 +361,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         UserAccountManager.getInstance().logoutOfDJIUserAccount(error -> {
             if (null == error) {
                 showToast("已注销登录");
-                ConnectionActivity.this.runOnUiThread(() -> loginStateTV.setText("未登录"));
+                ConnectionActivity.this.runOnUiThread(() -> tvUsername.setText("未登录"));
             } else {
                 showToast("注销失败: " + error.getDescription());
             }
