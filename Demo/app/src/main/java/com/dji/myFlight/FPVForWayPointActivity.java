@@ -30,7 +30,7 @@ import dji.ux.beta.core.widget.systemstatus.SystemStatusWidget;
 import dji.ux.beta.map.widget.map.MapWidget;
 import dji.ux.beta.training.widget.simulatorcontrol.SimulatorControlWidget;
 
-public class ManualFlightActivity2 extends AppCompatActivity implements View.OnClickListener {
+public class FPVForWayPointActivity extends AppCompatActivity implements View.OnClickListener {
 
     //region Fields
     private final static String TAG = "ManualFlightActivity";
@@ -212,7 +212,7 @@ public class ManualFlightActivity2 extends AppCompatActivity implements View.OnC
      * @param view The thumbnail view that was clicked.
      */
     private void onViewClick(View view) {
-        Intent intent = new Intent(this,Waypoint1Activity.class);
+        Intent intent = new Intent(this, WaypointMissionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

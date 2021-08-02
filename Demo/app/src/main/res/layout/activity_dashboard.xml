@@ -88,36 +88,6 @@
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/fpvDemo_btn"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="9dp"
-        android:background="@drawable/round_btn"
-        android:text="FPV"
-        android:textColor="@color/colorWhite"
-        android:textSize="17sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imgBtn_gallery"
-        app:layout_constraintStart_toEndOf="@+id/text_app_name"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes" />
-
-    <Button
-        android:id="@+id/beta_btn"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="9dp"
-        android:background="@drawable/round_btn"
-        android:text="Beta UX"
-        android:textColor="@color/colorWhite"
-        android:textSize="17sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fpvDemo_btn"
-        app:layout_constraintStart_toEndOf="@+id/text_connection_status"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes" />
-
     <ImageButton
         android:id="@+id/imgBtn_gallery"
         style="@style/circle_button"

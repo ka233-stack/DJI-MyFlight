@@ -58,7 +58,7 @@ import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
 import dji.ux.beta.core.widget.fpv.FPVWidget;
 
-public class Waypoint1Activity extends FragmentActivity implements View.OnClickListener, OnMapClickListener {
+public class WaypointMissionActivity extends FragmentActivity implements View.OnClickListener, OnMapClickListener {
 
     protected static final String TAG = "Waypoint1Activity";
 
@@ -150,7 +150,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
     }
 
     private void setResultToToast(final String string) {
-        Waypoint1Activity.this.runOnUiThread(() -> Toast.makeText(Waypoint1Activity.this, string, Toast.LENGTH_SHORT).show());
+        WaypointMissionActivity.this.runOnUiThread(() -> Toast.makeText(WaypointMissionActivity.this, string, Toast.LENGTH_SHORT).show());
     }
 
     private void initUI() {
@@ -291,18 +291,18 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         public boolean onMarkerClick(Marker marker) {
             int index = markerList.indexOf(marker);
             // 更改当前点样式
-            View view = LayoutInflater.from(Waypoint1Activity.this).inflate(R.layout.icon_marker_selected, null);
+            View view = LayoutInflater.from(WaypointMissionActivity.this).inflate(R.layout.icon_marker_selected, null);
             ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
             marker.setIcon(BitmapDescriptorFactory.fromView(view));
             // 更改前一标点样式
             if (selectedMarker != null && !marker.equals(selectedMarker)) {
                 index = markerList.indexOf(selectedMarker);
                 if (index != 0) {
-                    view = LayoutInflater.from(Waypoint1Activity.this).inflate(R.layout.icon_marker, null);
+                    view = LayoutInflater.from(WaypointMissionActivity.this).inflate(R.layout.icon_marker, null);
                     ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
                     selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
                 } else {
-                    view = LayoutInflater.from(Waypoint1Activity.this).inflate(R.layout.icon_marker_starting_point, null);
+                    view = LayoutInflater.from(WaypointMissionActivity.this).inflate(R.layout.icon_marker_starting_point, null);
                     ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
                     selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
                 }
@@ -661,7 +661,7 @@ public class Waypoint1Activity extends FragmentActivity implements View.OnClickL
         } else if (id == R.id.btn_remove_point) {
             removePoint();
         } else if (id == R.id.widget_fpv){
-            Intent intent = new Intent(this,ManualFlightActivity2.class);
+            Intent intent = new Intent(this, FPVForWayPointActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }

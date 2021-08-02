@@ -46,8 +46,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         tvLoginState = (TextView) findViewById(R.id.login_state_info);
         imgBtnGallery = (ImageButton) findViewById(R.id.imgBtn_gallery);
         imgBtnGallery.setOnClickListener(this);
-        fpvDemoBtn = (Button) findViewById(R.id.fpvDemo_btn);
-        betaBtn = (Button) findViewById(R.id.beta_btn);
         fpvDemoBtn.setOnClickListener(this);
         betaBtn.setOnClickListener(this);
     }
@@ -60,16 +58,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             Intent intent = new Intent(this, ManualFlightActivity.class);
             startActivity(intent);
         } else if (id == R.id.imgBtn_control_routes) {
-            Intent intent = new Intent(this, Waypoint1Activity.class);
+            Intent intent = new Intent(this, WaypointMissionActivity.class);
             startActivity(intent);
         } else if (id == R.id.imgBtn_gallery) {
             Intent intent = new Intent(this, GalleryActivity.class);
             startActivity(intent);
-        } else if (id == R.id.fpvDemo_btn) {
-            Intent intent = new Intent(this, FPVActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.beta_btn) {
-            showToast("Beta");
         }
     }
 
