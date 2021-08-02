@@ -1031,6 +1031,12 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                     firstLine.remove();
                     firstLine = null;
                 }
+                if (lastIndex > 0) {
+                    // 重新画线
+                    PolylineOptions polylineOptions = getTodoPolylineOptions();
+                    polylineOptions.add(curDronePos, markerList.get(0).getPosition());
+                    todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
+                }
                 // 更新后续标记数字
                 for (int i = index; i < lastIndex; i++) {
                     view = LayoutInflater.from(this).inflate(R.layout.icon_marker, null);
