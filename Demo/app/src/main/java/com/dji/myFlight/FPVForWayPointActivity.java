@@ -46,6 +46,11 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
     protected RTKWidget rtkWidget;
     protected SimulatorControlWidget simulatorControlWidget;
 
+    private boolean isMapMini = true;
+    private int widgetHeight;
+    private int widgetWidth;
+    private int deviceWidth;
+    private int deviceHeight;
     private CompositeDisposable compositeDisposable;
     //endregion
 
@@ -54,6 +59,13 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_flight);
+
+        widgetHeight = (int) getResources().getDimension(R.dimen.mini_map_height);
+        widgetWidth = (int) getResources().getDimension(R.dimen.mini_map_width);
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        deviceHeight = displayMetrics.heightPixels;
+        deviceWidth = displayMetrics.widthPixels;
 
         initUI();
         setM200SeriesWarningLevelRanges();
@@ -206,6 +218,23 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
     }
 
     /**
+     * 帮助方法来调整FPV和地图部件的大小
+     * Helper method to resize the FPV and Map Widgets.
+     *
+     * @param viewToEnlarge The view that needs to be enlarged to full screen.
+     * @param viewToShrink  The view that needs to be shrunk to a thumbnail.
+     */
+    private void resizeViews(View viewToEnlarge, View viewToShrink) {
+        // 放大第一个widget
+        ResizeAnimation enlargeAnimation = new ResizeAnimation(viewToEnlarge, widgetWidth, widgetHeight, deviceWidth, deviceHeight, 0);
+        viewToEnlarge.startAnimation(enlargeAnimation);
+
+        // 缩减第二个widget
+        ResizeAnimation shrinkAnimation = new ResizeAnimation(viewToShrink, deviceWidth, deviceHeight, widgetWidth, widgetHeight, 0);
+        viewToShrink.startAnimation(shrinkAnimation);
+    }
+
+    /**
      * 交换FPV和secondary FPV widget的视频源
      */
     private void swapVideoSource() {
@@ -243,5 +272,42 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
     //endregion
 
     //region classes
+
+    /**
+     * Animation to change the size of a view.
+     */
+    private static class ResizeAnimation extends Animation {
+
+        private static final int DURATION = 300;
+
+        private View view;
+        private int toHeight;
+        private int fromHeight;
+        private int toWidth;
+        private int fromWidth;
+        private int margin;
+
+        private ResizeAnimation(View v, int fromWidth, int fromHeight, int toWidth, int toHeight, int margin) {
+            this.toHeight = toHeight;
+            this.toWidth = toWidth;
+            this.fromHeight = fromHeight;
+            this.fromWidth = fromWidth;
+            view = v;
+            this.margin = margin;
+            setDuration(DURATION);
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            float height = (toHeight - fromHeight) * interpolatedTime + fromHeight;
+            float width = (toWidth - fromWidth) * interpolatedTime + fromWidth;
+            ConstraintLayout.LayoutParams p = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+            p.height = (int) height;
+            p.width = (int) width;
+            p.rightMargin = margin;
+            p.bottomMargin = margin;
+            view.requestLayout();
+        }
+    }
     //endregion
 }
