@@ -1020,11 +1020,13 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             selectedMarker.remove();
             markerList.remove(index);
             if (index == 0 && lastIndex == 0) { // 只有一个标记
+                firstLine.remove();
+                firstLine = null;
                 // 设置前一个坐标点
                 lastPointPos = null;
             } else if (index == 0) { // 第一个标记
                 // 移除画线
-                Polyline polyline = todoLineList.get(index);
+                Polyline polyline = todoLineList.get(0);
                 polyline.remove();
                 todoLineList.remove(index);
                 if (curDronePos != null) {
@@ -1035,7 +1037,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                     // 重新画线
                     PolylineOptions polylineOptions = getTodoPolylineOptions();
                     polylineOptions.add(curDronePos, markerList.get(0).getPosition());
-                    todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
+                    firstLine = aMap.addPolyline(polylineOptions);
                 }
                 // 更新后续标记数字
                 for (int i = index; i < lastIndex; i++) {
