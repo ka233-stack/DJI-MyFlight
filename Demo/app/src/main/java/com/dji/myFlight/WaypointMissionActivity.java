@@ -205,15 +205,6 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             aMap = mapView.getMap();
             aMap.setOnMapClickListener(this);// add the listener for click for amap object
         }
-        LatLng beijing = new LatLng(39.9149, 116.4039);
-        MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(beijing);
-        markerOption.title("天安门");
-        // 将Marker设置为贴地显示，可以双指下拉地图查看效果
-        markerOption.setFlat(true);//设置marker平贴地图效果
-        aMap.addMarker(markerOption);
-        aMap.moveCamera(CameraUpdateFactory.newLatLng(beijing));
-
         mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
         mUiSettings.setZoomControlsEnabled(false);
 
