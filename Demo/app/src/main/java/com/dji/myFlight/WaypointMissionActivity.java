@@ -470,6 +470,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     }
 
     private void addPointByLonLat() {
+<<<<<<< HEAD
         if ((editText_v.getText().toString().equals("")) || (editText_v1.getText().toString().equals(""))) {
             showToast("请先输入经纬度");
         } else {
@@ -491,6 +492,25 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                     waypointList.add(mWaypoint);
                     waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
                 }
+=======
+        double point_v = Double.parseDouble(editText_v.getText().toString());
+        double point_v1 = Double.parseDouble(editText_v1.getText().toString());
+        showToast(editText_v.toString());
+        showToast(editText_v1.toString());
+        if (editText_v.getText().equals("") || editText_v.getText() == null || editText_v1.getText().equals("") || editText_v1.getText() == null)
+            showToast("Please Enter First");
+        else {
+            LatLng point = new LatLng(point_v, point_v1);
+            markWaypoint(point);
+            Waypoint mWaypoint = new Waypoint(point.latitude, point.longitude, altitude);
+            if (waypointMissionBuilder != null) {
+                waypointList.add(mWaypoint);
+                waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
+            } else {
+                waypointMissionBuilder = new WaypointMission.Builder();
+                waypointList.add(mWaypoint);
+                waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
+>>>>>>> parent of 5633917 (喜提晚饭)
             }
         }
     }
@@ -786,6 +806,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     }
 
     private void set_settings() {
+<<<<<<< HEAD
 
         if ((speed_edittext.getText().toString().equals("")) || (altitude_edittext.getText().toString().equals(""))) {
             showToast("您还没有输入速度或者高度的值");
@@ -793,6 +814,10 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             this.mSpeed = Float.parseFloat(speed_edittext.getText().toString());
             this.altitude = Float.parseFloat(altitude_edittext.getText().toString());
         }
+=======
+        this.mSpeed = Float.parseFloat(speed_edittext.getText().toString());
+        this.altitude = Float.parseFloat(altitude_edittext.getText().toString());
+>>>>>>> parent of 5633917 (喜提晚饭)
         String action, angle;
         action = action_spinner.getSelectedItem().toString();
         angle = angle_spinner.getSelectedItem().toString();
@@ -956,50 +981,55 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         if (selectedMarker == null) {
             showToast("请先选中一个点");
         } else {
-            if ((change_point_v.getText().toString().equals("")) || (change_point_v1.getText().toString().equals(""))) {
-                showToast("请先输入经纬度");
-            } else {
-                double change_v = Double.parseDouble(change_point_v.getText().toString());
-                double change_v1 = Double.parseDouble(change_point_v1.getText().toString());
-                LatLng position = new LatLng(change_v, change_v1);
-                marker.setPosition(position);
+            double change_v = Double.parseDouble(change_point_v.getText().toString());
+            double change_v1 = Double.parseDouble(change_point_v1.getText().toString());
+            LatLng position = new LatLng(change_v, change_v1);
+            marker.setPosition(position);
 
-                int index, lastIndex;
-                index = -1;
-                lastIndex = todoLineList.size();
-                if (markerList.contains(marker))
-                    index = markerList.indexOf(marker);
+            int index, lastIndex;
+            index = -1;
+            lastIndex = todoLineList.size();
+            if (markerList.contains(marker))
+                index = markerList.indexOf(marker);
 
-                if (index == -1) { // 不存在该marker
-                    showToast("找不到该marker");
-                    return;
-                }
-                if (index < lastIndex) { // 后面还有marker
-                    Polyline polyline = todoLineList.get(index);
-                    LatLng pos = polyline.getOptions().getPoints().get(1);
-                    polyline.remove();
-                    todoLineList.remove(index);
-                    PolylineOptions polylineOptions = getTodoPolylineOptions();
-                    polylineOptions.add(marker.getPosition(), pos);
-                    todoLineList.add(index, aMap.addPolyline(polylineOptions));
-                }
-                if (index > 0) { // 前面还有marker
-                    Polyline polyline = todoLineList.get(index - 1);
-                    LatLng pos = polyline.getOptions().getPoints().get(0);
-                    polyline.remove();
-                    todoLineList.remove(index - 1);
-                    PolylineOptions polylineOptions = getTodoPolylineOptions();
-                    polylineOptions.add(pos, marker.getPosition());
-                    todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
-                }
-
+<<<<<<< HEAD
                 LatLng pos = marker.getPosition();
                 Waypoint waypoint = new Waypoint(pos.latitude, pos.longitude, altitude);
                 waypointList.set(index, waypoint);
                 // 设置lastPoint
                 if (index == lastIndex)
                     lastPointPos = marker.getPosition();
+=======
+            if (index == -1) { // 不存在该marker
+                showToast("找不到该marker");
+                return;
+>>>>>>> parent of 5633917 (喜提晚饭)
             }
+            if (index < lastIndex) { // 后面还有marker
+                Polyline polyline = todoLineList.get(index);
+                LatLng pos = polyline.getOptions().getPoints().get(1);
+                polyline.remove();
+                todoLineList.remove(index);
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(marker.getPosition(), pos);
+                todoLineList.add(index, aMap.addPolyline(polylineOptions));
+            }
+            if (index > 0) { // 前面还有marker
+                Polyline polyline = todoLineList.get(index - 1);
+                LatLng pos = polyline.getOptions().getPoints().get(0);
+                polyline.remove();
+                todoLineList.remove(index - 1);
+                PolylineOptions polylineOptions = getTodoPolylineOptions();
+                polylineOptions.add(pos, marker.getPosition());
+                todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
+            }
+
+            LatLng pos = marker.getPosition();
+            Waypoint waypoint = new Waypoint(pos.latitude, pos.longitude, altitude);
+            waypointList.set(index, waypoint);
+            // 设置lastPoint
+            if (index == lastIndex)
+                lastPoint = marker.getPosition();
         }
     }
 
