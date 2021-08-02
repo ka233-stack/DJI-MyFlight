@@ -56,6 +56,7 @@ import dji.sdk.mission.waypoint.WaypointMissionOperator;
 import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
+import dji.ux.beta.core.util.SettingDefinitions;
 import dji.ux.beta.core.widget.fpv.FPVWidget;
 
 public class WaypointMissionActivity extends FragmentActivity implements View.OnClickListener, OnMapClickListener {
@@ -126,6 +127,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         super.onResume();
         initFlightController();
         initUI();
+        fpvWidget.setVideoSource(SettingDefinitions.VideoSource.AUTO);
     }
 
     @Override
@@ -926,6 +928,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             scrollView.bringToFront();
             btnPanel.bringToFront();
             btn_change_mode.bringToFront();
+            fpvWidget.bringToFront();
             translationStart = -scrollView.getWidth();
             translationEnd = 0;
         }
@@ -946,6 +949,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                     point_settings_scroll_view.bringToFront();
                     btnPanel.bringToFront();
                     btn_change_mode.bringToFront();
+                    fpvWidget.bringToFront();
                 }
                 btnPanel.bringToFront();
                 isPanelOpen = !isPanelOpen;
@@ -970,6 +974,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             point_settings_scroll_view.bringToFront();
             btnPanel.bringToFront();
             btn_change_mode.bringToFront();
+            fpvWidget.bringToFront();
             translationStart = +point_settings_scroll_view.getWidth();
             translationEnd = 0;
         }
@@ -990,6 +995,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                     scrollView.bringToFront();
                     btnPanel.bringToFront();
                     btn_change_mode.bringToFront();
+                    fpvWidget.bringToFront();
                 }
                 btnPanel.bringToFront();
                 detailPanelVisible = !detailPanelVisible;

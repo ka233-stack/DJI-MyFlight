@@ -21,8 +21,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private TextView tvSDKVersion;
     protected ImageButton imgBtnGallery;
     protected TextView tvLoginState;
-    private Button fpvDemoBtn;
-    private Button betaBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +44,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         tvLoginState = (TextView) findViewById(R.id.login_state_info);
         imgBtnGallery = (ImageButton) findViewById(R.id.imgBtn_gallery);
         imgBtnGallery.setOnClickListener(this);
-        fpvDemoBtn.setOnClickListener(this);
-        betaBtn.setOnClickListener(this);
     }
 
     @Override
