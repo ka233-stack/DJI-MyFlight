@@ -33,7 +33,7 @@ import dji.ux.beta.training.widget.simulatorcontrol.SimulatorControlWidget;
 public class FPVForWayPointActivity extends AppCompatActivity implements View.OnClickListener {
 
     //region Fields
-    private final static String TAG = "ManualFlightActivity";
+    private final static String TAG = "FPVForWayPointActivity";
 
     protected RadarWidget radarWidget;
     protected FPVWidget fpvWidget;
