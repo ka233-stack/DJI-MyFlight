@@ -73,4 +73,17 @@
     <string name="sdk_version">DJI SDK 版本: %1$s</string>
     <string name="push_info">Push Info</string>
 
+    <string-array name="actionArray">
+        <item>无动作</item>
+        <item>自动返航</item>
+        <item>自动着陆</item>
+        <item>返回航线起始点</item>
+    </string-array>
+    <string-array name="angleArray">
+        <item>headingNext</item>
+        <item>headingInitDirec</item>
+        <item>headingRC</item>
+        <item>headingWP</item>
+    </string-array>
+
 </resources>

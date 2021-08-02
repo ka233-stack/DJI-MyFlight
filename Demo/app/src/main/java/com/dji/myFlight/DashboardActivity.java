@@ -60,7 +60,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             Intent intent = new Intent(this, ManualFlightActivity.class);
             startActivity(intent);
         } else if (id == R.id.imgBtn_control_routes) {
-            showToast("航线飞行");
+            Intent intent = new Intent(this, Waypoint1Activity.class);
+            startActivity(intent);
         } else if (id == R.id.imgBtn_gallery) {
             Intent intent = new Intent(this, GalleryActivity.class);
             startActivity(intent);

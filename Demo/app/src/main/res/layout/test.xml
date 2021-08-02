@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ScrollView
+        android:id="@+id/settings_scroll_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_gray"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/addPoint_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="通过经纬度加点"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/addPoint_separator"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/map_settings_item_separator"
+                android:background="@color/colorAccent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addPoint_text" />
+
+            <EditText
+                android:id="@+id/point_v"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_map_type_bg"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="22.5362"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addPoint_separator" />
+
+            <EditText
+                android:id="@+id/point_v1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_map_type_bg"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="113.9454"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/point_v" />
+
+            <Button
+                android:id="@+id/btn_commit"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="提交"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/point_v1" />
+
+            <TextView
+                android:id="@+id/editPoint_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="地图控制"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_commit" />
+
+            <View
+                android:id="@+id/editPoint_separator"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/map_settings_item_separator"
+                android:background="@color/colorAccent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editPoint_text" />
+
+            <Button
+                android:id="@+id/btn_addPoint_mode"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="加点"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editPoint_separator" />
+
+            <Button
+                android:id="@+id/btn_clear_all_points"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="清除所有点"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_addPoint_mode" />
+
+            <TextView
+                android:id="@+id/settings_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="飞行设置"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_clear_all_points" />
+
+            <View
+                android:id="@+id/settings_separator"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/map_settings_item_separator"
+                android:background="@color/colorAccent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/settings_text" />
+
+            <TextView
+                android:id="@+id/speed_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="速度"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/settings_separator" />
+
+            <EditText
+                android:id="@+id/speed_edittxet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_map_type_bg"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/speed_text" />
+
+            <TextView
+                android:id="@+id/altitude_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="高度"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/speed_edittxet" />
+
+            <EditText
+                android:id="@+id/altitude_edittext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_map_type_bg"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/altitude_text" />
+
+            <TextView
+                android:id="@+id/action_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="完成后动作"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/altitude_edittext" />
+
+            <Spinner
+                android:id="@+id/action_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/bg_spinner"
+                android:entries="@array/actionArray"
+                android:paddingRight="30dp"
+                android:spinnerMode="dropdown"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/action_text" />
+
+            <TextView
+                android:id="@+id/angle_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="飞行器偏航角"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/action_spinner" />
+
+            <Spinner
+                android:id="@+id/angle_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/bg_spinner"
+                android:entries="@array/angleArray"
+                android:paddingRight="30dp"
+                android:spinnerMode="dropdown"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/angle_text" />
+
+            <TextView
+                android:id="@+id/start_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="飞行控制"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/angle_spinner" />
+
+            <View
+                android:id="@+id/start_separator"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/map_settings_item_separator"
+                android:background="@color/colorAccent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/start_text" />
+
+            <Button
+                android:id="@+id/btn_upload"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="上传航线"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/start_separator" />
+
+            <Button
+                android:id="@+id/btn_start"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="开始飞行"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_upload" />
+
+            <Button
+                android:id="@+id/btn_stop"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="停止飞行"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_start" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/point_settings_scroll_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.6"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_gray"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/changePoint_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="更改某点坐标"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/changePoint_separator"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/map_settings_item_separator"
+                android:background="@color/colorAccent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/changePoint_text" />
+
+            <EditText
+                android:id="@+id/change_point_v"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_map_type_bg"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="请先选点"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/changePoint_separator" />
+
+            <EditText
+                android:id="@+id/change_point_v1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_map_type_bg"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:text="请先选点"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/change_point_v" />
+
+            <Button
+                android:id="@+id/btn_change_commit"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="修改"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/change_point_v1" />
+
+            <Button
+                android:id="@+id/btn_remove_point"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/map_settings_item_separator"
+                android:background="@drawable/selector_map_type_bg"
+                android:padding="10dp"
+                android:text="清除"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_change_commit" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/btn_settings"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:background="@color/light_gray_300"
+        android:padding="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_settings_white_24dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/btn_change_mode"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:background="@color/light_gray_300"
+        android:padding="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_settings_white_24dp"
+        tools:ignore="ContentDescription" />
+
+    <dji.ux.beta.core.widget.fpv.FPVWidget
+        android:id="@+id/widget_fpv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:uxsdk_onStateChange="@+id/widget_fpv_interaction"
+        app:uxsdk_sourceCameraNameVisibility="false"
+        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintHeight_percent="0.25">
+
+        <dji.ux.beta.core.widget.radar.RadarWidget
+            android:id="@+id/widget_radar"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+    </dji.ux.beta.core.widget.fpv.FPVWidget>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
