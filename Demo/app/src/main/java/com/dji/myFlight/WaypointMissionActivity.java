@@ -663,7 +663,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             removePoint();
         } else if (id == R.id.widget_fpv) {
             Intent intent = new Intent(this, FPVForWayPointActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         }
     }

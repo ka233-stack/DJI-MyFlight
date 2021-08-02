@@ -164,6 +164,7 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
                         }
                     }
                 }));
+        fpvWidget.setVideoSource(SettingDefinitions.VideoSource.AUTO);
     }
 
     @Override
@@ -213,7 +214,7 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
      */
     private void onViewClick(View view) {
         Intent intent = new Intent(this, WaypointMissionActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
     }
 
