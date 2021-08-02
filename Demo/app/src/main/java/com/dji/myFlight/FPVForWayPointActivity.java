@@ -58,6 +58,7 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
         mapWidget.initAMap(map -> {
             map.setOnMapClickListener(latLng -> onViewClick(mapWidget));
             map.getUiSettings().setZoomControlsEnabled(false);
+            map.getUiSettings().setScrollGesturesEnabled(false);
         });
         mapWidget.getUserAccountLoginWidget().setVisibility(View.GONE);
         mapWidget.onCreate(savedInstanceState);

@@ -74,6 +74,7 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
         mapWidget.initAMap(map -> {
             map.setOnMapClickListener(latLng -> onViewClick(mapWidget));
             map.getUiSettings().setZoomControlsEnabled(false);
+            map.getUiSettings().setScrollGesturesEnabled(false);
         });
         mapWidget.getUserAccountLoginWidget().setVisibility(View.GONE);
         mapWidget.onCreate(savedInstanceState);
@@ -224,6 +225,7 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
 
             // 启用FPV上的互动
             fpvInteractionWidget.setInteractionEnabled(true);
+            mapWidget.getMap().getUiSettings().setScrollGesturesEnabled(false);
             isMapMini = true;
         } else if (view == mapWidget && isMapMini) { // 拍摄模式
             // widget重新排序
@@ -234,6 +236,7 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
             // 禁用FPV上的互动
             fpvInteractionWidget.setInteractionEnabled(false);
             isMapMini = false;
+            mapWidget.getMap().getUiSettings().setScrollGesturesEnabled(true);
         }
     }
 

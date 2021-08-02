@@ -632,6 +632,9 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                 line.remove();
             }
             todoLineList.clear();
+            if (waypointMissionBuilder == null) {
+                waypointMissionBuilder = new WaypointMission.Builder();
+            }
             waypointMissionBuilder.waypointList(waypointList);
             updateDroneLocation();
             lastPoint = null;
