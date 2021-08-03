@@ -134,7 +134,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         } else if (!DJISDKManager.getInstance().hasSDKRegistered()) {
             startSDKRegistration();
         } else {
-            showToast("test");
+
         }
     }
 
@@ -238,7 +238,7 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
         tvProduct = (TextView) findViewById(R.id.text_product_info);
         btnOpen = (Button) findViewById(R.id.btn_open);
         btnOpen.setOnClickListener(this);
-        // btnOpen.setEnabled(false);
+        btnOpen.setEnabled(false);
         tvSDKVersion = (TextView) findViewById(R.id.text_sdk_version);
         tvSDKVersion.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
         tvBindingState = (TextView) findViewById(R.id.tv_binding_state_info);
