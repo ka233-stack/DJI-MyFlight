@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -192,6 +193,16 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         fpvWidget.setOnClickListener(this);
 
         tvAngleDescription = (TextView) findViewById(R.id.angle_description);
+
+        //
+        String[] mItems1 = getResources().getStringArray(R.array.actionArray);
+        String[] mItems2 = getResources().getStringArray(R.array.angleArray);
+        ArrayAdapter adapter1 = new ArrayAdapter<String>(WaypointMissionActivity.this,
+                R.layout.spinner_text,mItems1);
+        ArrayAdapter adapter2 = new ArrayAdapter<String>(WaypointMissionActivity.this,
+                R.layout.spinner_text,mItems2);
+        action_spinner.setAdapter(adapter1);
+        angle_spinner.setAdapter(adapter2);
     }
 
 
@@ -855,7 +866,6 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             translationStart = 0;
             translationEnd = -scrollView.getWidth();
         } else {
-
             scrollView.bringToFront();
             btnPanel.bringToFront();
             btn_change_mode.bringToFront();
@@ -877,7 +887,9 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             public void onAnimationEnd(Animation animation) {
                 if (isPanelOpen) {
                     mapView.bringToFront();
-                    point_settings_scroll_view.bringToFront();
+                    if(selectedMarker !=null) {
+                        point_settings_scroll_view.bringToFront();
+                    }
                     btnPanel.bringToFront();
                     btn_change_mode.bringToFront();
                     fpvWidget.bringToFront();
