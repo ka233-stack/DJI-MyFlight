@@ -67,7 +67,4 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         imgBtnControlManual.setEnabled(true);
     }
 
-    private void showToast(final String toastMsg) {
-        runOnUiThread(() -> Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show());
-    }
 }
