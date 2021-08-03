@@ -198,9 +198,9 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         String[] mItems1 = getResources().getStringArray(R.array.actionArray);
         String[] mItems2 = getResources().getStringArray(R.array.angleArray);
         ArrayAdapter adapter1 = new ArrayAdapter<String>(WaypointMissionActivity.this,
-                R.layout.spinner_text,mItems1);
+                R.layout.spinner_text, mItems1);
         ArrayAdapter adapter2 = new ArrayAdapter<String>(WaypointMissionActivity.this,
-                R.layout.spinner_text,mItems2);
+                R.layout.spinner_text, mItems2);
         action_spinner.setAdapter(adapter1);
         angle_spinner.setAdapter(adapter2);
     }
@@ -887,7 +887,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             public void onAnimationEnd(Animation animation) {
                 if (isPanelOpen) {
                     mapView.bringToFront();
-                    if(selectedMarker !=null) {
+                    if (selectedMarker != null) {
                         point_settings_scroll_view.bringToFront();
                     }
                     btnPanel.bringToFront();
