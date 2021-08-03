@@ -58,7 +58,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/title_seeting_panel" />
 
             <EditText
-                android:id="@+id/point_v"
+                android:id="@+id/et_add_point_latitude"
                 android:layout_width="150sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
@@ -72,7 +72,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/addPoint_separator" />
 
             <EditText
-                android:id="@+id/point_v1"
+                android:id="@+id/et_add_point_longitude"
                 android:layout_width="150sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
@@ -83,10 +83,10 @@
                 android:textColor="@color/yellow"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/point_v" />
+                app:layout_constraintTop_toBottomOf="@+id/et_add_point_latitude" />
 
             <Button
-                android:id="@+id/btn_commit"
+                android:id="@+id/btn_add_point_by_latlng"
                 android:layout_width="100sp"
                 android:layout_height="40dp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
@@ -96,7 +96,7 @@
                 android:textColor="@color/lightBlue"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/point_v1" />
+                app:layout_constraintTop_toBottomOf="@+id/et_add_point_longitude" />
 
             <TextView
                 android:id="@+id/editPoint_text"
@@ -111,7 +111,7 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_commit" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_add_point_by_latlng" />
 
             <View
                 android:id="@+id/editPoint_separator"
@@ -124,7 +124,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/editPoint_text" />
 
             <Button
-                android:id="@+id/btn_addPoint_mode"
+                android:id="@+id/btn_add_point_by_map_mode"
                 android:layout_width="150sp"
                 android:layout_height="40sp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
@@ -147,7 +147,7 @@
                 android:textColor="@color/red"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_addPoint_mode" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_add_point_by_map_mode" />
 
             <TextView
                 android:id="@+id/settings_text"
@@ -191,7 +191,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/settings_separator" />
 
             <EditText
-                android:id="@+id/speed_edittxet"
+                android:id="@+id/et_speed"
                 android:layout_width="50sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
@@ -214,11 +214,11 @@
                 android:text="高度"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/speed_edittxet"
+                app:layout_constraintStart_toEndOf="@+id/et_speed"
                 app:layout_constraintTop_toBottomOf="@+id/settings_separator"  />
 
             <EditText
-                android:id="@+id/altitude_edittext"
+                android:id="@+id/et_altitude"
                 android:layout_width="50sp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_map_type_bg"
@@ -243,7 +243,7 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/altitude_edittext" />
+                app:layout_constraintTop_toBottomOf="@+id/et_altitude" />
 
             <Spinner
                 android:id="@+id/action_spinner"
@@ -337,7 +337,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/start_text" />
 
             <Button
-                android:id="@+id/btn_upload"
+                android:id="@+id/btn_upload_waypoint_mission"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
@@ -350,7 +350,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/start_separator" />
 
             <Button
-                android:id="@+id/btn_start"
+                android:id="@+id/btn_start_waypoint_mission"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="@dimen/map_settings_item_separator"
@@ -360,7 +360,7 @@
                 android:textColor="@color/lightBlue"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_upload" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_upload_waypoint_mission" />
 
             <Button
                 android:id="@+id/btn_stop"
@@ -373,7 +373,7 @@
                 android:textColor="@color/red"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_start" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_start_waypoint_mission" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

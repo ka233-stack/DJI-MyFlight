@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -62,20 +61,17 @@ import dji.ux.beta.core.widget.fpv.FPVWidget;
 
 public class WaypointMissionActivity extends FragmentActivity implements View.OnClickListener, OnMapClickListener {
 
-    protected static final String TAG = "WaypointMissionActivity";
-
     private static final int TODO_LINE = 0;
     private static final int FINISHED_LINE = 1;
 
     private MapView mapView;
     private AMap aMap;
 
-    private EditText editText_v, editText_v1;
-    private Button btn_commit;
-    private Button btn_addPoint_mode, btnClearAllPoints;
-    private EditText speed_edittext, altitude_edittext;
+    private EditText etAddPointLatitude, etAddPointLongitude;
+    private Button btnAddPointByLatLng, btn_clearLastPoint, btnAddPointByMapMode, btnClearAllPoints;
+    private EditText etSpeed, etAltitude;
     private Spinner action_spinner, angle_spinner;
-    private Button btn_upload, btn_start, btn_stop;
+    private Button btnUploadWaypointMission, btnStartWaypointMission, btn_stop;
 
     // 上一个航点坐标点
     private LatLng lastPointPos = null;
@@ -118,7 +114,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     private Marker selectedMarker;
     protected TextView changePoint_text;
     protected ImageView btn_change_mode;
-    protected Button btn_clearLastPoint;
+
 
     private UiSettings mUiSettings;//定义一个UiSettings对象
 
@@ -150,7 +146,6 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
      * @Description : RETURN Button RESPONSE FUNCTION
      */
     public void onReturn(View view) {
-        Log.d(TAG, "onReturn");
         this.finish();
     }
 
@@ -159,24 +154,24 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     }
 
     private void initUI() {
-        editText_v = (EditText) findViewById(R.id.point_v);
-        editText_v1 = (EditText) findViewById(R.id.point_v1);
-        btn_commit = (Button) findViewById(R.id.btn_commit);
-        btn_addPoint_mode = (Button) findViewById(R.id.btn_addPoint_mode);
+        etAddPointLatitude = (EditText) findViewById(R.id.et_add_point_latitude);
+        etAddPointLongitude = (EditText) findViewById(R.id.et_add_point_longitude);
+        btnAddPointByLatLng = (Button) findViewById(R.id.btn_add_point_by_latlng);
+        btnAddPointByMapMode = (Button) findViewById(R.id.btn_add_point_by_map_mode);
         btnClearAllPoints = (Button) findViewById(R.id.btn_clear_all_points);
-        speed_edittext = (EditText) findViewById(R.id.speed_edittxet);
-        altitude_edittext = (EditText) findViewById(R.id.altitude_edittext);
+        etSpeed = (EditText) findViewById(R.id.et_speed);
+        etAltitude = (EditText) findViewById(R.id.et_altitude);
         action_spinner = (Spinner) findViewById(R.id.action_spinner);
         angle_spinner = (Spinner) findViewById(R.id.angle_spinner);
-        btn_upload = (Button) findViewById(R.id.btn_upload);
-        btn_start = (Button) findViewById(R.id.btn_start);
+        btnUploadWaypointMission = (Button) findViewById(R.id.btn_upload_waypoint_mission);
+        btnStartWaypointMission = (Button) findViewById(R.id.btn_start_waypoint_mission);
         btn_stop = (Button) findViewById(R.id.btn_stop);
 
-        btn_commit.setOnClickListener(this);
-        btn_addPoint_mode.setOnClickListener(this);
+        btnAddPointByLatLng.setOnClickListener(this);
+        btnAddPointByMapMode.setOnClickListener(this);
         btnClearAllPoints.setOnClickListener(this);
-        btn_upload.setOnClickListener(this);
-        btn_start.setOnClickListener(this);
+        btnUploadWaypointMission.setOnClickListener(this);
+        btnStartWaypointMission.setOnClickListener(this);
         btn_stop.setOnClickListener(this);
 
         scrollView = (ScrollView) findViewById(R.id.settings_scroll_view);
@@ -204,9 +199,9 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
         if (aMap == null) {
             aMap = mapView.getMap();
-            aMap.setOnMapClickListener(this);// add the listener for click for amap object
+            aMap.setOnMapClickListener(this); // add the listener for click for amap object
         }
-        mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
+        mUiSettings = aMap.getUiSettings(); //实例化UiSettings类对象
         mUiSettings.setZoomControlsEnabled(false);
 
         // 绑定 Marker 被点击事件
@@ -429,7 +424,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         }
     }
 
-    //Add Listener for WaypointMissionOperator
+    // Add Listener for WaypointMissionOperator
     private void addListener() {
         if (getWaypointMissionOperator() != null) {
             getWaypointMissionOperator().addListener(eventNotificationListener);
@@ -477,14 +472,14 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     }
 
     private void addPointByLonLat() {
-        if ((editText_v.getText().toString().equals("")) || (editText_v1.getText().toString().equals(""))) {
+        if ((etAddPointLatitude.getText().toString().equals("")) || (etAddPointLongitude.getText().toString().equals(""))) {
             showToast("请先输入经纬度");
         } else {
-            double point_v = Double.parseDouble(editText_v.getText().toString());
-            double point_v1 = Double.parseDouble(editText_v1.getText().toString());
-            showToast(editText_v.toString());
-            showToast(editText_v1.toString());
-            if (editText_v.getText().equals("") || editText_v.getText() == null || editText_v1.getText().equals("") || editText_v1.getText() == null)
+            double point_v = Double.parseDouble(etAddPointLatitude.getText().toString());
+            double point_v1 = Double.parseDouble(etAddPointLongitude.getText().toString());
+            showToast(etAddPointLatitude.toString());
+            showToast(etAddPointLongitude.toString());
+            if (etAddPointLatitude.getText().equals("") || etAddPointLatitude.getText() == null || etAddPointLongitude.getText().equals("") || etAddPointLongitude.getText() == null)
                 showToast("Please Enter First");
             else {
                 LatLng point = new LatLng(point_v, point_v1);
@@ -646,7 +641,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.btn_addPoint_mode) {
+        if (id == R.id.btn_add_point_by_map_mode) {
             enableDisableAdd();
         } else if (id == R.id.btn_clear_all_points) {
             runOnUiThread(() -> aMap.clear());
@@ -667,7 +662,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             if (detailPanelVisible) {
                 moveDetailPanel(300);
             }
-        } else if (id == R.id.btn_upload) {
+        } else if (id == R.id.btn_upload_waypoint_mission) {
             set_settings();
             if (!checkConditions()) {
                 showToast("请检查输入的参数");
@@ -675,11 +670,11 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                 configWayPointMission();
                 uploadWayPointMission();
             }
-        } else if (id == R.id.btn_start) {
+        } else if (id == R.id.btn_start_waypoint_mission) {
             startWaypointMission();
         } else if (id == R.id.btn_stop) {
             stopWaypointMission();
-        } else if (id == R.id.btn_commit) {
+        } else if (id == R.id.btn_add_point_by_latlng) {
             addPointByLonLat();
         } else if (id == R.id.btn_change_commit) {
             changePointPos();
@@ -706,7 +701,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
     private void enableDisableAdd() {
         isAdd = !isAdd;
-        btn_addPoint_mode.setText(isAdd ? "Exit" : "Add");
+        btnAddPointByMapMode.setText(isAdd ? "关闭地图选点" : "地图选点");
     }
 
     private void configWayPointMission() {
@@ -795,11 +790,11 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
     private void set_settings() {
 
-        if ((speed_edittext.getText().toString().equals("")) || (altitude_edittext.getText().toString().equals(""))) {
+        if ((etSpeed.getText().toString().equals("")) || (etAltitude.getText().toString().equals(""))) {
             showToast("您还没有输入速度或者高度的值");
         } else {
-            this.mSpeed = Float.parseFloat(speed_edittext.getText().toString());
-            this.altitude = Float.parseFloat(altitude_edittext.getText().toString());
+            this.mSpeed = Float.parseFloat(etSpeed.getText().toString());
+            this.altitude = Float.parseFloat(etAltitude.getText().toString());
         }
         String action, angle;
         action = action_spinner.getSelectedItem().toString();
@@ -949,7 +944,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     private void showSelectedMarkerDetailPanel() {
         LatLng position = selectedMarker.getPosition();
         int index = markerList.indexOf(selectedMarker);
-        changePoint_text.setText(String.format("标点%d", index + 1));
+        changePoint_text.setText(String.format("航点%d", index + 1));
         change_point_v.setText(String.valueOf(position.latitude));
         change_point_v1.setText(String.valueOf(position.longitude));
         if (!detailPanelVisible) {
