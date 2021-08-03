@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +41,7 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
     protected RTKWidget rtkWidget;
     protected SimulatorControlWidget simulatorControlWidget;
     private CompositeDisposable compositeDisposable;
+    private Button btnGallery;
     //endregion
 
     //region Lifecycle
@@ -88,8 +90,11 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
         rtkWidget = (RTKWidget) findViewById(R.id.widget_rtk);
         simulatorControlWidget = (SimulatorControlWidget) findViewById(R.id.widget_simulator_control);
 
+        btnGallery = (Button) findViewById(R.id.btn_mediaManager);
+
         secondaryFPVWidget.setOnClickListener(this);
         fpvWidget.setOnClickListener(this);
+        btnGallery.setOnClickListener(this);
     }
 
     @Override
@@ -233,6 +238,10 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
             swapVideoSource();
         } else if (id == R.id.widget_fpv) {
             onViewClick(fpvWidget);
+        } else if (id == R.id.btn_mediaManager) {
+            Intent intent = new Intent(this, GalleryActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
         }
     }
 }

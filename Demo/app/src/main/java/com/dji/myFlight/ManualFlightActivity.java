@@ -1,11 +1,13 @@
 package com.dji.myFlight;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +41,7 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
     protected FPVWidget secondaryFPVWidget;
     protected ConstraintLayout parentView;
     protected SystemStatusListPanelWidget systemStatusListPanelWidget;
+    protected Button btnGallery;
 
     protected RTKWidget rtkWidget;
     protected SimulatorControlWidget simulatorControlWidget;
@@ -100,6 +103,7 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
         secondaryFPVWidget = (FPVWidget) findViewById(R.id.widget_secondary_fpv);
         parentView = (ConstraintLayout) findViewById(R.id.root_view);
         systemStatusListPanelWidget = (SystemStatusListPanelWidget) findViewById(R.id.widget_panel_system_status_list);
+        btnGallery = (Button) findViewById(R.id.btn_mediaManager);
 
         // camera
         rtkWidget = (RTKWidget) findViewById(R.id.widget_rtk);
@@ -107,6 +111,7 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
 
         fpvWidget.setOnClickListener(this);
         secondaryFPVWidget.setOnClickListener(this);
+        btnGallery.setOnClickListener(this);
     }
 
     @Override
@@ -286,6 +291,10 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
             swapVideoSource();
         } else if (id == R.id.widget_fpv) {
             onViewClick(fpvWidget);
+        } else if (id == R.id.btn_mediaManager) {
+            Intent intent = new Intent(this, GalleryActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
         }
     }
     //endregion
