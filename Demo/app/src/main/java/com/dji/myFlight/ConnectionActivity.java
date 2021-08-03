@@ -42,18 +42,19 @@ import dji.sdk.useraccount.UserAccountManager;
 public class ConnectionActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = ConnectionActivity.class.getName();
+    private static final int REQUEST_PERMISSION_CODE = 12345;
 
     private static boolean isAppStarted = false;
 
-    private TextView tvConnectionStatus;
-    private TextView tvProduct;
     private Button btnOpen;
-    private TextView tvSDKVersion;
-    protected Button btnLogin;
-    protected Button btnLogout;
+    private Button btnLogin;
+    private Button btnLogout;
+    protected TextView tvConnectionStatus;
+    protected TextView tvProductInfo;
     protected TextView tvBindingState;
     protected TextView tvAppActivationState;
     protected TextView tvUsername;
+    protected TextView tvSDKVersion;
     // 添加侦听器获取应用程序激活状态和飞行器绑定状态
     private AppActivationManager appActivationManager;
     private AppActivationState.AppActivationStateListener activationStateListener;
@@ -77,7 +78,6 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
     private List<String> missingPermission = new ArrayList<>();
     private AtomicBoolean isRegistrationInProgress = new AtomicBoolean(false);
-    private static final int REQUEST_PERMISSION_CODE = 12345;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,17 +235,19 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
     private void initUI() {
         tvConnectionStatus = (TextView) findViewById(R.id.text_connection_status);
-        tvProduct = (TextView) findViewById(R.id.text_product_info);
+        tvProductInfo = (TextView) findViewById(R.id.text_product_info);
         btnOpen = (Button) findViewById(R.id.btn_open);
-        btnOpen.setOnClickListener(this);
-        btnOpen.setEnabled(false);
         tvSDKVersion = (TextView) findViewById(R.id.text_sdk_version);
-        tvSDKVersion.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
         tvBindingState = (TextView) findViewById(R.id.tv_binding_state_info);
         tvAppActivationState = (TextView) findViewById(R.id.tv_activation_state_info);
         tvUsername = (TextView) findViewById(R.id.login_state_info);
         btnLogin = (Button) findViewById(R.id.btn_login);
         btnLogout = (Button) findViewById(R.id.btn_logout);
+
+        btnOpen.setEnabled(false);
+        tvSDKVersion.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
+
+        btnOpen.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
     }
@@ -263,13 +265,10 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
 
     private void setUpListener() {
         // Example of Listener
-        activationStateListener = new AppActivationState.AppActivationStateListener() {
-            @Override
-            public void onUpdate(final AppActivationState appActivationState) {
-                ConnectionActivity.this.runOnUiThread(() -> tvAppActivationState.setText(appActivationState.toString()));
-            }
-        };
-        bindingStateListener = bindingState -> ConnectionActivity.this.runOnUiThread(() -> tvBindingState.setText(bindingState.toString()));
+        activationStateListener = appActivationState -> ConnectionActivity.this.runOnUiThread(
+                () -> tvAppActivationState.setText(appActivationState.toString()));
+        bindingStateListener = bindingState -> ConnectionActivity.this.runOnUiThread(
+                () -> tvBindingState.setText(bindingState.toString()));
     }
 
     private void tearDownListener() {
@@ -303,15 +302,15 @@ public class ConnectionActivity extends Activity implements View.OnClickListener
             tvConnectionStatus.setText(String.format("状态: 已连接%s", str));
 
             if (null != mProduct.getModel()) {
-                tvProduct.setText(mProduct.getModel().getDisplayName());
+                tvProductInfo.setText(mProduct.getModel().getDisplayName());
             } else {
-                tvProduct.setText(R.string.product_information);
+                tvProductInfo.setText(R.string.product_info);
             }
         } else {
             Log.v(TAG, "refreshSDK: False");
             btnOpen.setEnabled(false);
 
-            tvProduct.setText(R.string.product_information);
+            tvProductInfo.setText(R.string.product_info);
             tvConnectionStatus.setText(R.string.connection_loose);
         }
     }

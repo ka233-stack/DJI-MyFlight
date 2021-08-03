@@ -1,10 +1,8 @@
 package com.dji.myFlight;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,9 +15,6 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -68,8 +63,6 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     private TextView mPushTv;
     private Camera camera;
     private SettingsDefinitions.StorageLocation mediaStorageLocation;
-
-    private static final int REQUEST_PERMISSION_CODE = 12345;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

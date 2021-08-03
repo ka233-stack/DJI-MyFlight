@@ -11,8 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.dji.mapkit.core.maps.DJIMap;
-
 import dji.common.airlink.PhysicalSource;
 import dji.common.product.Model;
 import dji.thirdparty.io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,7 +20,6 @@ import dji.ux.beta.cameracore.widget.fpvinteraction.FPVInteractionWidget;
 import dji.ux.beta.core.extension.ViewExtensions;
 import dji.ux.beta.core.panel.systemstatus.SystemStatusListPanelWidget;
 import dji.ux.beta.core.panel.topbar.TopBarPanelWidget;
-import dji.ux.beta.core.util.DisplayUtil;
 import dji.ux.beta.core.util.SettingDefinitions;
 import dji.ux.beta.core.widget.fpv.FPVWidget;
 import dji.ux.beta.core.widget.gpssignal.GPSSignalWidget;
@@ -35,8 +32,6 @@ import dji.ux.beta.training.widget.simulatorcontrol.SimulatorControlWidget;
 public class ManualFlightActivity extends AppCompatActivity implements View.OnClickListener {
 
     //region Fields
-    private final static String TAG = "ManualFlightActivity";
-
     protected RadarWidget radarWidget;
     protected FPVWidget fpvWidget;
     protected FPVInteractionWidget fpvInteractionWidget;
@@ -100,17 +95,18 @@ public class ManualFlightActivity extends AppCompatActivity implements View.OnCl
     private void initUI() {
         radarWidget = (RadarWidget) findViewById(R.id.widget_radar);
         fpvWidget = (FPVWidget) findViewById(R.id.widget_fpv);
-        fpvWidget.setOnClickListener(this);
         fpvInteractionWidget = (FPVInteractionWidget) findViewById(R.id.widget_fpv_interaction);
         mapWidget = (MapWidget) findViewById(R.id.widget_map);
         secondaryFPVWidget = (FPVWidget) findViewById(R.id.widget_secondary_fpv);
-        secondaryFPVWidget.setOnClickListener(this);
         parentView = (ConstraintLayout) findViewById(R.id.root_view);
         systemStatusListPanelWidget = (SystemStatusListPanelWidget) findViewById(R.id.widget_panel_system_status_list);
 
         // camera
         rtkWidget = (RTKWidget) findViewById(R.id.widget_rtk);
         simulatorControlWidget = (SimulatorControlWidget) findViewById(R.id.widget_simulator_control);
+
+        fpvWidget.setOnClickListener(this);
+        secondaryFPVWidget.setOnClickListener(this);
     }
 
     @Override

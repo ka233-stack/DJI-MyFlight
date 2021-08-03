@@ -3,10 +3,7 @@ package com.dji.myFlight;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,15 +32,13 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
     //region Fields
     protected RadarWidget radarWidget;
     protected FPVWidget fpvWidget;
+    protected FPVWidget secondaryFPVWidget;
     protected FPVInteractionWidget fpvInteractionWidget;
     protected MapWidget mapWidget;
-    protected FPVWidget secondaryFPVWidget;
     protected ConstraintLayout parentView;
     protected SystemStatusListPanelWidget systemStatusListPanelWidget;
-
     protected RTKWidget rtkWidget;
     protected SimulatorControlWidget simulatorControlWidget;
-
     private CompositeDisposable compositeDisposable;
     //endregion
 
@@ -52,7 +47,7 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_flight);
-        
+
         initUI();
         setM200SeriesWarningLevelRanges();
         mapWidget.initAMap(map -> {
@@ -84,17 +79,17 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
     private void initUI() {
         radarWidget = (RadarWidget) findViewById(R.id.widget_radar);
         fpvWidget = (FPVWidget) findViewById(R.id.widget_fpv);
-        fpvWidget.setOnClickListener(this);
         fpvInteractionWidget = (FPVInteractionWidget) findViewById(R.id.widget_fpv_interaction);
         mapWidget = (MapWidget) findViewById(R.id.widget_map);
         secondaryFPVWidget = (FPVWidget) findViewById(R.id.widget_secondary_fpv);
-        secondaryFPVWidget.setOnClickListener(this);
         parentView = (ConstraintLayout) findViewById(R.id.root_view);
         systemStatusListPanelWidget = (SystemStatusListPanelWidget) findViewById(R.id.widget_panel_system_status_list);
-
         // camera
         rtkWidget = (RTKWidget) findViewById(R.id.widget_rtk);
         simulatorControlWidget = (SimulatorControlWidget) findViewById(R.id.widget_simulator_control);
+
+        secondaryFPVWidget.setOnClickListener(this);
+        fpvWidget.setOnClickListener(this);
     }
 
     @Override

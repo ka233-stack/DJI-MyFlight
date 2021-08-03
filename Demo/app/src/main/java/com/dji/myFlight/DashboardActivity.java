@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,11 +14,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private TextView tvConnectionStatus;
     private TextView tvProductInfo;
+    private TextView tvSDKVersion;
+    private TextView tvLoginState;
     private ImageButton imgBtnControlManual;
     private ImageButton imgBtnControlRoutes;
-    private TextView tvSDKVersion;
-    protected ImageButton imgBtnGallery;
-    protected TextView tvLoginState;
+    private ImageButton imgBtnGallery;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +34,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private void initUI() {
         tvConnectionStatus = (TextView) findViewById(R.id.text_connection_status);
         tvProductInfo = (TextView) findViewById(R.id.text_product_info);
+        tvLoginState = (TextView) findViewById(R.id.login_state_info);
+        tvSDKVersion = (TextView) findViewById(R.id.text_sdk_version);
         imgBtnControlManual = (ImageButton) findViewById(R.id.imgBtn_control_manual);
         imgBtnControlRoutes = (ImageButton) findViewById(R.id.imgBtn_control_routes);
+        imgBtnGallery = (ImageButton) findViewById(R.id.imgBtn_gallery);
+
+        tvSDKVersion.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
+
         imgBtnControlManual.setOnClickListener(this);
         imgBtnControlRoutes.setOnClickListener(this);
-        tvSDKVersion = (TextView) findViewById(R.id.text_sdk_version);
-        tvSDKVersion.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
-        tvLoginState = (TextView) findViewById(R.id.login_state_info);
-        imgBtnGallery = (ImageButton) findViewById(R.id.imgBtn_gallery);
         imgBtnGallery.setOnClickListener(this);
     }
 

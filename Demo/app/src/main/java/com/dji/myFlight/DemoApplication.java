@@ -23,7 +23,6 @@ import dji.sdk.sdkmanager.DJISDKManager;
 
 public class DemoApplication extends Application {
     public static final String FLAG_CONNECTION_CHANGE = "demo_connection_change";
-    private static final String TAG = ConnectionActivity.class.getName();
 
     private static BaseProduct mProduct;
     public Handler mHandler;
