@@ -42,6 +42,11 @@ import java.util.List;
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.FlightControllerState;
 import dji.common.flightcontroller.LocationCoordinate3D;
+import dji.common.gimbal.Attitude;
+import dji.common.gimbal.Rotation;
+import dji.common.mission.hotpoint.HotpointHeading;
+import dji.common.mission.hotpoint.HotpointMission;
+import dji.common.mission.hotpoint.HotpointStartPoint;
 import dji.common.mission.waypoint.Waypoint;
 import dji.common.mission.waypoint.WaypointMission;
 import dji.common.mission.waypoint.WaypointMissionDownloadEvent;
@@ -50,9 +55,19 @@ import dji.common.mission.waypoint.WaypointMissionFinishedAction;
 import dji.common.mission.waypoint.WaypointMissionFlightPathMode;
 import dji.common.mission.waypoint.WaypointMissionHeadingMode;
 import dji.common.mission.waypoint.WaypointMissionUploadEvent;
+import dji.common.model.LocationCoordinate2D;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.base.BaseProduct;
 import dji.sdk.flightcontroller.FlightController;
+import dji.sdk.mission.MissionControl;
+import dji.sdk.mission.timeline.TimelineElement;
+import dji.sdk.mission.timeline.TimelineEvent;
+import dji.sdk.mission.timeline.actions.GimbalAttitudeAction;
+import dji.sdk.mission.timeline.actions.GoHomeAction;
+import dji.sdk.mission.timeline.actions.GoToAction;
+import dji.sdk.mission.timeline.actions.HotpointAction;
+import dji.sdk.mission.timeline.actions.ShootPhotoAction;
+import dji.sdk.mission.timeline.actions.TakeOffAction;
 import dji.sdk.mission.waypoint.WaypointMissionOperator;
 import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
 import dji.sdk.products.Aircraft;
@@ -60,7 +75,15 @@ import dji.sdk.sdkmanager.DJISDKManager;
 import dji.ux.beta.core.util.SettingDefinitions;
 import dji.ux.beta.core.widget.fpv.FPVWidget;
 
-public class WaypointMissionActivity extends FragmentActivity implements View.OnClickListener, OnMapClickListener {
+public class WaypointMissionV2Activity extends FragmentActivity implements View.OnClickListener, OnMapClickListener {
+
+    private Button startMission, stopMission, loadMission;
+    private MissionControl missionControl;
+    private TimelineElement preElement;
+    private TimelineEvent preEvent;
+    private double baseLatitude = 39;
+    private double baseLongitude = 113;
+    private final float baseAltitude = 30.0f;
 
     private static final int TODO_LINE = 0;
     private static final int FINISHED_LINE = 1;
@@ -152,7 +175,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     }
 
     private void setResultToToast(final String string) {
-        WaypointMissionActivity.this.runOnUiThread(() -> Toast.makeText(WaypointMissionActivity.this, string, Toast.LENGTH_SHORT).show());
+        WaypointMissionV2Activity.this.runOnUiThread(() -> Toast.makeText(WaypointMissionV2Activity.this, string, Toast.LENGTH_SHORT).show());
     }
 
     private void initUI() {
@@ -182,9 +205,9 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
 
         String[] mItems1 = getResources().getStringArray(R.array.actionArray);
         String[] mItems2 = getResources().getStringArray(R.array.angleArray);
-        ArrayAdapter adapter1 = new ArrayAdapter<String>(WaypointMissionActivity.this,
+        ArrayAdapter adapter1 = new ArrayAdapter<String>(WaypointMissionV2Activity.this,
                 R.layout.spinner_text, mItems1);
-        ArrayAdapter adapter2 = new ArrayAdapter<String>(WaypointMissionActivity.this,
+        ArrayAdapter adapter2 = new ArrayAdapter<String>(WaypointMissionV2Activity.this,
                 R.layout.spinner_text, mItems2);
         actionSpinner.setAdapter(adapter1);
         angleSpinner.setAdapter(adapter2);
@@ -298,13 +321,13 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
         public boolean onMarkerClick(Marker marker) {
             int index = markerList.indexOf(marker);
             // 更改当前点样式
-            View view = LayoutInflater.from(WaypointMissionActivity.this).inflate(R.layout.icon_marker_selected, null);
+            View view = LayoutInflater.from(WaypointMissionV2Activity.this).inflate(R.layout.icon_marker_selected, null);
             ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
             marker.setIcon(BitmapDescriptorFactory.fromView(view));
             // 更改前一标点样式
             if (selectedMarker != null && !marker.equals(selectedMarker)) {
                 index = markerList.indexOf(selectedMarker);
-                view = LayoutInflater.from(WaypointMissionActivity.this).inflate(R.layout.icon_marker, null);
+                view = LayoutInflater.from(WaypointMissionV2Activity.this).inflate(R.layout.icon_marker, null);
                 ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
                 selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
             }
@@ -318,7 +341,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_way_point_mission);
+        setContentView(R.layout.activity_way_point_mission_v2);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(DemoApplication.FLAG_CONNECTION_CHANGE);
@@ -701,6 +724,14 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
             Intent intent = new Intent(this, FPVForWayPointActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
+        } else if (id == R.id.startMission2) {
+            if (MissionControl.getInstance().scheduledCount() > 0) {
+                MissionControl.getInstance().startTimeline();
+            }
+        } else if (id == R.id.stopMission2) {
+            MissionControl.getInstance().stopTimeline();
+        } else if (id == R.id.loadMission2) {
+            initTimeline();
         }
     }
 
@@ -781,7 +812,7 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
     }
 
     private void setButtonAbility(Button btn, boolean b) {
-        WaypointMissionActivity.this.runOnUiThread(() -> btn.setEnabled(b));
+        WaypointMissionV2Activity.this.runOnUiThread(() -> btn.setEnabled(b));
     }
 
     private void stopWaypointMission() {
@@ -1098,5 +1129,49 @@ public class WaypointMissionActivity extends FragmentActivity implements View.On
                 moveDetailPanel(300);
             }
         }
+    }
+
+    private void initTimeline() {
+        List<TimelineElement> elements = new ArrayList<>();
+        missionControl = MissionControl.getInstance();
+        final TimelineEvent preEvent = null;
+
+        elements.add(new TakeOffAction());
+
+        Attitude attitude = new Attitude(-30, Rotation.NO_ROTATION, Rotation.NO_ROTATION);
+        GimbalAttitudeAction gimbalAction = new GimbalAttitudeAction(attitude);
+        gimbalAction.setCompletionTime(2);
+        elements.add(gimbalAction);
+
+        elements.add(new GoToAction(new LocationCoordinate2D(baseLatitude, baseLongitude), 10));
+
+        elements.add(ShootPhotoAction.newShootIntervalPhotoAction(3, 2));
+
+        //also waypoint missions addable with TimelineMission.elementFromWaypointMission(WaypointMission)
+
+        HotpointMission hotpointMission = new HotpointMission();
+        hotpointMission.setHotpoint(new LocationCoordinate2D(baseLatitude, baseLongitude));
+        hotpointMission.setAltitude(10);
+        hotpointMission.setRadius(10);
+        hotpointMission.setAngularVelocity(10);
+        HotpointStartPoint startPoint = HotpointStartPoint.NEAREST;
+        hotpointMission.setStartPoint(startPoint);
+        HotpointHeading heading = HotpointHeading.TOWARDS_HOT_POINT;
+        hotpointMission.setHeading(heading);
+        elements.add(new HotpointAction(hotpointMission, 360));
+
+        elements.add(new GoHomeAction());
+
+        attitude = new Attitude(0, Rotation.NO_ROTATION, Rotation.NO_ROTATION);
+        gimbalAction = new GimbalAttitudeAction(attitude);
+        gimbalAction.setCompletionTime(2);
+        elements.add(gimbalAction);
+
+        if (missionControl.scheduledCount() > 0) {
+            missionControl.unscheduleEverything();
+            missionControl.removeAllListeners();
+        }
+
+        missionControl.scheduleElements(elements);
     }
 }

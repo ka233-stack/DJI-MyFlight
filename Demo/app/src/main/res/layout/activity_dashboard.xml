@@ -88,6 +88,22 @@
         app:layout_constraintStart_toEndOf="@+id/text_app_name"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="80sp"
+        android:layout_height="50sp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/round_btn"
+        android:text="测试"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/text_app_name"
+        app:layout_constraintTop_toBottomOf="@+id/imgBtn_control_routes"/>
+
     <ImageButton
         android:id="@+id/imgBtn_gallery"
         style="@style/circle_button"

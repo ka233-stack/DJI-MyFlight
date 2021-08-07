@@ -3,6 +3,7 @@ package com.dji.myFlight;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private ImageButton imgBtnControlManual;
     private ImageButton imgBtnControlRoutes;
     private ImageButton imgBtnGallery;
+    private Button btnTest;
 
 
     @Override
@@ -39,12 +41,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         imgBtnControlManual = (ImageButton) findViewById(R.id.imgBtn_control_manual);
         imgBtnControlRoutes = (ImageButton) findViewById(R.id.imgBtn_control_routes);
         imgBtnGallery = (ImageButton) findViewById(R.id.imgBtn_gallery);
+        btnTest = (Button) findViewById(R.id.btn_test);
 
         tvSDKVersion.setText(getResources().getString(R.string.sdk_version, DJISDKManager.getInstance().getSDKVersion()));
 
         imgBtnControlManual.setOnClickListener(this);
         imgBtnControlRoutes.setOnClickListener(this);
         imgBtnGallery.setOnClickListener(this);
+        btnTest.setOnClickListener(this);
     }
 
     @Override
@@ -59,6 +63,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             startActivity(intent);
         } else if (id == R.id.imgBtn_gallery) {
             Intent intent = new Intent(this, GalleryActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.btn_test) {
+            Intent intent = new Intent(this, WaypointMissionV2Activity.class);
             startActivity(intent);
         }
     }

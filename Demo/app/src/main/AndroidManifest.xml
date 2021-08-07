@@ -121,6 +121,13 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".WaypointMissionV2Activity"
+            android:label="Map Widget"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/MapTheme" />
+
     </application>
 
 </manifest>
