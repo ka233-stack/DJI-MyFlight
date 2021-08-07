@@ -65,8 +65,8 @@
                 android:inputType="numberDecimal"
                 android:padding="5sp"
                 android:text="22.5362"
-                android:textColor="@color/yellow"
                 android:textSize="14sp"
+                android:textColor="@color/yellow"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addPoint_separator" />
@@ -79,8 +79,8 @@
                 android:inputType="numberDecimal"
                 android:padding="5sp"
                 android:text="113.9454"
-                android:textColor="@color/yellow"
                 android:textSize="14sp"
+                android:textColor="@color/yellow"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/et_add_point_latitude" />
@@ -98,33 +98,6 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/et_add_point_longitude" />
 
-            <Button
-                android:id="@+id/startMission2"
-                android:layout_width="100sp"
-                android:layout_height="50sp"
-                android:text="Starte Mission"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_add_point_by_latlng" />
-
-            <Button
-                android:id="@+id/stopMission2"
-                android:layout_width="100sp"
-                android:layout_height="50sp"
-                android:text="Stoppe Mission"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/startMission2" />
-
-            <Button
-                android:id="@+id/loadMission2"
-                android:layout_width="100sp"
-                android:layout_height="50sp"
-                android:text="Lade Mission"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/stopMission2" />
-
             <TextView
                 android:id="@+id/editPoint_text"
                 android:layout_width="0dp"
@@ -138,7 +111,7 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/loadMission2" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_add_point_by_latlng" />
 
             <View
                 android:id="@+id/editPoint_separator"
@@ -242,7 +215,7 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/et_speed"
-                app:layout_constraintTop_toBottomOf="@+id/settings_separator" />
+                app:layout_constraintTop_toBottomOf="@+id/settings_separator"  />
 
             <EditText
                 android:id="@+id/et_altitude"
@@ -252,8 +225,8 @@
                 android:inputType="numberDecimal"
                 android:padding="5sp"
                 android:text="5"
-                android:textColor="@color/yellow"
                 android:textSize="14sp"
+                android:textColor="@color/yellow"
                 app:layout_constraintStart_toEndOf="@+id/altitude_text"
                 app:layout_constraintTop_toBottomOf="@+id/settings_separator" />
 
@@ -410,11 +383,11 @@
         android:id="@+id/point_settings_scroll_view"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:background="@color/dark_gray"
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.3">
+        app:layout_constraintWidth_percent="0.3"
+        android:background="@color/dark_gray">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -455,8 +428,8 @@
                 android:inputType="numberDecimal"
                 android:padding="5sp"
                 android:text="请先选点"
-                android:textColor="@color/yellow"
                 android:textSize="14sp"
+                android:textColor="@color/yellow"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/changePoint_separator" />
@@ -469,8 +442,8 @@
                 android:inputType="numberDecimal"
                 android:padding="5sp"
                 android:text="请先选点"
-                android:textColor="@color/yellow"
                 android:textSize="14sp"
+                android:textColor="@color/yellow"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selected_point_latitude" />

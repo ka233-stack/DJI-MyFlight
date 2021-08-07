@@ -42,11 +42,6 @@ import java.util.List;
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.FlightControllerState;
 import dji.common.flightcontroller.LocationCoordinate3D;
-import dji.common.gimbal.Attitude;
-import dji.common.gimbal.Rotation;
-import dji.common.mission.hotpoint.HotpointHeading;
-import dji.common.mission.hotpoint.HotpointMission;
-import dji.common.mission.hotpoint.HotpointStartPoint;
 import dji.common.mission.waypoint.Waypoint;
 import dji.common.mission.waypoint.WaypointMission;
 import dji.common.mission.waypoint.WaypointMissionDownloadEvent;
@@ -55,19 +50,9 @@ import dji.common.mission.waypoint.WaypointMissionFinishedAction;
 import dji.common.mission.waypoint.WaypointMissionFlightPathMode;
 import dji.common.mission.waypoint.WaypointMissionHeadingMode;
 import dji.common.mission.waypoint.WaypointMissionUploadEvent;
-import dji.common.model.LocationCoordinate2D;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.base.BaseProduct;
 import dji.sdk.flightcontroller.FlightController;
-import dji.sdk.mission.MissionControl;
-import dji.sdk.mission.timeline.TimelineElement;
-import dji.sdk.mission.timeline.TimelineEvent;
-import dji.sdk.mission.timeline.actions.GimbalAttitudeAction;
-import dji.sdk.mission.timeline.actions.GoHomeAction;
-import dji.sdk.mission.timeline.actions.GoToAction;
-import dji.sdk.mission.timeline.actions.HotpointAction;
-import dji.sdk.mission.timeline.actions.ShootPhotoAction;
-import dji.sdk.mission.timeline.actions.TakeOffAction;
 import dji.sdk.mission.waypoint.WaypointMissionOperator;
 import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
 import dji.sdk.products.Aircraft;
@@ -77,16 +62,10 @@ import dji.ux.beta.core.widget.fpv.FPVWidget;
 
 public class WaypointMissionV2Activity extends FragmentActivity implements View.OnClickListener, OnMapClickListener {
 
-    private Button startMission, stopMission, loadMission;
-    private MissionControl missionControl;
-    private TimelineElement preElement;
-    private TimelineEvent preEvent;
-    private double baseLatitude = 39;
-    private double baseLongitude = 113;
-    private final float baseAltitude = 30.0f;
-
     private static final int TODO_LINE = 0;
     private static final int FINISHED_LINE = 1;
+
+    private final float cornerRadius = 10.0f;
 
     private MapView mapView;
     private AMap aMap;
@@ -110,11 +89,12 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
     private List<Polyline> todoLineList = new ArrayList<>();
     private Polyline firstLine;
 
-    private boolean isAdd = false;
+    private boolean isAddPointMode = false;
     private boolean isMissionStarted = false;
 
     // 地图标记列表
     private final List<Marker> markerList = new ArrayList<>();
+    private final List<Marker> auxMarkerList = new ArrayList<>();
     private Marker droneMarker = null;
 
     private float altitude = 100.0f;
@@ -267,9 +247,7 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
         @Override
         public void onMarkerDragEnd(Marker marker) {
             // 更改 wayPoint
-            LatLng pos = marker.getPosition();
-            Waypoint waypoint = new Waypoint(pos.latitude, pos.longitude, altitude);
-            waypointList.set(index, waypoint);
+            changeWaypoints(index, marker.getPosition());
             // 设置lastPoint
             if (index == lastIndex)
                 lastPointPos = marker.getPosition();
@@ -283,7 +261,6 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
         @Override
         public void onMarkerDrag(Marker marker) {
             if (index == -1) { // 不存在该marker
-                showToast("找不到该marker");
                 return;
             }
             if (index == 0) {
@@ -320,19 +297,21 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
         @Override
         public boolean onMarkerClick(Marker marker) {
             int index = markerList.indexOf(marker);
-            // 更改当前点样式
-            View view = LayoutInflater.from(WaypointMissionV2Activity.this).inflate(R.layout.icon_marker_selected, null);
-            ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
-            marker.setIcon(BitmapDescriptorFactory.fromView(view));
-            // 更改前一标点样式
-            if (selectedMarker != null && !marker.equals(selectedMarker)) {
-                index = markerList.indexOf(selectedMarker);
-                view = LayoutInflater.from(WaypointMissionV2Activity.this).inflate(R.layout.icon_marker, null);
+            if (index != -1) {
+                // 更改当前点样式
+                View view = LayoutInflater.from(WaypointMissionV2Activity.this).inflate(R.layout.icon_marker_selected, null);
                 ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
-                selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
+                marker.setIcon(BitmapDescriptorFactory.fromView(view));
+                // 更改前一标点样式
+                if (selectedMarker != null && !marker.equals(selectedMarker)) {
+                    index = markerList.indexOf(selectedMarker);
+                    view = LayoutInflater.from(WaypointMissionV2Activity.this).inflate(R.layout.icon_marker, null);
+                    ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(index + 1));
+                    selectedMarker.setIcon(BitmapDescriptorFactory.fromView(view));
+                }
+                selectedMarker = marker;
+                showSelectedMarkerDetailPanel();
             }
-            selectedMarker = marker;
-            showSelectedMarkerDetailPanel();
             return true;
         }
     };
@@ -341,7 +320,7 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_way_point_mission_v2);
+        setContentView(R.layout.activity_way_point_mission);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(DemoApplication.FLAG_CONNECTION_CHANGE);
@@ -516,29 +495,23 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
     }
 
     private void addPointByLonLat() {
-        if ((etAddPointLatitude.getText().toString().equals("")) || (etAddPointLongitude.getText().toString().equals(""))) {
+        if (etAddPointLatitude.getText().toString().equals("") || etAddPointLongitude.getText().toString().equals("") || etAddPointLatitude.getText() == null || etAddPointLongitude.getText().equals("") || etAddPointLongitude.getText() == null) {
             showToast("请先输入经纬度");
-        } else {
-            double point_v = Double.parseDouble(etAddPointLatitude.getText().toString());
-            double point_v1 = Double.parseDouble(etAddPointLongitude.getText().toString());
-            if (etAddPointLatitude.getText().equals("") || etAddPointLatitude.getText() == null || etAddPointLongitude.getText().equals("") || etAddPointLongitude.getText() == null)
-                showToast("Please Enter First");
-            else {
-                LatLng point = new LatLng(point_v, point_v1);
-                markWaypoint(point);
-                Waypoint mWaypoint = new Waypoint(point.latitude, point.longitude, altitude);
-                waypointList.add(mWaypoint);
-            }
+            return;
         }
+        double latitude = Double.parseDouble(etAddPointLatitude.getText().toString());
+        double longitude = Double.parseDouble(etAddPointLongitude.getText().toString());
+        LatLng point = new LatLng(latitude, longitude);
+        markWaypoint(point);
+        addWaypoints(point);
     }
+
 
     @Override
     public void onMapClick(LatLng point) {
-        if (isAdd) {
+        if (isAddPointMode) {
             markWaypoint(point);
-            Waypoint mWaypoint = new Waypoint(point.latitude, point.longitude, altitude);
-            //Add Waypoints to Waypoint arraylist;
-            waypointList.add(mWaypoint);
+            addWaypoints(point);
         } else if (selectedMarker != null) {
             // 更改标点样式
             int index = markerList.indexOf(selectedMarker);
@@ -645,7 +618,7 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
         // set icon
         view = LayoutInflater.from(this).inflate(R.layout.icon_marker_selected, null);
         // set text
-        ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(waypointList.size() + 1));
+        ((TextView) view.findViewById(R.id.icon_text)).setText(String.valueOf(markerList.size() + 1));
         wayPointMarkerOptions.icon(BitmapDescriptorFactory.fromView(view));
 
         Marker marker = aMap.addMarker(wayPointMarkerOptions);
@@ -677,6 +650,7 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
         } else if (id == R.id.btn_clear_all_points) {
             runOnUiThread(() -> aMap.clear());
             markerList.clear();
+            auxMarkerList.clear();
             // 移除画线
             for (Polyline line : todoLineList) {
                 line.remove();
@@ -724,14 +698,6 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
             Intent intent = new Intent(this, FPVForWayPointActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
-        } else if (id == R.id.startMission2) {
-            if (MissionControl.getInstance().scheduledCount() > 0) {
-                MissionControl.getInstance().startTimeline();
-            }
-        } else if (id == R.id.stopMission2) {
-            MissionControl.getInstance().stopTimeline();
-        } else if (id == R.id.loadMission2) {
-            initTimeline();
         }
     }
 
@@ -744,8 +710,8 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
     }
 
     private void enableDisableAdd() {
-        isAdd = !isAdd;
-        btnAddPointByMapMode.setText(isAdd ? "关闭地图选点" : "地图选点");
+        isAddPointMode = !isAddPointMode;
+        btnAddPointByMapMode.setText(isAddPointMode ? "关闭地图选点" : "地图选点");
     }
 
     private void configAndUploadWayPointMission() {
@@ -756,9 +722,10 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
                 .headingMode(mHeadingMode)
                 .autoFlightSpeed(mSpeed)
                 .maxFlightSpeed(mSpeed)
-                .flightPathMode(WaypointMissionFlightPathMode.NORMAL)
+                .flightPathMode(WaypointMissionFlightPathMode.CURVED)
                 .waypointList(waypointList)
                 .waypointCount(waypointList.size());
+        // waypointMissionBuilder.addWaypoint(waypointList.get(0));
 
         if (waypointMissionBuilder.getWaypointList().size() > 0) {
             for (int i = 0; i < waypointMissionBuilder.getWaypointList().size(); i++) {
@@ -790,8 +757,8 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
     }
 
     private void startWaypointMission() {
-        for (Polyline line : finishedLineList) {
-            line.remove();
+        for (int i = 0; i < finishedLineList.size(); i++) {
+            finishedLineList.remove(i);
         }
         finishedLineList.clear();
         lastDronePos = null;
@@ -1047,8 +1014,7 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
                 polylineOptions.add(pos, selectedMarker.getPosition());
                 todoLineList.add(index - 1, aMap.addPolyline(polylineOptions));
             }
-            Waypoint waypoint = new Waypoint(position.latitude, position.longitude, altitude);
-            waypointList.set(index, waypoint);
+            changeWaypoints(index, position);
             // 设置lastPoint
             if (index == lastIndex)
                 lastPointPos = selectedMarker.getPosition();
@@ -1123,7 +1089,11 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
             // 选中点设置为null
             selectedMarker = null;
             // 移除航点
-            waypointList.remove(index);
+            for (int i = 0; i < 6; i++) {
+                waypointList.remove(index * 6);
+                auxMarkerList.get(index * 6).remove();
+                auxMarkerList.remove(index * 6);
+            }
             // 关闭标点信息面板
             if (detailPanelVisible) {
                 moveDetailPanel(300);
@@ -1131,47 +1101,106 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
         }
     }
 
-    private void initTimeline() {
-        List<TimelineElement> elements = new ArrayList<>();
-        missionControl = MissionControl.getInstance();
-        final TimelineEvent preEvent = null;
+    public void addWaypoints(LatLng point) {
+        double biasLat = 0.00001 / 1.3 * cornerRadius;
+        double biasLng = 0.00001 * cornerRadius;
+        Waypoint waypoint1 = new Waypoint(point.latitude, point.longitude - biasLng, altitude);
+        Waypoint waypoint2 = new Waypoint(point.latitude - biasLat, point.longitude - biasLng, altitude);
+        waypoint2.cornerRadiusInMeters = cornerRadius - 2;
+        Waypoint waypoint3 = new Waypoint(point.latitude - biasLat, point.longitude + biasLng, altitude);
+        waypoint3.cornerRadiusInMeters = cornerRadius - 2;
+        Waypoint waypoint4 = new Waypoint(point.latitude + biasLat, point.longitude + biasLng, altitude);
+        waypoint4.cornerRadiusInMeters = cornerRadius - 2;
+        Waypoint waypoint5 = new Waypoint(point.latitude + biasLat, point.longitude - biasLng, altitude);
+        waypoint5.cornerRadiusInMeters = cornerRadius - 2;
+        Waypoint waypoint6 = new Waypoint(point.latitude, point.longitude - biasLng, altitude);
+        waypointList.add(waypoint1);
+        waypointList.add(waypoint2);
+        waypointList.add(waypoint3);
+        waypointList.add(waypoint4);
+        waypointList.add(waypoint5);
+        waypointList.add(waypoint6);
+        MarkerOptions markerOptions = getWayPointMarkerOptions();
+        markerOptions.position(new LatLng(point.latitude, point.longitude - biasLng)).draggable(false);
+        auxMarkerList.add(aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude - biasLat, point.longitude - biasLng)).draggable(false);
+        auxMarkerList.add(aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude - biasLat, point.longitude + biasLng)).draggable(false);
+        auxMarkerList.add(aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude + biasLat, point.longitude + biasLng)).draggable(false);
+        auxMarkerList.add(aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude + biasLat, point.longitude - biasLng)).draggable(false);
+        auxMarkerList.add(aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude, point.longitude - biasLng)).draggable(false);
+        auxMarkerList.add(aMap.addMarker(markerOptions));
+    }
 
-        elements.add(new TakeOffAction());
+    public void changeWaypoints(int index, LatLng point) {
+        double biasLat = 0.00001 / 1.3 * cornerRadius;
+        double biasLng = 0.00001 * cornerRadius;
+        Waypoint waypoint1 = new Waypoint(point.latitude, point.longitude - biasLng, altitude);
+        Waypoint waypoint2 = new Waypoint(point.latitude - biasLat, point.longitude - biasLng, altitude);
+        waypoint2.cornerRadiusInMeters = cornerRadius - 2;
+        Waypoint waypoint3 = new Waypoint(point.latitude - biasLat, point.longitude + biasLng, altitude);
+        waypoint3.cornerRadiusInMeters = cornerRadius - 2;
+        Waypoint waypoint4 = new Waypoint(point.latitude + biasLat, point.longitude + biasLng, altitude);
+        waypoint4.cornerRadiusInMeters = cornerRadius - 2;
+        Waypoint waypoint5 = new Waypoint(point.latitude + biasLat, point.longitude - biasLng, altitude);
+        waypoint5.cornerRadiusInMeters = cornerRadius - 2;
+        Waypoint waypoint6 = new Waypoint(point.latitude, point.longitude - biasLng, altitude);
+        waypointList.set(index * 6, waypoint1);
+        waypointList.set(index * 6 + 1, waypoint2);
+        waypointList.set(index * 6 + 2, waypoint3);
+        waypointList.set(index * 6 + 3, waypoint4);
+        waypointList.set(index * 6 + 4, waypoint5);
+        waypointList.set(index * 6 + 5, waypoint6);
 
-        Attitude attitude = new Attitude(-30, Rotation.NO_ROTATION, Rotation.NO_ROTATION);
-        GimbalAttitudeAction gimbalAction = new GimbalAttitudeAction(attitude);
-        gimbalAction.setCompletionTime(2);
-        elements.add(gimbalAction);
-
-        elements.add(new GoToAction(new LocationCoordinate2D(baseLatitude, baseLongitude), 10));
-
-        elements.add(ShootPhotoAction.newShootIntervalPhotoAction(3, 2));
-
-        //also waypoint missions addable with TimelineMission.elementFromWaypointMission(WaypointMission)
-
-        HotpointMission hotpointMission = new HotpointMission();
-        hotpointMission.setHotpoint(new LocationCoordinate2D(baseLatitude, baseLongitude));
-        hotpointMission.setAltitude(10);
-        hotpointMission.setRadius(10);
-        hotpointMission.setAngularVelocity(10);
-        HotpointStartPoint startPoint = HotpointStartPoint.NEAREST;
-        hotpointMission.setStartPoint(startPoint);
-        HotpointHeading heading = HotpointHeading.TOWARDS_HOT_POINT;
-        hotpointMission.setHeading(heading);
-        elements.add(new HotpointAction(hotpointMission, 360));
-
-        elements.add(new GoHomeAction());
-
-        attitude = new Attitude(0, Rotation.NO_ROTATION, Rotation.NO_ROTATION);
-        gimbalAction = new GimbalAttitudeAction(attitude);
-        gimbalAction.setCompletionTime(2);
-        elements.add(gimbalAction);
-
-        if (missionControl.scheduledCount() > 0) {
-            missionControl.unscheduleEverything();
-            missionControl.removeAllListeners();
+        for (int i = 0; i < 6; i++) {
+            auxMarkerList.get(index * 6 + i).remove();
         }
-
-        missionControl.scheduleElements(elements);
+        MarkerOptions markerOptions = getWayPointMarkerOptions();
+        markerOptions.draggable(false);
+        markerOptions.position(new LatLng(point.latitude, point.longitude - biasLng));
+        auxMarkerList.set(index * 6, aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude - biasLat, point.longitude - biasLng));
+        auxMarkerList.set(index * 6 + 1, aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude - biasLat, point.longitude + biasLng));
+        auxMarkerList.set(index * 6 + 2, aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude + biasLat, point.longitude + biasLng));
+        auxMarkerList.set(index * 6 + 3, aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude + biasLat, point.longitude - biasLng));
+        auxMarkerList.set(index * 6 + 4, aMap.addMarker(markerOptions));
+        markerOptions.position(new LatLng(point.latitude, point.longitude - biasLng));
+        auxMarkerList.set(index * 6 + 5, aMap.addMarker(markerOptions));
+        // auxMarkerList.set(index * 6, aMap.addMarker(getWayPointMarkerOptions()
+        //                 .position(new LatLng(point.latitude, point.longitude - biasLng))
+        //                 .draggable(false)
+        //         )
+        // );
+        // auxMarkerList.set(index * 6 + 1, aMap.addMarker(getWayPointMarkerOptions()
+        //                 .position(new LatLng(point.latitude - biasLat, point.longitude - biasLng))
+        //                 .draggable(false)
+        //         )
+        // );
+        // auxMarkerList.set(index * 6 + 2, aMap.addMarker(getWayPointMarkerOptions()
+        //                 .position(new LatLng(point.latitude - biasLat, point.longitude + biasLng))
+        //                 .draggable(false)
+        //         )
+        // );
+        // auxMarkerList.set(index * 6 + 3, aMap.addMarker(getWayPointMarkerOptions()
+        //                 .position(new LatLng(point.latitude + biasLat, point.longitude + biasLng))
+        //                 .draggable(false)
+        //         )
+        // );
+        // auxMarkerList.set(index * 6 + 4, aMap.addMarker(getWayPointMarkerOptions()
+        //                 .position(new LatLng(point.latitude + biasLat, point.longitude - biasLng))
+        //                 .draggable(false)
+        //         )
+        // );
+        // auxMarkerList.set(index * 6 + 5, aMap.addMarker(getWayPointMarkerOptions()
+        //                 .position(new LatLng(point.latitude, point.longitude - biasLng))
+        //                 .draggable(false)
+        //         )
+        // );
     }
 }
