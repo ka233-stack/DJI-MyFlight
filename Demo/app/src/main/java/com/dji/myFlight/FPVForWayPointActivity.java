@@ -200,9 +200,10 @@ public class FPVForWayPointActivity extends AppCompatActivity implements View.On
      * @param view The thumbnail view that was clicked.
      */
     private void onViewClick(View view) {
-        Intent intent = new Intent(this, WaypointMissionActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(intent);
+        // Intent intent = new Intent(this, WaypointMissionActivity.class);
+        // intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        // startActivity(intent);
+        this.finish();
     }
 
     /**
