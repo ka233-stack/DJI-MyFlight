@@ -65,7 +65,9 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
     private static final int TODO_LINE = 0;
     private static final int FINISHED_LINE = 1;
 
-    private final float cornerRadius = 10.0f;
+    private final float cornerRadius = 15.0f;
+    private final float cornerRadiusInMeters = 3.0f;
+    private final float factor = 1.3f;
 
     private MapView mapView;
     private AMap aMap;
@@ -1102,17 +1104,17 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
     }
 
     public void addWaypoints(LatLng point) {
-        double biasLat = 0.00001 / 1.3 * cornerRadius;
+        double biasLat = 0.00001 / factor * cornerRadius;
         double biasLng = 0.00001 * cornerRadius;
         Waypoint waypoint1 = new Waypoint(point.latitude, point.longitude - biasLng, altitude);
         Waypoint waypoint2 = new Waypoint(point.latitude - biasLat, point.longitude - biasLng, altitude);
-        waypoint2.cornerRadiusInMeters = cornerRadius - 2;
+        waypoint2.cornerRadiusInMeters = cornerRadius - cornerRadiusInMeters;
         Waypoint waypoint3 = new Waypoint(point.latitude - biasLat, point.longitude + biasLng, altitude);
-        waypoint3.cornerRadiusInMeters = cornerRadius - 2;
+        waypoint3.cornerRadiusInMeters = cornerRadius - cornerRadiusInMeters;
         Waypoint waypoint4 = new Waypoint(point.latitude + biasLat, point.longitude + biasLng, altitude);
-        waypoint4.cornerRadiusInMeters = cornerRadius - 2;
+        waypoint4.cornerRadiusInMeters = cornerRadius - cornerRadiusInMeters;
         Waypoint waypoint5 = new Waypoint(point.latitude + biasLat, point.longitude - biasLng, altitude);
-        waypoint5.cornerRadiusInMeters = cornerRadius - 2;
+        waypoint5.cornerRadiusInMeters = cornerRadius - cornerRadiusInMeters;
         Waypoint waypoint6 = new Waypoint(point.latitude, point.longitude - biasLng, altitude);
         waypointList.add(waypoint1);
         waypointList.add(waypoint2);
@@ -1136,17 +1138,17 @@ public class WaypointMissionV2Activity extends FragmentActivity implements View.
     }
 
     public void changeWaypoints(int index, LatLng point) {
-        double biasLat = 0.00001 / 1.3 * cornerRadius;
+        double biasLat = 0.00001 / factor * cornerRadius;
         double biasLng = 0.00001 * cornerRadius;
         Waypoint waypoint1 = new Waypoint(point.latitude, point.longitude - biasLng, altitude);
         Waypoint waypoint2 = new Waypoint(point.latitude - biasLat, point.longitude - biasLng, altitude);
-        waypoint2.cornerRadiusInMeters = cornerRadius - 2;
+        waypoint2.cornerRadiusInMeters = cornerRadius - cornerRadiusInMeters;
         Waypoint waypoint3 = new Waypoint(point.latitude - biasLat, point.longitude + biasLng, altitude);
-        waypoint3.cornerRadiusInMeters = cornerRadius - 2;
+        waypoint3.cornerRadiusInMeters = cornerRadius - cornerRadiusInMeters;
         Waypoint waypoint4 = new Waypoint(point.latitude + biasLat, point.longitude + biasLng, altitude);
-        waypoint4.cornerRadiusInMeters = cornerRadius - 2;
+        waypoint4.cornerRadiusInMeters = cornerRadius - cornerRadiusInMeters;
         Waypoint waypoint5 = new Waypoint(point.latitude + biasLat, point.longitude - biasLng, altitude);
-        waypoint5.cornerRadiusInMeters = cornerRadius - 2;
+        waypoint5.cornerRadiusInMeters = cornerRadius - cornerRadiusInMeters;
         Waypoint waypoint6 = new Waypoint(point.latitude, point.longitude - biasLng, altitude);
         waypointList.set(index * 6, waypoint1);
         waypointList.set(index * 6 + 1, waypoint2);
